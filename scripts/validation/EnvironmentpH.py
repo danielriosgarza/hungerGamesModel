@@ -65,4 +65,4 @@ textstr = '\n'.join((
 ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10,
         verticalalignment='top', bbox=props)
 
-plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'pHregression.png'), dpi = 300)
+plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'pHregression.png'), dpi = 100)

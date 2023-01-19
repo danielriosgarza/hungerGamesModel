@@ -59,7 +59,7 @@ sns.regplot(x=y_test, y = a, truncate=False)
 props = dict(boxstyle='round', facecolor='#9ca3a6', alpha=0.5)
 
 textstr = '\n'.join((
-    "In 33% of the data (test-set)",
+    "33% of the data (test-set):",
     "$r^2$ = {:.3f}".format(sts.pearsonr(y_test, a)[0]**2),
     "p = {:.2E}".format(sts.pearsonr(y_test, a)[1])))
 ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10,

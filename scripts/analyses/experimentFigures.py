@@ -45,6 +45,10 @@ stTypes = ['cells',
 
 for i,v in enumerate(states):
     pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
-    plt.savefig(os.path.join(figPath, v + '.png'), dpi = 300)
+    plt.savefig(os.path.join(figPath, v + '.png'), dpi = 150)
+    
+for i,v in enumerate(states):
+    pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
+    plt.savefig(os.path.join(figPath, 'logos', v + '.png'), dpi = 75)
 
 #####################################

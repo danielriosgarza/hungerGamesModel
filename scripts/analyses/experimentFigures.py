@@ -49,6 +49,6 @@ for i,v in enumerate(states):
     
 for i,v in enumerate(states):
     pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
-    plt.savefig(os.path.join(figPath, 'logos', v + '.png'), dpi = 75)
+    plt.savefig(os.path.join(figPath, 'logos', v + '.png'), dpi = 50)
 
 #####################################

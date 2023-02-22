@@ -2,3 +2,4 @@ numpy
 sklearn
 seaborn
 scipy
+sqlite3

@@ -3,3 +3,4 @@ sklearn
 seaborn
 scipy
 sqlite3
+plotly

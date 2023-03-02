@@ -9,6 +9,7 @@ Created on Tue Mar 29 12:20:18 2022
 from pony.orm import *
 from pathlib import Path
 import sys
+import os
 
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'core'))
 from mainClasses import *

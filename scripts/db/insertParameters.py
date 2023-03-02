@@ -77,26 +77,27 @@ def addFile(conn, filePath, tableName):
 
 
 
-databaseName = 'modelDB_bhbtri.sqlite3'
+databaseName = 'modelDB_bhA.sqlite3'
 
-databaseFolder = 'C:\\Users\\danie\\OneDrive\\Documentos\\GitHub\\SyntheticCommunity\\scripts\\MODEL_hill\\db\\parameterFit\\tests'
+databaseFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
-conn = create_connection(os.path.join(databaseFolder, databaseName))
+conn = sqlite3.connect(os.path.join(databaseFolder, databaseName))
 
-dbParamsFolder = 'C:\\Users\\danie\\OneDrive\\Documentos\\GitHub\\SyntheticCommunity\\files\\strainSummaries\\db_entries_hill' 
+dbParamsFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'dbsTemplateTables' )
 
 
 
-addFile(conn, os.path.join(dbParamsFolder, 'elements.txt'), 'elements')
-addFile(conn, os.path.join(dbParamsFolder, 'metabolites.txt'), 'metabolites')
-addFile(conn, os.path.join(dbParamsFolder, 'metabolites2elements.txt'), 'metabolites2elements')
-addFile(conn, os.path.join(dbParamsFolder, 'wc.txt'), 'wc')
-addFile(conn, os.path.join(dbParamsFolder, 'species.txt'), 'species')
-addFile(conn, os.path.join(dbParamsFolder, 'feedingTerms.txt'), 'feedingTerms')
-addFile(conn, os.path.join(dbParamsFolder, 'feedingTerms2metabolites.txt'), 'feedingTerms2metabolites')
-addFile(conn, os.path.join(dbParamsFolder, 'subpopulations.txt'), 'subpopulations')
-addFile(conn, os.path.join(dbParamsFolder, 'subpopulations2subpopulations.txt'), 'subpopulations2subpopulations')
-addFile(conn, os.path.join(dbParamsFolder, 'subpopulations2feedingTerms.txt'), 'subpopulations2feedingTerms')
+
+addFile(conn, os.path.join(dbParamsFolder, 'elements.tsv'), 'elements')
+addFile(conn, os.path.join(dbParamsFolder, 'metabolites.tsv'), 'metabolites')
+addFile(conn, os.path.join(dbParamsFolder, 'metabolites2elements.tsv'), 'metabolites2elements')
+addFile(conn, os.path.join(dbParamsFolder, 'wc.tsv'), 'wc')
+addFile(conn, os.path.join(dbParamsFolder, 'species.tsv'), 'species')
+addFile(conn, os.path.join(dbParamsFolder, 'feedingTerms.tsv'), 'feedingTerms')
+addFile(conn, os.path.join(dbParamsFolder, 'feedingTerms2metabolites.tsv'), 'feedingTerms2metabolites')
+addFile(conn, os.path.join(dbParamsFolder, 'subpopulations.tsv'), 'subpopulations')
+addFile(conn, os.path.join(dbParamsFolder, 'subpopulations2subpopulations.tsv'), 'subpopulations2subpopulations')
+addFile(conn, os.path.join(dbParamsFolder, 'subpopulations2feedingTerms.tsv'), 'subpopulations2feedingTerms')
 
 
 

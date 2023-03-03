@@ -5,21 +5,104 @@ Created on Fri Dec 23 12:28:47 2022
 @author: danie
 """
 
+from pathlib import Path
 import os
 import sys
-sys.path.append('C:\\Users\\danie\\OneDrive\\Documentos\\GitHub\\SyntheticCommunity\\scripts\MODEL_hill\\db\\scripts')
+
+sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'db'))
+
 from updateParameters import *
 from lmfit import Parameters
 
-def assignParameters2db(species, inputParams, conn):
-    
+
+
+def getPramsFromFile(species, filePath):
     lmfit_params = Parameters()    
-    with open(inputParams) as f:
+    with open(filePath) as f:
         f.readline()
         for line in f:
             a = line.strip().split('\t')
             if a[0] == species:
                 lmfit_params.add(a[1], value = float(a[2]), min = float(a[3]), max = float(a[4]), vary=True)
+    
+    return lmfit_params
+    
+    
+
+
+def assignBhParams(lmfit_params, conn):
+    
+    a1 = str(lmfit_params['bh_z1_t1'].value**(lmfit_params['bh_z1_h1'].value))
+    
+    b1 = "metObj.metD['trehalose'].concentration**" + str(lmfit_params['bh_z1_h1'].value)
+    
+    a2 = str(lmfit_params['bh_z1_t2'].value**(lmfit_params['bh_z1_h2'].value))
+    
+    b2 = "metObj.metD['glucose'].concentration**" + str(lmfit_params['bh_z1_h2'].value)
+
+        
+    zeta1 = "(" + a1 + "/(" + a1 + " + " + b1 + "))*(" + b2 + "/(" + a2 + " + " + b2 + "))"
+    
+    zeta2 = '""'
+    
+    a1 = str(lmfit_params['bh_z3_t1'].value**(lmfit_params['bh_z3_h1'].value))
+    
+    b1 = "metObj.metD['glucose'].concentration**" + str(lmfit_params['bh_z3_h1'].value)
+    
+    a2 = str(lmfit_params['bh_z3_t2'].value**(lmfit_params['bh_z3_h2'].value))
+    
+    b2 = "metObj.metD['glutamate'].concentration**" + str(lmfit_params['bh_z3_h2'].value)
+    
+    
+    zeta3 = "(((" + a1 + ")/(" + a1 + "+ " + b1 + ")) + ((" + a2 + ")/(" + a2 + " + " + b2 + ")) + ((((" + a1 + ")/(" + a1 + " + " + b1 + ")) - ((" + a2 + ")/(" + a2 + " + " + b2 + ")))**2)**0.5)/2"
+    
+    zeta4 = '""'
+    
+    with conn:
+        
+        update_subpopulations(conn, (lmfit_params['bh_expA_mumax'].value, lmfit_params['bh_expA_pHopt'].value, lmfit_params['bh_expA_pHalpha'].value, 'bh.expA'))
+        
+        update_subpopulations(conn, (lmfit_params['bh_expB_mumax'].value, lmfit_params['bh_expB_pHopt'].value, lmfit_params['bh_expB_pHalpha'].value, 'bh.expB'))
+        
+        
+        
+        update_subpopulations2subpopulations(conn, (zeta1, lmfit_params['bh_z1_r'].value, 6))
+        
+        update_subpopulations2subpopulations(conn, (zeta2, lmfit_params['bh_z2_r'].value, 7))
+        
+        update_subpopulations2subpopulations(conn, (zeta3, lmfit_params['bh_z3_r'].value, 8))
+        
+        update_subpopulations2subpopulations(conn, (zeta4, lmfit_params['bh_z4_r'].value, 9))
+        
+        
+        
+        
+        update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft1_trehalose_g'].value, lmfit_params['bh_monod_trehalose'].value, 24))
+        
+        update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft1_acetate_g'].value, 0, 25))
+        
+        update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft1_lactate_g'].value, 0, 26))
+        
+        update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft2_pyruvate_g'].value, lmfit_params['bh_monod_pyruvate'].value, 27))
+        
+        update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft2_acetate_g'].value, 0, 28))
+        
+        update_feedingTerms2metabolites(conn, (lmfit_params['bh_expB_ft3_glutamate_g'].value, lmfit_params['bh_monod_glutamate'].value, 29))
+        
+        update_feedingTerms2metabolites(conn, (lmfit_params['bh_expB_ft3_glucose_g'].value, lmfit_params['bh_monod_glucose'].value, 30))
+        
+        update_feedingTerms2metabolites(conn, (lmfit_params['bh_expB_ft3_acetate_g'].value, 0, 31))
+        
+        update_wc(conn, (lmfit_params['glutamate_conc'].value, "glutamate"))
+        
+    
+    
+
+    
+    
+
+def assignParameters2db(species, inputParams, conn):
+    
     
     
     

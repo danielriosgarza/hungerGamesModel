@@ -14,6 +14,7 @@ sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'db'))
 
 from readModelDB import *
 from mainClasses import *
+from loadParameters import *
 
 import plotly.io as pio
 pio.renderers.default='browser'
@@ -25,6 +26,17 @@ ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries'
 databaseName = 'modelDB_bhA.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
+
+
+#update database params
+conn = create_connection(os.path.join(databaseFolder, databaseName))
+
+bh_params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh0.tsv'))
+
+assignBhParams(bh_params, conn)
+
+
+
 
 
 #Load database

@@ -16,42 +16,36 @@ import seaborn as sns
 import plotly.io as pio
 pio.renderers.default='browser'
 
-sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'db', 'scripts'))
-
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'core'))
+sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'db'))
+sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'compare2experiments'))
 
 
-#from mainClasses import *
+from mainClasses import *
 from parseTable import *
-#from readModelDB import *
-#from loadParameters import *
+from updateParameters import *
+from readModelDB import *
+from loadParameters import *
+
 
 ###setup####
 
-def simulateExperiment(species, experiment, paramFile, dbName, states):
+def simulateExperiment(species, experimentLabel, params, dbPath, measuredStates):
     
-    ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.txt')
+    ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv')
     
-    strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[2], 'files', 'strainSummaries', species)
-    dbFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files','dbs')
+    strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', species)
     
     
+    initialStates = {i:get_initialState(i, strainSummaryFolder, experimentLabel) for i in measuredStates}
 
-    speciesParams = os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', paramFile)
+    conn = create_connection(dbPath)
     
-    initialStates = {}
-    
-    for idx,state in enumerate(states):
-        initialStates[state] = get_initialState(state, strainSummaryFolder, experiment)
-        
-        
-    conn = create_connection(os.path.join(dbFolder, dbName))
-    
-    assignParameters2db(species, speciesParams, conn)     
+    assignParameters2db(species, params, conn)     
         
     states = []
     
-    db = get_database(os.path.join(dbFolder, dbName))
+    db = get_database(dbPath)
     
     
 
@@ -105,7 +99,7 @@ def simulateExperiment(species, experiment, paramFile, dbName, states):
         species_r.subpopD['bt.lag'].count = initialStates['live']
 
 
-    p1 = Pulse(wc_f, species_f, 0, 120, 1000, 0, 0, 0, 0)
+    p1 = Pulse(wc_f, species_f, 0, 120, 10000, 0, 0, 0, 0)
 
     r_species = Reactor(species_r, wc_r, [p1], 60)
 
@@ -119,7 +113,8 @@ def makeExperimentPlot(species,
              experiments = ['bhbtri'],
              lables = ['bh3'],
              colors = ['#ff0000'],
-             simulObj = [None, None, None]):
+             simulObj = [None, None, None],
+             alpha=1):
     
     fig, ax = plt.subplots()
     strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', species)
@@ -128,7 +123,7 @@ def makeExperimentPlot(species,
             
     for i,v in enumerate(experiments):
         stateDF = getDFdict(stateTable, state, True)[v]
-        sns.lineplot(x='time', y=state, marker="o", markers=True, data=stateDF, color = colors[i], lw=.666, label=lables[i])#, err_style='bars', err_kws = {'capsize':6, 'fmt':'o'})
+        sns.lineplot(x='time', y=state, marker="o", markers=True, data=stateDF, color = colors[i], lw=.666, label=lables[i], alpha=alpha)#, err_style='bars', err_kws = {'capsize':6, 'fmt':'o'})
         
         if simulObj[i] is not None:
             

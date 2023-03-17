@@ -1,0 +1,16 @@
+sample	condition
+ri_t12_A	ri_t12t48
+ri_t12_B	ri_t12t48
+ri_t12_C	ri_t12t48
+ri_t48_A	ri_t12t48
+ri_t48_B	ri_t12t48
+ri_t48_C	ri_t12t48
+btri_t12_riA	btri_t12t24t36
+btri_t12_riB	btri_t12t24t36
+btri_t12_riC	btri_t12t24t36
+btri_t24_riA	btri_t12t24t36
+btri_t24_riB	btri_t12t24t36
+btri_t24_riC	btri_t12t24t36
+btri_t36_riA	btri_t12t24t36
+btri_t36_riB	btri_t12t24t36
+btri_t36_riC	btri_t12t24t36

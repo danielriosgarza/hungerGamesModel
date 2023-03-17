@@ -41,7 +41,8 @@ def assignBhParams(lmfit_params, conn):
     b2 = "metObj.metD['glucose'].concentration**" + str(lmfit_params['bh_z1_h2'].value)
 
         
-    zeta1 = "(" + a1 + "/(" + a1 + " + " + b1 + "))*(" + b2 + "/(" + a2 + " + " + b2 + "))"
+    #zeta1 = "(" + a1 + "/(" + a1 + " + " + b1 + "))"#"*(" + b2 + "/(" + a2 + " + " + b2 + "))"
+    zeta1 = "metObj.metD['trehalose'].concentration < " +  str(lmfit_params['bh_z1_t1'].value)
     
     zeta2 = '""'
     
@@ -54,7 +55,9 @@ def assignBhParams(lmfit_params, conn):
     b2 = "metObj.metD['glutamate'].concentration**" + str(lmfit_params['bh_z3_h2'].value)
     
     
-    zeta3 = "(((" + a1 + ")/(" + a1 + "+ " + b1 + ")) + ((" + a2 + ")/(" + a2 + " + " + b2 + ")) + ((((" + a1 + ")/(" + a1 + " + " + b1 + ")) - ((" + a2 + ")/(" + a2 + " + " + b2 + ")))**2)**0.5)/2"
+    #zeta3 = "(((" + a1 + ")/(" + a1 + "+ " + b1 + ")) + ((" + a2 + ")/(" + a2 + " + " + b2 + ")) + ((((" + a1 + ")/(" + a1 + " + " + b1 + ")) - ((" + a2 + ")/(" + a2 + " + " + b2 + ")))**2)**0.5)/2"
+    
+    zeta3 = "metObj.metD['glucose'].concentration < " + str(lmfit_params['bh_z3_t1'].value) + " or metObj.metD['glutamate'].concentration < " + str(lmfit_params['bh_z3_t2'].value)
     
     zeta4 = '""'
     
@@ -101,64 +104,14 @@ def assignBhParams(lmfit_params, conn):
     
     
 
-def assignParameters2db(species, inputParams, conn):
+def assignParameters2db(species, lmfit_params, conn):
     
     
     
     
     
     if species == 'bh':
-        zeta1_bh = "(metObj.metD['trehalose'].concentration < " + str(lmfit_params['bh_z1_t1'].value) + ") and (metObj.metD['glucose'].concentration > " + str(lmfit_params['bh_z1_t2'].value) + ")"
-        #zeta1_bh = "(" + str(lmfit_params['bh_z1_t1'].value) + "**" + str(lmfit_params['bh_z1_h1'].value) + ")/((" + str(lmfit_params['bh_z1_t1'].value) + "**" + str(lmfit_params['bh_z1_h1'].value) + ") + ( metObj.metD['trehalose'].concentration**" + str(lmfit_params['bh_z1_h1'].value) + ")) *  (metObj.metD['glucose'].concentration ** "  + str(lmfit_params['bh_z1_h2'].value) + ")/((metObj.metD['glucose'].concentration ** "  + str(lmfit_params['bh_z1_h2'].value) + ") + (" + str(lmfit_params['bh_z1_t2'].value) + "**" + str(lmfit_params['bh_z1_h2'].value) + "))"
-        
-        
-        zeta2_bh = '""'
-        
-        zeta3_bh = "(metObj.metD['co2'].concentration < " + str(lmfit_params['bh_z3_t1'].value) + ") or (metObj.metD['glucose'].concentration < " + str(lmfit_params['bh_z3_t2'].value) + ")"
-        
-        #zeta3_bh = "(" + str(lmfit_params['bh_z3_t1'].value ** lmfit_params['bh_z3_h1'].value) + ")/((" + str(lmfit_params['bh_z3_t1'].value ** lmfit_params['bh_z3_h1'].value) + ") + ( metObj.metD['glucose'].concentration ** " + str(lmfit_params['bh_z3_h1'].value) + ")) * (" + str(lmfit_params['bh_z3_t2'].value ** lmfit_params['bh_z3_h2'].value) + ")/((" + str(lmfit_params['bh_z3_t2'].value ** lmfit_params['bh_z3_h2'].value) + ") + ( metObj.metD['co2'].concentration ** " + str(lmfit_params['bh_z3_h2'].value) + "))"
-        
-        zeta4_bh = '""' 
-       
-        with conn:
-            
-            update_subpopulations(conn, (lmfit_params['bh_expA_mumax'].value, lmfit_params['bh_expA_pHopt'].value, lmfit_params['bh_expA_pHalpha'].value, 'bh.expA'))
-            
-            update_subpopulations(conn, (lmfit_params['bh_expB_mumax'].value, lmfit_params['bh_expB_pHopt'].value, lmfit_params['bh_expB_pHalpha'].value, 'bh.expB'))
-            
-            update_subpopulations2subpopulations(conn, (zeta1_bh, lmfit_params['bh_z1_r'].value, 6))
-            
-            update_subpopulations2subpopulations(conn, (zeta2_bh, lmfit_params['bh_z2_r'].value, 7))
-            
-            update_subpopulations2subpopulations(conn, (zeta3_bh, lmfit_params['bh_z3_r'].value, 8))
-            
-            update_subpopulations2subpopulations(conn, (zeta4_bh, lmfit_params['bh_z4_r'].value, 9))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft1_trehalose_g'].value, lmfit_params['bh_monod_trehalose'].value, 24))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft1_co2_g'].value, lmfit_params['bh_monod_co2'].value, 25))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft1_acetate_g'].value, 0, 26))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft1_lactate_g'].value, 0, 27))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft2_pyruvate_g'].value, lmfit_params['bh_monod_pyruvate'].value, 28))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft2_acetate_g'].value, 0, 29))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expA_ft2_lactate_g'].value, 0, 30))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expB_ft3_co2_g'].value, lmfit_params['bh_monod_co2'].value, 31))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expB_ft3_glucose_g'].value, lmfit_params['bh_monod_glucose'].value, 32))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expB_ft3_acetate_g'].value, 0, 33))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expB_ft4_glutamate_g'].value, lmfit_params['bh_monod_glutamate'].value, 34))
-            
-            update_feedingTerms2metabolites(conn, (lmfit_params['bh_expB_ft4_co2_g'].value, 0, 35))
-        
-        
+        assignBhParams(lmfit_params, conn)
     elif species == 'bt':
         
         zeta1_bt = "((metObj.metD['glucose'].concentration + metObj.metD['pyruvate'].concentration) ** " +  str(lmfit_params['bt_z1_h'].value) + ") /((" + str(lmfit_params['bt_z1_t'].value**lmfit_params['bt_z1_h'].value) + ") + ((metObj.metD['glucose'].concentration + metObj.metD['pyruvate'].concentration) ** " +  str(lmfit_params['bt_z1_h'].value) + "))"

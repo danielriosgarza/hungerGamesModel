@@ -1,0 +1,7 @@
+sample	condition
+bt_t12_A	bt_t12
+bt_t12_B	bt_t12
+bt_t12_C	bt_t12
+btri_t12_btA	btri_t12_bt
+btri_t12_btB	btri_t12_bt
+btri_t12_btC	btri_t12_bt

@@ -1,0 +1,7 @@
+sample	condition
+ri_t04_A	t04
+ri_t04_B	t04
+ri_t04_C	t04
+ri_t48_A	t48
+ri_t48_B	t48
+ri_t48_C	t48

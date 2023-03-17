@@ -19,7 +19,7 @@ dds <- DESeqDataSetFromMatrix(countData = round(cts),
 
 
 dds <- DESeq(dds)
-res <- results(dds, ,alpha = 0.05, lfcThreshold = 1.5)
+res <- results(dds, ,alpha = 0.05, lfcThreshold = 1.0)
 dds <- estimateSizeFactors(dds)
 counts.norm <- counts(dds, normalized = T)
 
@@ -41,7 +41,7 @@ dds <- DESeqDataSetFromMatrix(countData = round(cts),
 
 
 dds <- DESeq(dds)
-res <- results(dds,alpha = 0.05, lfcThreshold = 1.5)
+res <- results(dds,alpha = 0.05, lfcThreshold = 1.0)
 dds <- estimateSizeFactors(dds)
 counts.norm <- counts(dds, normalized = T)
 
@@ -62,10 +62,34 @@ dds <- DESeqDataSetFromMatrix(countData = round(cts),
 
 
 dds <- DESeq(dds)
-res <- results(dds,alpha = 0.05, lfcThreshold = 1.5)
+res <- results(dds,alpha = 0.05, lfcThreshold = 1.0)
 dds <- estimateSizeFactors(dds)
 counts.norm <- counts(dds, normalized = T)
 
 write.table(as.data.frame(res), 
             file="t32vst72_deseq.txt", sep='\t')
+
+####################################################
+
+samples <- read.table("bh_samples_t14vsothers.txt", header=TRUE, row.names = 1)
+samples$condition <- factor(samples$condition)
+
+cts <- as.matrix(read.csv('bh_counts.txt',sep="\t",row.names="geneID"))
+
+all(rownames(samples) == colnames(cts))
+
+dds <- DESeqDataSetFromMatrix(countData = round(cts),
+                              colData = samples,
+                              design = ~ condition)
+
+
+dds <- DESeq(dds)
+res <- results(dds,alpha = 0.05, lfcThreshold = 0.0)
+dds <- estimateSizeFactors(dds)
+counts.norm <- counts(dds, normalized = T)
+
+write.table(as.data.frame(res), 
+            file="t14vsothers_deseq.txt", sep='\t')
+
+
 

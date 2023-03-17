@@ -1,0 +1,7 @@
+sample	condition
+ri_t12_A	ri_t12
+ri_t12_B	ri_t12
+ri_t12_C	ri_t12
+btri_t12_riA	btri_ri_t12
+btri_t12_riB	btri_ri_t12
+btri_t12_riC	btri_ri_t12

@@ -77,7 +77,7 @@ def addFile(conn, filePath, tableName):
 
 
 
-databaseName = 'modelDB_bhA.sqlite3'
+databaseName = 'modelDB_bhD.sqlite3'
 
 databaseFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 

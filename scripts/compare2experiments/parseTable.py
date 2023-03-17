@@ -101,11 +101,21 @@ def get_initialState(stateName, strainSummaryFolder, experimentLabel):
 
     df_state = getDFdict(state, stateName, False)[experimentLabel]
     
-
-
-    timeV = np.array(df_state.index)
     
     stateMean = np.array(df_state.mean(axis=1))
     
 
-    return stateMean[0]          
+    return stateMean[0]
+
+def get_StateStd(stateName, strainSummaryFolder, experimentLabel):
+    
+    state = parseTable(os.path.join(strainSummaryFolder, stateName + '.tsv'))
+
+    df_state = getDFdict(state, stateName, False)[experimentLabel]
+    
+    stateStd = np.array(df_state.var(axis=1))
+    
+    sum(stateStd**2)
+    
+
+    return (sum(stateStd**2))**0.5

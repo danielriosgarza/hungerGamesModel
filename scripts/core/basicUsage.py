@@ -60,7 +60,8 @@ bhbtri_f.subpopD['ri.lag'].count = 0
 
 #create the reactor obj, with starting populations
 bhbtri_r = Microbiome({'bh':createBacteria(db, 'bh', 'wc'), 'bt':createBacteria(db, 'bt', 'wc'), 'ri':createBacteria(db, 'ri', 'wc')})
-
+bhbtri_r.subpopD['bt.lag'].count = 0
+bhbtri_r.subpopD['ri.lag'].count = 0
 
 batchA = Pulse(wc_f, bhbtri_f, 0, 120, 10000, 0, 0, 0,0)
 

@@ -10,7 +10,7 @@ from pathlib import Path
 import sqlite3
 
 #Replace this name for the desired name.
-databaseName = 'modelDB_bhA.sqlite3'
+databaseName = 'modelDB_bhD.sqlite3'
 
 #by default, the sqlite3 file is stored in /files/dbs
 databaseFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')

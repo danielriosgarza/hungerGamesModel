@@ -18,18 +18,18 @@ from general import *
 ###########BH###############
 
 
-species = 'bh'
-experiments = ['bhbt', 'bhri', 'bhbtri']
-labels = ['bh1', 'bh2', 'bh3']
+species = 'ri'
+experiments = ['bhri', 'btri', 'bhbtri']
+labels = ['ri1', 'ri2', 'ri3']
 colors = ['#00ff26', '#003eff', '#ff0000']
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 
 states = ['live',
           'dead',
           'pH',
-          'trehalose',
-          'pyruvate',
           'glucose',
+          'pyruvate',
+          'butyrate',
           'acetate',
           'lactate']
 

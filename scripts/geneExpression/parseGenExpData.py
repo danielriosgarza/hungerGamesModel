@@ -24,8 +24,12 @@ class GeneExpr:
                  groupIDX,
                  groupComparison,
                  featuresFile,
-                 sbmlModel):
+                 sbmlModel,
+                 rootID = 'ncbi',
+                 species = 'bt'):
         
+        self.rootID = rootID
+        self.species = species
         self.geneFolder = geneFolder
         self.groupLabels = groupLabels
         self.groupIDX = groupIDX #in tpm file
@@ -43,6 +47,7 @@ class GeneExpr:
         self.means = self.__getMeans(self.tpm)
         self.powerM, self.powerSTD = self.__getPowerT(self.tpm)
         self.pvalsDeseq = self.__getPvalsDeseq()
+        self.fc = self.__getFCDeseq()
         self.genes2reactions, self.reactions2genes = self.__parseModelGenes(sbmlModel)
         
         
@@ -53,11 +58,21 @@ class GeneExpr:
             f.readline()
             for line in f:
                 a = line.strip().split('\t')
-                genes.append(a[1])
-                d[a[1]] = {}
+                
+                if self.species=='bt':
+                    idx = 0
+                    
+                elif self.species == 'bh':
+                    idx = 1
+                
+                elif self.species == 'ri':
+                    idx=1
+                
+                genes.append(a[idx])
+                d[a[idx]] = {}
                 for i, group in enumerate(self.groupLabels):
                     #the patric id is assumed at position 1 of the tpm file
-                    d[a[1]][group] = np.array(list(map(self.floatTry, a[self.groupIDX[i][0]: self.groupIDX[i][-1] + 1])))
+                    d[a[idx]][group] = np.array(list(map(self.floatTry, a[self.groupIDX[i][0]: self.groupIDX[i][-1] + 1])))
         return np.array(genes), d
     
     def __parsePatricFeatures(self, featuresFile):
@@ -83,7 +98,12 @@ class GeneExpr:
             reacs[reaction.id] = []
             if reaction.genes != frozenset():
                 for gene in reaction.genes:
-                    geneID = 'fig|' + gene.id
+                    
+                    if self.species=='bt':
+                        geneID = gene.id
+                    else:
+                        geneID = 'fig|' + gene.id
+                    
                     g2r[geneID].append(reaction.id)
                     reacs[reaction.id].append(geneID)
         return g2r, reacs
@@ -130,6 +150,37 @@ class GeneExpr:
     def __getPvalsDeseq(self):
         pvals = {gene:{comp:np.nan for comp in self.groupComparison} for gene in self.genes}
         self.notInPatric = []
+        print(self.genes)
+        for comp in self.groupComparison:
+            with open(os.path.join(self.geneFolder, self.groupComparison[comp])) as f:
+                f.readline()
+                for line in f:
+                    a = line.strip().split('\t')
+                    geneID = a[0].replace('"', '')
+                    
+                    if self.rootID == 'ncbi':
+                        if geneID not in self.ncbi2patric:
+                            self.notInPatric.append(geneID)
+                        else:
+                            if abs(self.floatTry(a[2]))>1:
+                                pvals[self.ncbi2patric[geneID]][comp] = self.floatTry(a[-1], 1.0)
+                            else:
+                                pvals[self.ncbi2patric[geneID]][comp] = 1
+                    else:
+                        
+                        pvals[geneID][comp] = self.floatTry(a[-1], 1.0)
+                        
+                        # else:
+                        #     pvals[geneID][comp] = 1
+    
+    
+        return pvals
+    
+    
+    def __getFCDeseq(self):
+        
+        fc = {gene:{comp:np.nan for comp in self.groupComparison} for gene in self.genes}
+        self.notInPatric = []
         
         for comp in self.groupComparison:
             with open(os.path.join(self.geneFolder, self.groupComparison[comp])) as f:
@@ -137,20 +188,24 @@ class GeneExpr:
                 for line in f:
                     a = line.strip().split('\t')
                     geneID = a[0].replace('"', '')
-                    if geneID not in self.ncbi2patric:
-                        self.notInPatric.append(geneID)
-                    else:
-                        if abs(self.floatTry(a[2]))>1:
-                            pvals[self.ncbi2patric[geneID]][comp] = self.floatTry(a[-1], 1.0)
+                    
+                    if self.rootID == 'ncbi':
+                        if geneID not in self.ncbi2patric:
+                            pass
                         else:
-                            pvals[self.ncbi2patric[geneID]][comp] = 1
-                    
-                    
-        
-        return pvals
+                            if abs(self.floatTry(a[2]))>1:
+                                fc[self.ncbi2patric[geneID]][comp] = self.floatTry(a[2])
+                            else:
+                                fc[self.ncbi2patric[geneID]][comp] = 0
+                    else:
+                        
+                        fc[geneID][comp] = self.floatTry(a[2])
+                        
+                        # else:
+                        #     pvals[geneID][comp] = 1
     
     
-    
+        return fc
         
     
         
@@ -170,7 +225,7 @@ class GeneExpr:
 
 
 
-def extracReactions(exprObj, reactionList, fcL, group):
+def extracReactions(exprObj, reactionList, group):
     x, p, g = [],[],[]
     
     for reac in reactionList:
@@ -178,22 +233,23 @@ def extracReactions(exprObj, reactionList, fcL, group):
         
         if len(genes)>0:
             
-            change=[]
+            
             pv = []
+            fc = []
             gids = []
             
             
             for gene in genes:
                 gidx = np.arange(len(exprObj.genes))[exprObj.genes==gene]
-                change.append(fcL[gidx])
+                fc.append(exprObj.fc[gene][group])
                 pv.append(exprObj.pvalsDeseq[gene][group])
                 gids.append(gene)
             
-            change = np.array(change).flatten()
+            fc = np.array(fc).flatten()
             pv = np.array(pv).flatten()
             gids = np.array(gids).flatten()
             
-            x.append(change[np.abs(pv)==min(np.abs(pv))][0])
+            x.append(fc[np.abs(pv)==min(np.abs(pv))][0])
             p.append(pv[np.abs(pv)==min(np.abs(pv))][0])
             g.append(gids[np.abs(pv)==min(np.abs(pv))][0])
         

@@ -1,0 +1,7 @@
+sample	condition
+btri_t12_riA	btri_ri_t12
+btri_t12_riB	btri_ri_t12
+btri_t12_riC	btri_ri_t12
+btri_t36_riA	btri_ri_t36
+btri_t36_riB	btri_ri_t36
+btri_t36_riC	btri_ri_t36

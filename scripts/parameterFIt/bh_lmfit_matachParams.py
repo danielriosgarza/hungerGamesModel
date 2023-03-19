@@ -49,7 +49,14 @@ def pseudoHuberLoss(y_true, y_pred, delta = 0.50):
     # Return the mean loss
     return np.mean(np.where(np.abs(error) <= delta, small_error, large_error))
 
-
+def sResidual(y_true, y_pred):
+    choice = np.random.choice(np.arange(len(y_true)), size = int(0.3*len(y_true)), replace=False)
+    y_t = y_true[choice]
+    y_p = y_pred[choice]
+    
+    return np.sqrt(np.mean((y_t-y_p)**2))
+    
+    
 
 ####################################################################
 def writeOutput(lmfit_params, outputFile):
@@ -62,7 +69,7 @@ def writeOutput(lmfit_params, outputFile):
 
 
 
-def distance(lmfit_params, database, initialStates, splines, experimentLabel, species, lbd=0.1):
+def distance(lmfit_params, database, initialStates, splines, experimentLabel, species, intervals, combined = True):
     
     conn = create_connection(database)
     
@@ -70,7 +77,13 @@ def distance(lmfit_params, database, initialStates, splines, experimentLabel, sp
     
     db = get_database(database)
     
-    r = simulateExperiment(species, experimentLabel, lmfit_params, database, initialStates)
+    r = simulateExperiment(species, 
+                           experimentLabel, 
+                           lmfit_params, 
+                           database, 
+                           initialStates,
+                           combined=combined, 
+                           intervals=intervals)
     
     
     distances = []
@@ -90,11 +103,8 @@ def distance(lmfit_params, database, initialStates, splines, experimentLabel, sp
             distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
     
     
-    pars = np.array([inputParams[i].value for i in inputParams])
     
-    pars_std = (pars-np.mean(pars))/np.std(pars)
-    
-    objV = sum(distances) + sum(pars_std**2)*lbd
+    objV = sum(distances)
    
     ssrSum = np.round(objV,3)
     
@@ -107,7 +117,7 @@ def distance(lmfit_params, database, initialStates, splines, experimentLabel, sp
             plt.show()
     evals.append(ssrSum)
     return objV
-    
+
 
 
 ##############SETUP###########################################
@@ -115,20 +125,17 @@ ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries'
 
 species = 'bh'
 
-experimentLabel = 'bhbtri'
+experimentLabel = ['bhbt', 'bhri', 'bhbtri']
 
 strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh')
 
-inputParams = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh2.tsv'))
+inputParams = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh0.tsv'))
 
 
+outputFile = os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh0.tsv')
 
 
-
-outputFile = os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh2.tsv')
-
-
-databaseName = 'modelDB_bhC.sqlite3'
+databaseName = 'modelDB_bhA.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -146,7 +153,15 @@ measuredStates = ['live',
                   'acetate']
 
 
-
+intervals = [4,
+             12,
+             4,
+             
+             4,
+             4,
+             4,
+             16,
+             4]
 
 initialStates = ['live',
                  'trehalose',
@@ -158,51 +173,38 @@ initialStates = ['live',
 
 #####################################################################
 
-####get initial values & splines
+
+
+
+
+
+
+####get splines
 splines = {}
 
-splines['bhbt'] = {i:get_spline(i, strainSummaryFolder, 'bhbt') for i in measuredStates}
-splines['bhri'] = {i:get_spline(i, strainSummaryFolder, 'bhri') for i in measuredStates}
-splines['bhbtri'] = {i:get_spline(i, strainSummaryFolder, 'bhbtri') for i in measuredStates}
-
-
-
-
+for i,v in enumerate(measuredStates):
+    
+    stFile = parseTable(os.path.join(strainSummaryFolder, v +  '.tsv'))
+    df_state = getDFdict(stFile, v, False)
+    summ_state = summarizeExperiments(df_state, v, experimentLabel, interval = intervals[i])
+    splines[v] = get_spline(v, 'nothing', experimentLabel, df_state = summ_state)
 
 
 
 evals = []
 
 
-def minF(inputParams, database, initialStates, species, lbd):
-    
-    l = ['bhbtri']#, 'bhri', 'bhbtri']
-    
-    expL = np.random.choice(l)
-    
-    return distance(inputParams, database, initialStates, splines[expL], expL, species, lbd = lbd)
 
 
-# for i in range(10):
-    
-#     print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-    
-    
 
-#     selection = np.random.choice(list(inputParams.keys()), size = len(measuredStates), replace=False)
+
     
-    
-#     for param in inputParams:
-#         if param not in selection:
-#             inputParams[param].vary = False
-#         else:
-#             inputParams[param].vary = True
-    
-    
-# #d = 
-    
-out = minimize(minF, params=inputParams, method='bfgs', kws = {'database' : database,
-                                                                 'initialStates' : initialStates,
-                                                                 'species' : species,
-                                                                 'lbd':1.0})
+out = minimize(distance, params=inputParams, method='basinhopping', kws = {'database' : database,
+                                                                  'initialStates' : initialStates,
+                                                                  'splines': splines,
+                                                                  'experimentLabel':experimentLabel,
+                                                                  'species' : species,
+                                                                  'intervals': intervals,
+                                                                  'combined': True,
+                                                                  })
     

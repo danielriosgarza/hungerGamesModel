@@ -80,11 +80,63 @@ def getDFdict(parsedTable, measureName='measure', plot=True):
 
 # df_od = getDFdict(bt_od, 'OD', False)
 
-def get_spline(stateName, strainSummaryFolder, experimentLabel):
-    
-    state = parseTable(os.path.join(strainSummaryFolder, stateName + '.tsv'))
 
-    df_state = getDFdict(state, stateName, False)[experimentLabel]
+def summarizeExperiments(expDF, name, labels, start=0, stop=120, interval=12):
+    
+    exp = {}
+    
+    
+    r = np.arange(start, stop + interval, interval)
+    
+    for i,v in enumerate(r[1::]):
+        
+        t = r[i]
+        
+        c = []
+        
+        for expL in labels:
+            
+            points = np.array(expDF[expL][(expDF[expL].index>=r[i]) & (expDF[expL].index<v)]).flatten()
+            
+            for num in points:
+                c.append(num)
+        
+        if len(c)>0:
+            exp[t] = np.mean(c)
+    
+    exp[stop] = exp[max(list(exp.keys()))]
+    df = pd.Series(exp).to_frame(name)
+    df.index.name = 'time'
+    
+    
+    return df
+        
+    
+    
+# ri_live = parseTable(os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'ri', 'dead.tsv'))
+
+# live_df = getDFdict(ri_live, 'dead', False)
+
+# experiments = ['bhri', 'btri', 'bhbtri']
+
+# labels = ['ri1', 'ri2', 'ri3']
+# colors = ['#00ff26', '#003eff', '#ff0000']
+
+# s = summarizeExperiments(live_df, 'ri_live', experiments)
+
+# makeExperimentPlot('ri', 'dead', 'cells', experiments, labels, colors)
+# plt.plot(s)
+
+
+
+
+def get_spline(stateName, strainSummaryFolder, experimentLabel, df_state = None):
+    
+    
+    if df_state is None:
+        state = parseTable(os.path.join(strainSummaryFolder, stateName + '.tsv'))
+
+        df_state = getDFdict(state, stateName, False)[experimentLabel]
     
 
 
@@ -95,11 +147,17 @@ def get_spline(stateName, strainSummaryFolder, experimentLabel):
 
     return CubicSpline(timeV, stateMean, extrapolate=False)
     
-def get_initialState(stateName, strainSummaryFolder, experimentLabel):
+def get_initialState(stateName, strainSummaryFolder, experimentLabel, combined=False, interval=4):
     
     state = parseTable(os.path.join(strainSummaryFolder, stateName + '.tsv'))
-
-    df_state = getDFdict(state, stateName, False)[experimentLabel]
+    
+    if combined:
+        df_state = getDFdict(state, stateName, False)
+        
+        df_state = summarizeExperiments(df_state, stateName, experimentLabel, interval = interval)
+    
+    else:
+        df_state = getDFdict(state, stateName, False)[experimentLabel]
     
     
     stateMean = np.array(df_state.mean(axis=1))

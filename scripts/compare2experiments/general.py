@@ -30,14 +30,25 @@ from loadParameters import *
 
 ###setup####
 
-def simulateExperiment(species, experimentLabel, params, dbPath, measuredStates):
+def simulateExperiment(species, 
+                       experimentLabel, 
+                       params, 
+                       dbPath, 
+                       measuredStates, 
+                       combined=False, 
+                       intervals=None):
     
+    
+    if intervals is None:
+        intervals = [4]*len(measuredStates) 
     ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv')
     
     strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', species)
     
+    initialStates = {}
     
-    initialStates = {i:get_initialState(i, strainSummaryFolder, experimentLabel) for i in measuredStates}
+    for i,v in enumerate(measuredStates):
+        initialStates[v] = get_initialState(v, strainSummaryFolder, experimentLabel, combined, intervals[i]) 
 
     conn = create_connection(dbPath)
     

@@ -46,18 +46,18 @@ def assignBhParams(lmfit_params, conn):
     
     zeta2 = '""'
     
-    a1 = str(lmfit_params['bh_z3_t1'].value**(lmfit_params['bh_z3_h1'].value))
+    #a1 = str(lmfit_params['bh_z3_t1'].value**(lmfit_params['bh_z3_h1'].value))
     
-    b1 = "metObj.metD['glucose'].concentration**" + str(lmfit_params['bh_z3_h1'].value)
+    #b1 = "metObj.metD['glucose'].concentration**" + str(lmfit_params['bh_z3_h1'].value)
     
-    a2 = str(lmfit_params['bh_z3_t2'].value**(lmfit_params['bh_z3_h2'].value))
+    #a2 = str(lmfit_params['bh_z3_t2'].value**(lmfit_params['bh_z3_h2'].value))
     
-    b2 = "metObj.metD['glutamate'].concentration**" + str(lmfit_params['bh_z3_h2'].value)
+    #b2 = "metObj.metD['glutamate'].concentration**" + str(lmfit_params['bh_z3_h2'].value)
     
     
     #zeta3 = "(((" + a1 + ")/(" + a1 + "+ " + b1 + ")) + ((" + a2 + ")/(" + a2 + " + " + b2 + ")) + ((((" + a1 + ")/(" + a1 + " + " + b1 + ")) - ((" + a2 + ")/(" + a2 + " + " + b2 + ")))**2)**0.5)/2"
     
-    zeta3 = "metObj.metD['glucose'].concentration < " + str(lmfit_params['bh_z3_t1'].value) + " or metObj.metD['glutamate'].concentration < " + str(lmfit_params['bh_z3_t2'].value)
+    zeta3 = "max(metObj.metD['glucose'].concentration, metObj.metD['glutamate'].concentration) < " + str(lmfit_params['bh_z3_t1'].value)
     
     zeta4 = '""'
     

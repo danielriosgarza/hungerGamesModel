@@ -63,56 +63,23 @@ measuredStates = ['live',
                   'lactate',
                   'acetate']
 
+intervals = [4,
+             12,
+             4,
+             
+             4,
+             4,
+             4,
+             16,
+             4]
 
-r1 = simulateExperiment(species, 'bhbt', params, database, ['live',
+
+r1 = simulateExperiment(species, experiments, params, database, ['live',
                                                                'trehalose',
                                                                'pyruvate',
                                                                'glucose',
                                                                'lactate',
-                                                               'acetate'])
-
-
-
-params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh1.tsv'))
-
-databaseName = 'modelDB_bhB.sqlite3'
-
-databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
-
-
-database = os.path.join(databaseFolder, databaseName)
-
-
-r2 = simulateExperiment(species, 'bhri', params, database, ['live',
-                                                               'trehalose',
-                                                               'pyruvate',
-                                                               'glucose',
-                                                               'lactate',
-                                                               'acetate'])
-
-
-
-params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh2.tsv'))
-
-databaseName = 'modelDB_bhC.sqlite3'
-
-databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
-
-
-database = os.path.join(databaseFolder, databaseName)
-
-
-
-
-
-
-r3 = simulateExperiment(species, 'bhbtri', params, database, ['live',
-                                                               'trehalose',
-                                                               'pyruvate',
-                                                               'glucose',
-                                                               'lactate',
-                                                               'acetate'])
-
+                                                               'acetate'], combined = True, intervals = intervals )
 
 
 
@@ -120,7 +87,16 @@ r3 = simulateExperiment(species, 'bhbtri', params, database, ['live',
 
 
 for i,v in enumerate(states):
-    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [r1, r2, r3], alpha=0.05)
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [r1, r1, r1], alpha=0.05)
+    
+    
+    stFile = parseTable(os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh', v + '.tsv'))
+    
+    st_df = getDFdict(stFile, v, False)
+    
+    s = summarizeExperiments(st_df, v, experiments, interval = intervals[i])
+    sp = get_spline('dead', 'something', 'dead' , df_state=s)
+    t = np.linspace(0,120, 1000)
 
-
-
+    plt.plot(s)
+    plt.plot(t, sp(t))

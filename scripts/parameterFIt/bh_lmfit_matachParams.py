@@ -31,7 +31,7 @@ def pseudoHuberLoss(y_true, y_pred, delta = 0.50):
     Compute the Pseudo-Huber loss between y_true and y_pred with a given delta value.
     """
     
-    choice = np.random.choice(np.arange(len(y_true)), size = int(0.7*len(y_true)), replace=False)
+    choice = np.random.choice(np.arange(len(y_true)), size = int(1.0*len(y_true)), replace=False)
     
     y_t = y_true[choice]
     y_p = y_pred[choice]
@@ -199,7 +199,7 @@ evals = []
 
 
     
-out = minimize(distance, params=inputParams, method='bfgs', kws = {'database' : database,
+out = minimize(distance, params=inputParams, method='powell', kws = {'database' : database,
                                                                   'initialStates' : initialStates,
                                                                   'splines': splines,
                                                                   'experimentLabel':experimentLabel,

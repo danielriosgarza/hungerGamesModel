@@ -199,7 +199,7 @@ evals = []
 
 
     
-out = minimize(distance, params=inputParams, method='basinhopping', kws = {'database' : database,
+out = minimize(distance, params=inputParams, method='bfgs', kws = {'database' : database,
                                                                   'initialStates' : initialStates,
                                                                   'splines': splines,
                                                                   'experimentLabel':experimentLabel,

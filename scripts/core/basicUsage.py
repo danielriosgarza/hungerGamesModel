@@ -23,17 +23,17 @@ pio.renderers.default='browser'
 ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv') 
 
 
-databaseName = 'modelDB_bhA.sqlite3'
+databaseName = 'modelDB_bhbtri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
 
-#update database params
-conn = create_connection(os.path.join(databaseFolder, databaseName))
+# #update database params
+# conn = create_connection(os.path.join(databaseFolder, databaseName))
 
-bh_params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh0.tsv'))
+# bh_params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh0.tsv'))
 
-assignBhParams(bh_params, conn)
+# assignBhParams(bh_params, conn)
 
 
 
@@ -54,14 +54,12 @@ wc_r = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 
 #get the feed obj. Make it sterile
 bhbtri_f = Microbiome({'bh':createBacteria(db, 'bh', 'wc'), 'bt':createBacteria(db, 'bt', 'wc'), 'ri':createBacteria(db, 'ri', 'wc')})
-bhbtri_f.subpopD['bh.expA'].count = 0
-bhbtri_f.subpopD['bt.lag'].count = 0
-bhbtri_f.subpopD['ri.lag'].count = 0
+bhbtri_f.subpopD['xa'].count = 0
+bhbtri_f.subpopD['xe'].count = 0
+bhbtri_f.subpopD['xi'].count = 0
 
 #create the reactor obj, with starting populations
 bhbtri_r = Microbiome({'bh':createBacteria(db, 'bh', 'wc'), 'bt':createBacteria(db, 'bt', 'wc'), 'ri':createBacteria(db, 'ri', 'wc')})
-bhbtri_r.subpopD['bt.lag'].count = 0
-bhbtri_r.subpopD['ri.lag'].count = 0
 
 batchA = Pulse(wc_f, bhbtri_f, 0, 120, 10000, 0, 0, 0,0)
 

@@ -4,7 +4,7 @@ xa_pyruvate	bh pyruvate	bh
 xb_glucose_glutamate	bh glucose glutamate	bh
 xe_pyruvate	bt pyruvate	bt
 xe_glucose	bt glucose	bt
-xe_mannose	bt mannose	bt
+xf_mannose	bt mannose	bt
 xi_pyruvate	ri pyruvate	ri
 xi_glucose	ri glucose	ri
 xj_lactate	ri_lactate	ri

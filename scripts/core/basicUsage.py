@@ -9,7 +9,6 @@ from pathlib import Path
 import os
 import sys
 
-
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'db'))
 
 from readModelDB import *
@@ -19,25 +18,32 @@ from loadParameters import *
 import plotly.io as pio
 pio.renderers.default='browser'
 
-
 ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv') 
-
 
 databaseName = 'modelDB_bhbtri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
+#update database with parameters from a file
+##########################################
 
-# #update database params
-# conn = create_connection(os.path.join(databaseFolder, databaseName))
+#create a database connection
+conn = create_connection(os.path.join(databaseFolder, databaseName))
 
-# bh_params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh0.tsv'))
+#load the parameter file (parameter files are located at "/files/params" )
+bh_params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv'))
 
-# assignBhParams(bh_params, conn)
+bt_params = getPramsFromFile('bt', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bt.tsv'))
+
+ri_params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
 
 
+#assign these parameters (depending on the strain, use the specific function)
+assignBhParams(bh_params, conn)
 
+assignBtParams(bt_params, conn)
 
+assignRiParams(ri_params, conn)
 
 #Load database
 db = get_database(os.path.join(databaseFolder, databaseName))

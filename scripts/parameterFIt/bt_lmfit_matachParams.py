@@ -73,7 +73,7 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     conn = create_connection(database)
     
-    assignBhParams(lmfit_params, conn)
+    assignBtParams(lmfit_params, conn)
     
     db = get_database(database)
     
@@ -99,12 +99,6 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
         elif i=='pH':
             distances.append(pseudoHuberLoss(splines['pH'](r.time_simul), r.pH_simul))
         
-        elif i=='trehalose':
-            distances.append(10*pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
-        
-        elif i=='glucose':
-            distances.append(10*pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
-        
         else:
             distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
     
@@ -129,19 +123,19 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
 ##############SETUP###########################################
 ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv') 
 
-species = 'bh'
+species = 'bt'
 
-experimentLabel = ['bhbt', 'bhri', 'bhbtri']
+experimentLabel = ['bhbt', 'btri', 'bhbtri']
 
-strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh')
+strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bt')
 
-inputParams = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv'))
-
-
-outputFile = os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv')
+inputParams = getPramsFromFile('bt', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bt.tsv'))
 
 
-databaseName = 'modelDB_bhbtri_bh.sqlite3'
+outputFile = os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bt.tsv')
+
+
+databaseName = 'modelDB_bhbtri_bt.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -152,11 +146,13 @@ measuredStates = ['live',
                   'dead',
                   'pH',
                   
-                  'trehalose',
+                  
                   'pyruvate',
                   'glucose',
                   'lactate',
-                  'acetate']
+                  'acetate',
+                  'formate',
+                  'succinate']
 
 
 intervals = [4,
@@ -165,16 +161,18 @@ intervals = [4,
              
              4,
              4,
-             4,
              16,
+             4,
+             4,
              4]
 
 initialStates = ['live',
-                 'trehalose',
                  'pyruvate',
                  'glucose',
                  'lactate',
-                 'acetate'
+                 'acetate',
+                 'formate',
+                 'succinate'
                  ]
 
 #####################################################################

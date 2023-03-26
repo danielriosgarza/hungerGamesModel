@@ -73,7 +73,7 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     conn = create_connection(database)
     
-    assignBhParams(lmfit_params, conn)
+    assignRiParams(lmfit_params, conn)
     
     db = get_database(database)
     
@@ -90,7 +90,7 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     for i in measuredStates:
         if i=='live':
-            distances.append(pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            distances.append(10*pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
         
         elif i=='dead':
             
@@ -98,12 +98,6 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
         
         elif i=='pH':
             distances.append(pseudoHuberLoss(splines['pH'](r.time_simul), r.pH_simul))
-        
-        elif i=='trehalose':
-            distances.append(10*pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
-        
-        elif i=='glucose':
-            distances.append(10*pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
         
         else:
             distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
@@ -129,19 +123,19 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
 ##############SETUP###########################################
 ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv') 
 
-species = 'bh'
+species = 'ri'
 
-experimentLabel = ['bhbt', 'bhri', 'bhbtri']
+experimentLabel = ['bhri', 'btri', 'bhbtri']
 
-strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh')
+strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'ri')
 
-inputParams = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv'))
-
-
-outputFile = os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv')
+inputParams = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
 
 
-databaseName = 'modelDB_bhbtri_bh.sqlite3'
+outputFile = os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv')
+
+
+databaseName = 'modelDB_bhbtri_ri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -152,11 +146,12 @@ measuredStates = ['live',
                   'dead',
                   'pH',
                   
-                  'trehalose',
+                  
                   'pyruvate',
                   'glucose',
                   'lactate',
-                  'acetate']
+                  'acetate',
+                  'butyrate']
 
 
 intervals = [4,
@@ -165,16 +160,16 @@ intervals = [4,
              
              4,
              4,
-             4,
              16,
+             4,
              4]
 
 initialStates = ['live',
-                 'trehalose',
                  'pyruvate',
                  'glucose',
                  'lactate',
-                 'acetate'
+                 'acetate',
+                 'butyrate'
                  ]
 
 #####################################################################

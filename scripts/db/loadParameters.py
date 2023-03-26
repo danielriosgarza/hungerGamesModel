@@ -39,11 +39,11 @@ def assignBhParams(lmfit_params, conn):
     num1 = str(lmfit_params['z1_l_s1'].value**lmfit_params['z1_h_s1'].value)
     denom1 = num1 + " + metObj.metD['trehalose'].concentration**" + str(lmfit_params['z1_h_s1'].value)
     
-    num2 = "metObj.metD['glucose'].concentration**" + str(lmfit_params['z1_h_s3'].value)
-    denom2 = num2 + " + " + str(lmfit_params['z1_l_s3'].value**lmfit_params['z1_h_s3'].value)
+    # num2 = "metObj.metD['glucose'].concentration**" + str(lmfit_params['z1_h_s3'].value)
+    # denom2 = num2 + " + " + str(lmfit_params['z1_l_s3'].value**lmfit_params['z1_h_s3'].value)
     
        
-    zeta1 = "(" + num1 + "/(" + denom1 + ")) * (" + num2 + "/(" + denom2 + "))"
+    zeta1 = "(" + num1 + "/(" + denom1 + "))" #* (" + num2 + "/(" + denom2 + "))"
     #zeta1 = "metObj.metD['trehalose'].concentration < " +  str(lmfit_params['z1_l_s1'].value)
     
     
@@ -57,8 +57,8 @@ def assignBhParams(lmfit_params, conn):
     num3 = str(lmfit_params['z3_l_s3_s4'].value**lmfit_params['z3_h_s3_s4'].value)
     
     
-    absD = "((metObj.metD['glucose'].concentration - metObj.metD['glucose'].concentration)**2)**0.5"
-    denom3 = num3 + " + (metObj.metD['glucose'].concentration + metObj.metD['glucose'].concentration + " + absD + ")/2"
+    absD = "((metObj.metD['glucose'].concentration - metObj.metD['glutamate'].concentration)**2)**0.5"
+    denom3 = num3 + " + (metObj.metD['glucose'].concentration + metObj.metD['glutamate'].concentration + " + absD + ")/2"
     
     
     zeta3 = "(" + num3 + "/(" + denom3 + "))"
@@ -103,9 +103,9 @@ def assignBhParams(lmfit_params, conn):
         
         update_feedingTerms2metabolites(conn, (lmfit_params['xb_g_s3_s4'].value, lmfit_params['xb_k_s3'].value, 6))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xb_g_s3_s4'].value, lmfit_params['xb_k_s3'].value, 7))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xb_g_s3_s4'].value, lmfit_params['xb_k_s4'].value, 7))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xb_g_s3_s4'].value, lmfit_params['xb_k_s4'].value, 8))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xb_g_s6_s3_s4'].value, 0, 8))
         
         
         
@@ -124,16 +124,17 @@ def assignBtParams(lmfit_params, conn):
     zeta5 = "(" + num1 + "/(" + denom1 + ")) * (" + num2 + "/(" + denom2 + "))"
     
     #z6
-    num1 = "metObj.metD['glucose'].concentration**" + str(lmfit_params['z6_h_s3'].value)
-    denom1 = num1 + " + " + str(lmfit_params['z6_l_s3'].value**lmfit_params['z6_h_s3'].value)
+    # num1 = "metObj.metD['glucose'].concentration**" + str(lmfit_params['z6_h_s3'].value)
+    # denom1 = num1 + " + " + str(lmfit_params['z6_l_s3'].value**lmfit_params['z6_h_s3'].value)
     
-    num2 = str(lmfit_params['z6_l_s7'].value**lmfit_params['z6_h_s7'].value)
-    denom2 = num2 + " + metObj.metD['mannose'].concentration**" + str(lmfit_params['z6_h_s7'].value)
+    # num2 = str(lmfit_params['z6_l_s7'].value**lmfit_params['z6_h_s7'].value)
+    # denom2 = num2 + " + metObj.metD['mannose'].concentration**" + str(lmfit_params['z6_h_s7'].value)
     
     
     
        
-    zeta6 = "(" + num1 + "/(" + denom1 + ")) * (" + num2 + "/(" + denom2 + "))"
+    # zeta6 = "(" + num1 + "/(" + denom1 + ")) * (" + num2 + "/(" + denom2 + "))"
+    zeta6 = 0
     
     
     #z7
@@ -195,7 +196,7 @@ def assignBtParams(lmfit_params, conn):
 def assignRiParams(lmfit_params, conn):
     
     #z10
-    num1 = "metObj.metD['lactate'].concentration**" + str(lmfit_params['z10_h_s5'].value)
+    num1 = "(metObj.metD['lactate'].concentration+metObj.metD['acetate'].concentration)**" + str(lmfit_params['z10_h_s5'].value)
     denom1 = num1 + " + " + str(lmfit_params['z10_l_s5'].value**lmfit_params['z10_h_s5'].value)
     
     zeta10 = "(" + num1 + "/(" + denom1 + "))"
@@ -252,3 +253,12 @@ def assignRiParams(lmfit_params, conn):
 
     
 
+def assignParameters2db(species, lmfit_params, conn):
+    if species == 'bh':
+        assignBhParams(lmfit_params, conn)
+    
+    elif species == 'bt':
+        assignBtParams(lmfit_params, conn)
+        
+    elif species == 'ri':
+        assignRiParams(lmfit_params, conn)

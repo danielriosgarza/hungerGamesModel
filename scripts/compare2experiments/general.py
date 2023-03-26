@@ -94,20 +94,20 @@ def simulateExperiment(species,
 
     species_f = Microbiome({species:createBacteria(db, species, 'wc')})
     if species == 'bh':
-        species_f.subpopD['bh.expA'].count = 0
-    elif species == 'ri':
-        species_f.subpopD['ri.lag'].count = 0
+        species_f.subpopD['xa'].count = 0
     elif species == 'bt':
-        species_f.subpopD['bt.lag'].count = 0
+        species_f.subpopD['xe'].count = 0
+    elif species == 'ri':
+        species_f.subpopD['xi'].count = 0
         
 
     species_r = Microbiome({species:createBacteria(db, species, 'wc')})
     if species == 'bh':
-        species_r.subpopD['bh.expA'].count = initialStates['live']
-    elif species == 'ri':
-        species_r.subpopD['ri.lag'].count = initialStates['live']
+        species_r.subpopD['xa'].count = initialStates['live']
     elif species == 'bt':
-        species_r.subpopD['bt.lag'].count = initialStates['live']
+        species_r.subpopD['xe'].count = initialStates['live']
+    elif species == 'ri':
+        species_r.subpopD['xi'].count = initialStates['live']
 
 
     p1 = Pulse(wc_f, species_f, 0, 120, 10000, 0, 0, 0, 0)

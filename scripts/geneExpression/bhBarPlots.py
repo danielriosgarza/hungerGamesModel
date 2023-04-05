@@ -10,8 +10,12 @@ from pathlib import Path
 import numpy as np
 import scipy.stats as sts
 import cobra
+from aquarel import load_theme
+theme = load_theme("minimal_light")
+theme.apply()
+
+
 import matplotlib.pyplot as plt
-plt.style.use('seaborn-bright')
 
 from parseGenExpData import *
 
@@ -91,6 +95,14 @@ labels[labels=='LDH_L'] = 'LDH'
 labels[labels=='LDH_L'] = 'LDH'
 
 
+#########################t14 vs 32 #########################
+gA = 't14'
+gB = 't32'
+
+
+group = (gA, gB)
+
+x,p,g = extracReactions(bhGE, reactionList, group)
 
 c= np.array(['#6B6ACF']*len(x))
 
@@ -102,8 +114,7 @@ c[(p < 0.01) & (x < 0)] = '#44A043'
 
 
 
-
-
+plt.rcParams["figure.figsize"] = (3 ,9)
 fig, ax = plt.subplots()
 
 ax.vlines(0,0, len(x), color = 'k', lw=1, ls='--')
@@ -116,14 +127,15 @@ ax.set_yticks(np.arange(len(x)), labels=labels, fontsize=10)
 ax.set_xlim(-fcRange, fcRange)
 ax.set_xlabel('gene expression FC')
 
-ax.text(-fcRange/2, len(x) + .2, gA)
-ax.text(fcRange/2, len(x) + .2, gB)
+ax.text(-fcRange/2, len(x) + .1, gA)
+ax.text(fcRange/2, len(x) + .1, gB)
 
-plt.rcParams["figure.figsize"] = (3 ,8)
+plt.rcParams["figure.figsize"] = (3 ,9)
 plt.tight_layout()
 
 plt.savefig(os.path.join(figuresFolder,  'geneExp_' + gA + 'vs' + gB + '.png'), dpi = 300)
 
+plt.show()
 
 
 #########################t14 vs 72 #########################
@@ -159,15 +171,15 @@ ax.set_yticks(np.arange(len(x)), labels=labels, fontsize=10)
 ax.set_xlim(-fcRange, fcRange)
 ax.set_xlabel('gene expression FC')
 
-ax.text(-fcRange/2, len(x) + .2, gA)
-ax.text(fcRange/2, len(x) + .2, gB)
+ax.text(-fcRange/2, len(x) + .1, gA)
+ax.text(fcRange/2, len(x) + .1, gB)
 
-plt.rcParams["figure.figsize"] = (3 ,8)
+plt.rcParams["figure.figsize"] = (3 ,9)
 plt.tight_layout()
 
 plt.savefig(os.path.join(figuresFolder,  'geneExp_' + gA + 'vs' + gB + '.png'), dpi = 300)
 
-
+plt.show()
 #########################t32 vs 72 #########################
 gA = 't32'
 gB = 't72'
@@ -201,10 +213,10 @@ ax.set_yticks(np.arange(len(x)), labels=labels, fontsize=10)
 ax.set_xlim(-fcRange, fcRange)
 ax.set_xlabel('gene expression FC')
 
-ax.text(-fcRange/2, len(x) + .2, gA)
-ax.text(fcRange/2, len(x) + .2, gB)
+ax.text(-fcRange/2, len(x) + .1, gA)
+ax.text(fcRange/2, len(x) + .1, gB)
 
-plt.rcParams["figure.figsize"] = (3 ,8)
+plt.rcParams["figure.figsize"] = (3 ,9)
 plt.tight_layout()
 
 plt.savefig(os.path.join(figuresFolder,  'geneExp_' + gA + 'vs' + gB + '.png'), dpi = 300)

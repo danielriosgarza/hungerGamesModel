@@ -90,7 +90,7 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     for i in measuredStates:
         if i=='live':
-            distances.append(pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            distances.append(10*pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
         
         elif i=='dead':
             
@@ -99,11 +99,11 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
         elif i=='pH':
             distances.append(pseudoHuberLoss(splines['pH'](r.time_simul), r.pH_simul))
         
-        elif i=='trehalose':
-            distances.append(10*pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
-        
         elif i=='glucose':
             distances.append(10*pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
+        
+        elif i=='acetate':
+            distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
         
         else:
             distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))

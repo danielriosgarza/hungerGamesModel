@@ -176,6 +176,46 @@ def makeExperimentPlot(species,
     return fig,ax
 
 
+def makeKineticPlot(x,
+                    y,
+                    color,
+                    legend,
+                    xlabel,
+                    ylabel,
+                    title = None,
+                    linestyle = 'o-'):
+    '''
+    '$10^5$ cells/uL'
+    'Time (h)'
+    'mM'
+
+    '''
+    
+    #fig, ax = plt.subplots()
+    
+    plt.plot(x, y, color=color, linestyle = linestyle, lw=2, alpha = 0.9, label=legend)
+            
+
+    legend_properties = {'size':12}
+    plt.legend(fontsize=16, prop=legend_properties, bbox_to_anchor=(1.0, 1.0))
+    
+    ax = plt.gca()
+
+    ax.set_ylabel(ylabel, fontsize=16)
+    ax.set_xlabel(xlabel, fontsize=16)
+    
+    
+    if title is not None:
+        plt.title(title, fontsize=16)
+    
+    
+    
+
+    
+    plt.tight_layout()
+
+
+
 
 # species = 'bh'
 # experiments = ['bhbt', 'bhri', 'bhbtri']

@@ -106,8 +106,6 @@ x,p,g = extracReactions(bhGE, reactionList, group)
 
 c= np.array(['#6B6ACF']*len(x))
 
-
-
 c[(p < 0.01) & (x > 0)] = '#001eff'
 
 c[(p < 0.01) & (x < 0)] = '#44A043'
@@ -149,8 +147,6 @@ x,p,g = extracReactions(bhGE, reactionList, group)
 
 c= np.array(['#6B6ACF']*len(x))
 
-
-
 c[(p < 0.01) & (x > 0)] = '#bd00ff'
 
 c[(p < 0.01) & (x < 0)] = '#44A043'
@@ -190,7 +186,6 @@ group = (gA, gB)
 x,p,g = extracReactions(bhGE, reactionList, group)
 
 c= np.array(['#6B6ACF']*len(x))
-
 
 
 c[(p < 0.01) & (x > 0)] = '#bd00ff'

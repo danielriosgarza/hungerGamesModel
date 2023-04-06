@@ -280,6 +280,7 @@ figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species
 
 states = ['live_bh',
           'live_bt',
+          'live_ri',
           'dead',
           'pH',
           'trehalose',
@@ -293,6 +294,7 @@ states = ['live_bh',
 
 
 stTypes = ['cells',
+           'cells',
            'cells',
            'cells',
            'pH',

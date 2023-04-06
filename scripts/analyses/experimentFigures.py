@@ -142,3 +142,181 @@ for i,v in enumerate(states):
     plt.show()
 
 #####################################
+
+############## bhbt #####################
+
+species = 'bhbt'
+experiments = ['bhbt']
+labels = ['bhbt']
+colors = ['#003eff']
+figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
+
+states = ['live_bh',
+          'live_bt',
+          'dead',
+          'pH',
+          'trehalose',
+          'glucose',
+          'pyruvate',
+          'succinate',
+          'acetate',
+          'lactate',
+          'formate']
+
+
+stTypes = ['cells',
+           'cells',
+           'cells',
+           'pH',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite']
+
+for i,v in enumerate(states):
+    pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
+    plt.savefig(os.path.join(figPath, v + '.png'), dpi = 150)
+    plt.show()
+    
+for i,v in enumerate(states):
+    pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
+    plt.savefig(os.path.join(figPath, 'logos', v + '.png'), dpi = 50)
+    plt.show()
+
+############## bhri #####################
+
+species = 'bhri'
+experiments = ['bhri']
+labels = ['bhri']
+colors = ['#003eff']
+figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
+
+states = ['live_bh',
+          'live_ri',
+          'dead',
+          'pH',
+          'trehalose',
+          'glucose',
+          'pyruvate',
+          'butyrate',
+          'acetate',
+          'lactate']
+
+
+stTypes = ['cells',
+           'cells',
+           'cells',
+           'pH',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite']
+
+for i,v in enumerate(states):
+    pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
+    plt.savefig(os.path.join(figPath, v + '.png'), dpi = 150)
+    plt.show()
+    
+for i,v in enumerate(states):
+    pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
+    plt.savefig(os.path.join(figPath, 'logos', v + '.png'), dpi = 50)
+    plt.show()
+
+############## btri #####################
+
+species = 'btri'
+experiments = ['btri']
+labels = ['btri']
+colors = ['#003eff']
+figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
+
+states = ['live_bt',
+          'live_ri',
+          'dead',
+          'pH',
+          'butyrate',
+          'glucose',
+          'pyruvate',
+          'succinate',
+          'acetate',
+          'lactate',
+          'formate']
+
+
+stTypes = ['cells',
+           'cells',
+           'cells',
+           'pH',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite']
+
+for i,v in enumerate(states):
+    pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
+    plt.savefig(os.path.join(figPath, v + '.png'), dpi = 150)
+    plt.show()
+    
+for i,v in enumerate(states):
+    pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
+    plt.savefig(os.path.join(figPath, 'logos', v + '.png'), dpi = 50)
+    plt.show()
+
+############## bhbtri #####################
+
+species = 'bhbtri'
+experiments = ['bhbtri']
+labels = ['bhbtri']
+colors = ['#003eff']
+figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
+
+states = ['live_bh',
+          'live_bt',
+          'dead',
+          'pH',
+          'trehalose',
+          'glucose',
+          'pyruvate',
+          'succinate',
+          'butyrate',
+          'acetate',
+          'lactate',
+          'formate']
+
+
+stTypes = ['cells',
+           'cells',
+           'cells',
+           'pH',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite',
+           'metabolite']
+
+for i,v in enumerate(states):
+    pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
+    plt.savefig(os.path.join(figPath, v + '.png'), dpi = 150)
+    plt.show()
+    
+for i,v in enumerate(states):
+    pH = makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors)
+    plt.savefig(os.path.join(figPath, 'logos', v + '.png'), dpi = 50)
+    plt.show()
+
+#####################################
+
+
+
+

@@ -2,6 +2,7 @@ id	name	species
 xa_trehalose	bh trehalose	bh
 xa_pyruvate	bh pyruvate	bh
 xb_glucose_glutamate	bh glucose glutamate	bh
+xb_pyruvate	bh pyruvate	bh
 xe_pyruvate	bt pyruvate	bt
 xe_glucose	bt glucose	bt
 xf_mannose	bt mannose	bt

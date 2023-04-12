@@ -69,8 +69,8 @@ def assignBhParams(lmfit_params, conn):
     
     zeta4 = '""'
     
-    num1 = str(lmfit_params['z14_l_s1'].value**lmfit_params['z14_h_s1'].value)
-    denom1 = num1 + " + (metObj.metD['trehalose'].concentration + metObj.metD['trehalose'].concentration)**" + str(lmfit_params['z14_h_s1'].value)
+    #num1 = str(lmfit_params['z14_l_s1'].value**lmfit_params['z14_h_s1'].value)
+    #denom1 = num1 + " + (metObj.metD['trehalose'].concentration + metObj.metD['trehalose'].concentration)**" + str(lmfit_params['z14_h_s1'].value)
     
     
     #z5

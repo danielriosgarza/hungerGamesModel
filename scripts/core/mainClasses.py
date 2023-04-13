@@ -474,7 +474,7 @@ class Reactor:
         
         vec[1 : 1 + self.metabolome.nmets] = self.metabolome.get_concentration()
         vec[1 + self.metabolome.nmets::] = self.microbiome.countSubpops()
-        vec = np.round(vec, 6)
+        vec = np.round(vec, 8)
         return vec
     
     def update_states(self, vec):

@@ -8,6 +8,6 @@ id	subpopulation_A	subpopulation_B	hillFunc	rate
 7	xf	xg	""	0.001
 8	xg	xh	""	0.001
 9	xi	xj	""	0.001
-10	xi	xk	""	0.001
+10	xi	xl	""	0.001
 11	xj	xk	""	0.001
 12	xk	xl	""	0.001

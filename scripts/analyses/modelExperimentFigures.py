@@ -201,91 +201,91 @@ for i,v in enumerate(states):
 
 plt.show()
 
-# species = 'ri'
-# experiments = ['bhri', 'btri', 'bhbtri']
-# labels = ['ri1', 'ri2', 'ri3']
-# colors = ['#00ff26', '#003eff', '#ff0000']
-# figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
+species = 'ri'
+experiments = ['bhri', 'btri', 'bhbtri']
+labels = ['ri1', 'ri2', 'ri3']
+colors = ['#00ff26', '#003eff', '#ff0000']
+figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 
-# states = ['live',
-#           'dead',
-#           'pH',
+states = ['live',
+          'dead',
+          'pH',
           
-#           'pyruvate',
-#           'glucose',
-#           'acetate',
-#           'lactate',
-#           'butyrate']
+          'pyruvate',
+          'glucose',
+          'acetate',
+          'lactate',
+          'butyrate']
 
 
-# stTypes = ['cells',
-#            'cells',
-#            'pH',
-#            'metabolite',
-#            'metabolite',
-#            'metabolite',
-#            'metabolite',
-#            'metabolite']
+stTypes = ['cells',
+            'cells',
+            'pH',
+            'metabolite',
+            'metabolite',
+            'metabolite',
+            'metabolite',
+            'metabolite']
 
 
 
-# params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
+params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
 
-# databaseName = 'modelDB_bhbtri.sqlite3'
+databaseName = 'modelDB_bhbtri.sqlite3'
 
-# databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
+databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
-# database = os.path.join(databaseFolder, databaseName)
+database = os.path.join(databaseFolder, databaseName)
 
-# conn = create_connection(os.path.join(databaseFolder, databaseName))
-# assignRiParams(params, conn)
+conn = create_connection(os.path.join(databaseFolder, databaseName))
+assignRiParams(params, conn)
 
 
-# measuredStates = ['live', 
-#                   'dead',
-#                   'pH',
+measuredStates = ['live', 
+                  'dead',
+                  'pH',
                   
                   
-#                   'pyruvate',
-#                   'glucose',
-#                   'lactate',
-#                   'acetate',
-#                   'butyrate']
+                  'pyruvate',
+                  'glucose',
+                  'lactate',
+                  'acetate',
+                  'butyrate']
 
-# intervals = [4,
-#              12,
-#              4,
+intervals = [4,
+              12,
+              4,
              
-#              4,
-#              4,
-#              4,
-#              4,
-#              4]
+              4,
+              4,
+              4,
+              4,
+              4]
 
 
-# r3 = simulateExperiment(species, experiments, params, database, ['live',
+r3 = simulateExperiment(species, experiments, params, database, ['live',
                                                                
-#                                                                'pyruvate',
-#                                                                'glucose',
-#                                                                'lactate',
-#                                                                'acetate',
-#                                                                'butyrate'], combined = True, intervals = intervals )
+                                                                'pyruvate',
+                                                                'glucose',
+                                                                'lactate',
+                                                                'acetate',
+                                                                'butyrate'], combined = True, intervals = intervals )
 
 
 
 
 
-# for i,v in enumerate(states):
-#     makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [r3, r3, r3], alpha=0.5)
+for i,v in enumerate(states):
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [r3, r3, r3], alpha=0.5)
     
     
-#     stFile = parseTable(os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'ri', v + '.tsv'))
+    stFile = parseTable(os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'ri', v + '.tsv'))
     
-#     st_df = getDFdict(stFile, v, False)
+    st_df = getDFdict(stFile, v, False)
     
-#     s = summarizeExperiments(st_df, v, experiments, interval = intervals[i])
-#     sp = get_spline('dead', 'something', 'dead' , df_state=s)
-#     t = np.linspace(0,120, 1000)
+    s = summarizeExperiments(st_df, v, experiments, interval = intervals[i])
+    sp = get_spline('dead', 'something', 'dead' , df_state=s)
+    t = np.linspace(0,120, 1000)
 
-#     plt.plot(s)
-#     plt.plot(t, sp(t))
+    plt.plot(s)
+    plt.plot(t, sp(t))

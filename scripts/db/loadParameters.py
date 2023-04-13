@@ -189,25 +189,25 @@ def assignBtParams(lmfit_params, conn):
     
 def assignRiParams(lmfit_params, conn):
     
-    #z10
-    num1 = "(metObj.metD['lactate'].concentration+metObj.metD['acetate'].concentration)**" + str(lmfit_params['z10_h_s5'].value)
-    denom1 = num1 + " + " + str(lmfit_params['z10_l_s5'].value**lmfit_params['z10_h_s5'].value)
+    #z9
+    num = "(metObj.metD['lactate'].concentration+metObj.metD['acetate'].concentration)**" + str(lmfit_params['z9_h_s5'].value)
+    denom = num + " + " + str(lmfit_params['z9_l_s5'].value**lmfit_params['z9_h_s5'].value)
     
-    zeta10 = "(" + num1 + "/(" + denom1 + "))"
+    zeta9 = "(" + num + "/(" + denom + "))"
+    
+    #z10
+    
+    num = str(lmfit_params['z10_l_s3'].value**lmfit_params['z10_h_s3'].value)
+    denom = num + " + metObj.metD['glucose'].concentration**" + str(lmfit_params['z10_h_s3'].value)
+    
+    zeta10 = "(" + num + "/(" + denom + "))"
     
     #z11
-    
-    num1 = str(lmfit_params['z11_l_s3'].value**lmfit_params['z11_h_s3'].value)
-    denom1 = num1 + " + metObj.metD['glucose'].concentration**" + str(lmfit_params['z11_h_s3'].value)
-    
-    zeta11 = "(" + num1 + "/(" + denom1 + "))"
+    zeta11 = '""'
     
     #z12
+    
     zeta12 = '""'
-    
-    #z13
-    
-    zeta13 = '""'
     
     with conn:
         
@@ -215,35 +215,35 @@ def assignRiParams(lmfit_params, conn):
         
         update_subpopulations(conn, (lmfit_params['xj_mumax'].value, lmfit_params['xj_pHopt'].value, lmfit_params['xj_pHalpha'].value, 'xj'))
     
+        update_subpopulations2subpopulations(conn, (zeta9, lmfit_params['z9_r'].value, 9))
+        
         update_subpopulations2subpopulations(conn, (zeta10, lmfit_params['z10_r'].value, 10))
         
         update_subpopulations2subpopulations(conn, (zeta11, lmfit_params['z11_r'].value, 11))
         
         update_subpopulations2subpopulations(conn, (zeta12, lmfit_params['z12_r'].value, 12))
         
-        update_subpopulations2subpopulations(conn, (zeta13, lmfit_params['z13_r'].value, 13))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s2'].value, lmfit_params['xi_k_s2'].value, 21))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s2'].value, lmfit_params['xi_k_s2'].value, 19))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s6_s2'].value, 0, 22))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s6_s2'].value, 0, 20))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s10_s2'].value, 0, 23))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s10_s2'].value, 0, 21))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s3'].value, lmfit_params['xi_k_s3'].value, 24))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s3'].value, lmfit_params['xi_k_s3'].value, 22))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s6_s3'].value, 0, 25))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s6_s3'].value, 0, 23))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s5_s3'].value, 0, 26))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s5_s3'].value, 0, 24))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s10_s3'].value, 0, 27))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s10_s3'].value, 0, 25))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xj_g_s5'].value, lmfit_params['xj_k_s5'].value, 28))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xj_g_s5'].value, lmfit_params['xj_k_s5'].value, 26))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xj_g_s10_s5'].value, 0, 29))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xj_g_s10_s5'].value, 0, 27))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xj_g_s6'].value, lmfit_params['xj_k_s6'].value, 30))
         
-        update_feedingTerms2metabolites(conn, (lmfit_params['xj_g_s6'].value, lmfit_params['xj_k_s6'].value, 28))
-        
-        update_feedingTerms2metabolites(conn, (lmfit_params['xj_g_s10_s6'].value, 0, 29))
+        update_feedingTerms2metabolites(conn, (lmfit_params['xj_g_s10_s6'].value, 0, 31))
 
     
 

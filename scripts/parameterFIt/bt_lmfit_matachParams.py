@@ -90,7 +90,7 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     for i in measuredStates:
         if i=='live':
-            distances.append(5*pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            distances.append(pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
         
         elif i=='dead':
             

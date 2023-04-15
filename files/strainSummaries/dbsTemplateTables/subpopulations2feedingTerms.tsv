@@ -2,7 +2,7 @@ id	subpopulation	feedingTerm
 1	xa	xa_trehalose
 2	xa	xa_pyruvate
 3	xb	xb_glucose_glutamate
-4	xb	pyruvate
+4	xb	xb_pyruvate
 5	xe	xe_pyruvate
 6	xe	xe_glucose
 7	xf	xf_mannose

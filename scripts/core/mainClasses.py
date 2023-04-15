@@ -316,6 +316,7 @@ class Subpopulation:
                 metabV += fterm.intrinsicMetabolism(metObj)
             
             return self.mumax*self.count*metabV
+            #return self.count*metabV
             
         
         return metabolism
@@ -387,7 +388,7 @@ class Bacteria:
         
         for subP in self.subpopulations:
             pop = self.subpopulations[subP]
-            metV+= pop.intrinsicMetabolism(metObj) * pop.pHSensitivity(metObj.pH)
+            metV+= pop.intrinsicMetabolism(metObj) * pop.pHSensitivity(metObj.pH)#limit uptake by pH
         
         return metV
         

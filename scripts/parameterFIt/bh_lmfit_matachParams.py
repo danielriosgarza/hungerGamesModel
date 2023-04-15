@@ -102,7 +102,7 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
         elif i=='glucose':
             distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
         
-        elif i=='acetate':
+        elif i=='lactate':
             distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
         
         else:

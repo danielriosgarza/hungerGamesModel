@@ -209,6 +209,8 @@ def assignRiParams(lmfit_params, conn):
     
     zeta12 = '""'
     
+    zeta13 = '""'
+    
     with conn:
         
         update_subpopulations(conn, (lmfit_params['xi_mumax'].value, lmfit_params['xi_pHopt'].value, lmfit_params['xi_pHalpha'].value, 'xi'))
@@ -222,6 +224,8 @@ def assignRiParams(lmfit_params, conn):
         update_subpopulations2subpopulations(conn, (zeta11, lmfit_params['z11_r'].value, 11))
         
         update_subpopulations2subpopulations(conn, (zeta12, lmfit_params['z12_r'].value, 12))
+        
+        update_subpopulations2subpopulations(conn, (zeta12, lmfit_params['z13_r'].value, 13))
         
         update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s2'].value, lmfit_params['xi_k_s2'].value, 21))
         

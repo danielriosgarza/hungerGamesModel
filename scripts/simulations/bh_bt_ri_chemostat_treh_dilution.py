@@ -102,7 +102,7 @@ for i in np.linspace(0.3125, 1.25, 100):
     reactor = Reactor(reactor_microbiome, wc_reactor,[chemostat], 15)
     reactor.simulate()
     #reactor.makePlots()
-    popRate.append(np.log2(np.round(reactor.subpop_simul[reactor.microbiome.subpops.index('xb')][-1], 3)/reactor.subpop_simul[reactor.microbiome.subpops.index('xi')][-1]))
+    popRate.append(np.log2(reactor.subpop_simul[reactor.microbiome.subpops.index('xb')][-1]/reactor.subpop_simul[reactor.microbiome.subpops.index('xi')][-1]))
     treh.append(reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')][-1])
     
     

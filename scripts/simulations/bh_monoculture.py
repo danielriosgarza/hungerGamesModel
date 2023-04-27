@@ -46,7 +46,7 @@ databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 conn = create_connection(os.path.join(databaseFolder, databaseName))
 
 #load the parameter file (parameter files are located at "/files/params" )
-bh_params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv'))
+bh_params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh_simul2.tsv'))
 
 
 #assign these parameters (depending on the strain, use the specific function)
@@ -66,7 +66,7 @@ pH =  predictpH(wc.get_concentration())
 wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 #wc_reactor.metD['pyruvate'].update(0.0)
-#wc_reactor.metD['trehalose'].update(8.0)
+wc_reactor.metD['trehalose'].update(10.0)
 #wc_reactor.metD['glutamate'].update(9.0)
 
 #get the feed obj. Make it sterile

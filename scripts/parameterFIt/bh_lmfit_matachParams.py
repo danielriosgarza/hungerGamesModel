@@ -50,7 +50,7 @@ def pseudoHuberLoss(y_true, y_pred, delta = 0.50):
     return np.mean(np.where(np.abs(error) <= delta, small_error, large_error))
 
 def sResidual(y_true, y_pred):
-    choice = np.random.choice(np.arange(len(y_true)), size = int(0.3*len(y_true)), replace=False)
+    choice = np.random.choice(np.arange(len(y_true)), size = int(0.7*len(y_true)), replace=False)
     y_t = y_true[choice]
     y_p = y_pred[choice]
     
@@ -90,7 +90,7 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     for i in measuredStates:
         if i=='live':
-            distances.append(pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            distances.append(5*pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
         
         elif i=='dead':
             
@@ -99,7 +99,7 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
         elif i=='pH':
             distances.append(pseudoHuberLoss(splines['pH'](r.time_simul), r.pH_simul))
         
-        elif i=='glucose':
+        elif i=='acetate':
             distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
         
         elif i=='lactate':

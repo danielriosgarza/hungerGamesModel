@@ -57,55 +57,168 @@ db = get_database(os.path.join(databaseFolder, databaseName))
 
 
 
-bh, bt, ri = [],[],[]
 
 
-for i in np.linspace(0, 25, 25):
+
+#getStarting pH
+wc = createMetabolome(db, 'wc')
+predictpH = getpH(wc.metabolites, ipH_path)
+pH =  predictpH(wc.get_concentration())
+
+#get the feed media and the reactor media
+wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
+wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
+
+wc_feed_pH = createMetabolome(db, 'wc', 2.5, pHFunc=None)
+#wc_reactor.metD['trehalose'].update(1.8)
+# wc_reactor.metD['glucose'].update(0.0)
+
+
+#get the feed obj. Make it sterile
+feed_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
+                              'bt':createBacteria(db, 'bt', 'wc'),
+                              'ri':createBacteria(db, 'ri', 'wc')})
+feed_microbiome.subpopD['xa'].count = 0
+feed_microbiome.subpopD['xe'].count = 0
+feed_microbiome.subpopD['xi'].count = 0
+
+#create the reactor obj, with starting populations
+reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
+                                 'bt':createBacteria(db, 'bt', 'wc'),
+                                 'ri':createBacteria(db, 'ri', 'wc')})
+#reactor_microbiome.subpopD['xa'].count = 0.01
+#reactor_microbiome.subpopD['xb'].count = 0.005
+
+d = 4.1
+#d2 = 
+
+batchA = Pulse(wc_feed, feed_microbiome, 0, 2000, 10000, 0, 0, d,d)
+
+#batchB = Pulse(wc_feed, feed_microbiome, 2000, 3000, 10000, 0, 0, 0,0)
+
+#batchC = Pulse(wc_feed, feed_microbiome, 3000, 5000, 10000, 0, 0, d,d)
+
+#simulate
+reactor = Reactor(reactor_microbiome, wc_reactor,[batchA, 
+                                                  ], 100)
+
+
+
+reactor.simulate()
+reactor.makePlots()
+
+
+
+
+
+
+###########pH perturbation
+
+
+
+
+#get the feed media and the reactor media
+wc_feed = createMetabolome(db, 'wc', reactor.pH, pHFunc=predictpH)
+wc_reactor = createMetabolome(db, 'wc', reactor.pH, pHFunc=predictpH)
+
+for i,met in enumerate(reactor.metabolome.metabolites):
     
-    print(i)
-        
+    wc_reactor.metD[met].update(reactor.metabolome.concentration[i])
+# wc_reactor.metD['glucose'].update(0.0)
+wc_reactor.metD['succinate'].update(10)
+
+#get the feed obj. Make it sterile
+feed_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
+                              'bt':createBacteria(db, 'bt', 'wc'),
+                              'ri':createBacteria(db, 'ri', 'wc')})
+feed_microbiome.subpopD['xa'].count = 0
+feed_microbiome.subpopD['xe'].count = 0
+feed_microbiome.subpopD['xi'].count = 0
+
+#create the reactor obj, with starting populations
+reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
+                                 'bt':createBacteria(db, 'bt', 'wc'),
+                                 'ri':createBacteria(db, 'ri', 'wc')})
+
+
+
+
+for i,pop in enumerate(reactor.microbiome.subpops):
+    reactor_microbiome.subpopD[pop].count = reactor.microbiome.countSubpops()[i]
+
+
+batchB = Pulse(wc_feed, feed_microbiome, 2000, 2048, 10000, 0, 0, 0,0)
+
+
+
+reactorB = Reactor(reactor_microbiome, wc_reactor,[batchB 
+                                                  ], 100)
+
+
+
+reactorB.simulate()
+reactorB.makePlots()
+
+###########restore
+
+
+
+#get the feed media and the reactor media
+wc_feed = createMetabolome(db, 'wc', reactor.pH, pHFunc=predictpH)
+wc_reactor = createMetabolome(db, 'wc', reactor.pH, pHFunc=predictpH)
+
+for i,met in enumerate(reactor.metabolome.metabolites):
     
-    #getStarting pH
-    wc = createMetabolome(db, 'wc')
-    predictpH = getpH(wc.metabolites, ipH_path)
-    pH =  predictpH(wc.get_concentration())
-    
-    #get the feed media and the reactor media
-    wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
-    wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
-    #wc_reactor.metD['mannose'].update(0)
-    # wc_reactor.metD['glucose'].update(0.0)
-    
-    
-    #get the feed obj. Make it sterile
-    feed_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
-                                  'bt':createBacteria(db, 'bt', 'wc'),
-                                  'ri':createBacteria(db, 'ri', 'wc')})
-    feed_microbiome.subpopD['xa'].count = 0
-    feed_microbiome.subpopD['xe'].count = 0
-    feed_microbiome.subpopD['xi'].count = 0
-    
-    #create the reactor obj, with starting populations
-    reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
-                                     'bt':createBacteria(db, 'bt', 'wc'),
-                                     'ri':createBacteria(db, 'ri', 'wc')})
-    #reactor_microbiome.subpopD['xa'].count = 0.00
-    #reactor_microbiome.subpopD['xb'].count = 0.01
-    
-    batchA = Pulse(wc_feed, feed_microbiome, 0, 12, 10000, 0, 0, 0,0)
-    
-    chemostat = Pulse(wc_feed, feed_microbiome, 12, 1500, 10000, 0, 0, i,i)
-    
-    #simulate
-    reactor = Reactor(reactor_microbiome, wc_reactor,[batchA, chemostat], 100)
-    reactor.simulate()
-    reactor.makePlots()
-    bh.append(reactor.cellActive_dyn[0][-1])
-    bt.append(reactor.cellActive_dyn[1][-1])
-    ri.append(reactor.cellActive_dyn[2][-1])
-    
-    print(bh[-1], bt[-1], ri[-1])
-    
+    wc_reactor.metD[met].update(reactor.metabolome.concentration[i])
+# wc_reactor.metD['glucose'].update(0.0)
+#wc_reactor.metD['succinate'].update(10)
+
+#get the feed obj. Make it sterile
+feed_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
+                              'bt':createBacteria(db, 'bt', 'wc'),
+                              'ri':createBacteria(db, 'ri', 'wc')})
+feed_microbiome.subpopD['xa'].count = 0
+feed_microbiome.subpopD['xe'].count = 0
+feed_microbiome.subpopD['xi'].count = 0
+
+#create the reactor obj, with starting populations
+reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
+                                 'bt':createBacteria(db, 'bt', 'wc'),
+                                 'ri':createBacteria(db, 'ri', 'wc')})
+
+
+
+
+for i,pop in enumerate(reactorB.microbiome.subpops):
+    reactor_microbiome.subpopD[pop].count = reactorB.microbiome.countSubpops()[i]
+
+
+batchC = Pulse(wc_feed, feed_microbiome, 2048, 5000, 10000, 0, 0, d,d)
+
+
+
+reactorC = Reactor(reactor_microbiome, wc_reactor,[batchC 
+                                                  ], 100)
+
+
+
+reactorC.simulate()
+reactorC.makePlots()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # #########fermentation acids ###################

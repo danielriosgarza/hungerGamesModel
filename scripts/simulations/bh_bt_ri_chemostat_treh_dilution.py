@@ -57,10 +57,10 @@ db = get_database(os.path.join(databaseFolder, databaseName))
 
 
 
-bh, bt, ri = [],[],[]
+popRate, treh = [],[]
 
 
-for i in np.linspace(0, 25, 25):
+for i in np.linspace(0.3125, 1.25, 100):
     
     print(i)
         
@@ -73,8 +73,8 @@ for i in np.linspace(0, 25, 25):
     #get the feed media and the reactor media
     wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
     wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
-    #wc_reactor.metD['mannose'].update(0)
-    # wc_reactor.metD['glucose'].update(0.0)
+    wc_reactor.metD['trehalose'].update(5.0)
+    wc_feed.metD['trehalose'].update(5.0)
     
     
     #get the feed obj. Make it sterile
@@ -89,22 +89,24 @@ for i in np.linspace(0, 25, 25):
     reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
                                      'bt':createBacteria(db, 'bt', 'wc'),
                                      'ri':createBacteria(db, 'ri', 'wc')})
-    #reactor_microbiome.subpopD['xa'].count = 0.00
-    #reactor_microbiome.subpopD['xb'].count = 0.01
+    reactor_microbiome.subpopD['xa'].count = 0.01
+    reactor_microbiome.subpopD['xe'].count = 0.00
+    reactor_microbiome.subpopD['xi'].count = 0.01
+    reactor_microbiome.subpopD['xb'].count = 0.00
     
-    batchA = Pulse(wc_feed, feed_microbiome, 0, 12, 10000, 0, 0, 0,0)
     
-    chemostat = Pulse(wc_feed, feed_microbiome, 12, 1500, 10000, 0, 0, i,i)
+    
+    chemostat = Pulse(wc_feed, feed_microbiome, 0, 2000, 10000, 0, 0, i,i)
     
     #simulate
-    reactor = Reactor(reactor_microbiome, wc_reactor,[batchA, chemostat], 100)
+    reactor = Reactor(reactor_microbiome, wc_reactor,[chemostat], 15)
     reactor.simulate()
-    reactor.makePlots()
-    bh.append(reactor.cellActive_dyn[0][-1])
-    bt.append(reactor.cellActive_dyn[1][-1])
-    ri.append(reactor.cellActive_dyn[2][-1])
+    #reactor.makePlots()
+    popRate.append(np.log2(np.round(reactor.subpop_simul[reactor.microbiome.subpops.index('xb')][-1], 3)/reactor.subpop_simul[reactor.microbiome.subpops.index('xi')][-1]))
+    treh.append(reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')][-1])
     
-    print(bh[-1], bt[-1], ri[-1])
+    
+    print(popRate, treh)
     
 
 

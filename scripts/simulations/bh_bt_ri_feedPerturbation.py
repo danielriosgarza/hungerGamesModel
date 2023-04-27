@@ -69,9 +69,11 @@ pH =  predictpH(wc.get_concentration())
 wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 
-wc_feed_pH = createMetabolome(db, 'wc', 3.5, pHFunc=None)
-#wc_reactor.metD['trehalose'].update(1.8)
-# wc_reactor.metD['glucose'].update(0.0)
+wc_feed_pH = createMetabolome(db, 'wc', 2.5, pHFunc=None)
+wc_reactor.metD['trehalose'].update(5.0)
+wc_feed.metD['trehalose'].update(5.0)
+
+
 
 
 #get the feed obj. Make it sterile
@@ -86,22 +88,31 @@ feed_microbiome.subpopD['xi'].count = 0
 reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
                                  'bt':createBacteria(db, 'bt', 'wc'),
                                  'ri':createBacteria(db, 'ri', 'wc')})
-#reactor_microbiome.subpopD['xa'].count = 0.01
-#reactor_microbiome.subpopD['xb'].count = 0.005
+reactor_microbiome.subpopD['xa'].count = 0.01
+reactor_microbiome.subpopD['xe'].count = 0.00
+reactor_microbiome.subpopD['xi'].count = 0.01
+reactor_microbiome.subpopD['xb'].count = 0.00
 
-d = 20.0
-#d2 = 
-batchA = Pulse(wc_feed, feed_microbiome, 0, 500, 10000, 0, 0, d,d)
-batchB = Pulse(wc_feed, feed_microbiome, 500, 600, 10000, 0, 0, d,d)
+d = 1.5400
+d2 = 2
 
-batchC = Pulse(wc_feed, feed_microbiome, 600, 770, 10000, 0, 0, 0,0)
-batchD = Pulse(wc_feed, feed_microbiome, 770, 2000, 10000, 0, 0, d,d)
+batch0 = Pulse(wc_feed, feed_microbiome, 0, 24, 10000, 0, 0, 0,0)
+
+
+batchA = Pulse(wc_feed, feed_microbiome, 0, 1000, 10000, 0, 0, d,d)
+
+batchB = Pulse(wc_feed, feed_microbiome, 1000, 1013, 10000, 0, 0, d,d)
+
+batchC = Pulse(wc_feed, feed_microbiome, 1013, 2000, 10000, 0, 0, d,d)
+
 
 #simulate
-reactor = Reactor(reactor_microbiome, wc_reactor,[batchA, 
+reactor = Reactor(reactor_microbiome, wc_reactor,[
+                                                  batchA,
                                                   batchB,
-                                                  batchC,
-                                                  batchD,], 100)
+                                                  batchC
+                                                  
+                                                   ], 15)
 reactor.simulate()
 reactor.makePlots()
 

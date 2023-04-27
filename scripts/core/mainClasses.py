@@ -377,6 +377,8 @@ class Bacteria:
             
             for connection in self.connections[subP]:
                 
+                
+                
                 growth[connection[0]] += pop.count * connection[1](metObj) * connection[2]
                 
                 growth[subP] -= min(pop.count, pop.count * connection[1](metObj) * connection[2])
@@ -475,7 +477,7 @@ class Reactor:
         
         vec[1 : 1 + self.metabolome.nmets] = self.metabolome.get_concentration()
         vec[1 + self.metabolome.nmets::] = self.microbiome.countSubpops()
-        vec = np.round(vec, 8)
+        vec = vec
         return vec
     
     def update_states(self, vec):

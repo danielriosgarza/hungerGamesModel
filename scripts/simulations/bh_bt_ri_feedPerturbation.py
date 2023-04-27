@@ -70,8 +70,8 @@ wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 
 wc_feed_pH = createMetabolome(db, 'wc', 2.5, pHFunc=None)
-wc_reactor.metD['trehalose'].update(5.0)
-wc_feed.metD['trehalose'].update(5.0)
+#wc_reactor.metD['trehalose'].update(5.0)
+#wc_feed.metD['trehalose'].update(5.0)
 
 
 
@@ -93,7 +93,7 @@ reactor_microbiome.subpopD['xe'].count = 0.00
 reactor_microbiome.subpopD['xi'].count = 0.01
 reactor_microbiome.subpopD['xb'].count = 0.00
 
-d = 0.98484848
+d = 1.1805
 d2 = 0
 
 batch0 = Pulse(wc_feed, feed_microbiome, 0, 24, 10000, 0, 0, 0,0)
@@ -101,9 +101,9 @@ batch0 = Pulse(wc_feed, feed_microbiome, 0, 24, 10000, 0, 0, 0,0)
 
 batchA = Pulse(wc_feed, feed_microbiome, 0, 1000, 10000, 0, 0, d,d)
 
-batchB = Pulse(wc_feed, feed_microbiome, 1000, 1013, 10000, 0, 0, d2,d2)
+batchB = Pulse(wc_feed, feed_microbiome, 1000, 1024, 10000, 0, 0, d2,d2)
 
-batchC = Pulse(wc_feed, feed_microbiome, 1013, 2000, 10000, 0, 0, d,d)
+batchC = Pulse(wc_feed, feed_microbiome, 1024, 2000, 10000, 0, 0, d,d)
 
 
 #simulate

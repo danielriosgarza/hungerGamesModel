@@ -73,8 +73,8 @@ for i in np.linspace(0.3125, 1.25, 100):
     #get the feed media and the reactor media
     wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
     wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
-    wc_reactor.metD['trehalose'].update(5.0)
-    wc_feed.metD['trehalose'].update(5.0)
+    #wc_reactor.metD['trehalose'].update(5.0)
+    #wc_feed.metD['trehalose'].update(5.0)
     
     
     #get the feed obj. Make it sterile

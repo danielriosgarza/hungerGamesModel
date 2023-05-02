@@ -71,8 +71,8 @@ for i in np.linspace(0.3125, 1.25, 100):
     pH =  predictpH(wc.get_concentration())
     
     #get the feed media and the reactor media
-    wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
-    wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
+    wc_feed = createMetabolome(db, 'wc', pH, pHFunc=None)
+    wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=None)
     #wc_reactor.metD['trehalose'].update(5.0)
     #wc_feed.metD['trehalose'].update(5.0)
     
@@ -91,7 +91,7 @@ for i in np.linspace(0.3125, 1.25, 100):
                                      'ri':createBacteria(db, 'ri', 'wc')})
     reactor_microbiome.subpopD['xa'].count = 0.01
     reactor_microbiome.subpopD['xe'].count = 0.00
-    reactor_microbiome.subpopD['xi'].count = 0.01
+    reactor_microbiome.subpopD['xi'].count = 0.00
     reactor_microbiome.subpopD['xb'].count = 0.00
     
     
@@ -102,7 +102,7 @@ for i in np.linspace(0.3125, 1.25, 100):
     reactor = Reactor(reactor_microbiome, wc_reactor,[chemostat], 15)
     reactor.simulate()
     #reactor.makePlots()
-    popRate.append(np.log2(reactor.subpop_simul[reactor.microbiome.subpops.index('xb')][-1]/reactor.subpop_simul[reactor.microbiome.subpops.index('xi')][-1]))
+    #popRate.append(np.log2(reactor.subpop_simul[reactor.microbiome.subpops.index('xb')][-1]/reactor.subpop_simul[reactor.microbiome.subpops.index('xi')][-1]))
     treh.append(reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')][-1])
     
     

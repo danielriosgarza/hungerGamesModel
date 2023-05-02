@@ -69,7 +69,7 @@ pH =  predictpH(wc.get_concentration())
 wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 
-wc_feed_pH = createMetabolome(db, 'wc', 2.5, pHFunc=None)
+wc_feed_pH = createMetabolome(db, 'wc', 2.5, pHFunc=predictpH)
 #wc_reactor.metD['trehalose'].update(5.0)
 #wc_feed.metD['trehalose'].update(5.0)
 
@@ -89,21 +89,23 @@ reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
                                  'bt':createBacteria(db, 'bt', 'wc'),
                                  'ri':createBacteria(db, 'ri', 'wc')})
 reactor_microbiome.subpopD['xa'].count = 0.01
-reactor_microbiome.subpopD['xe'].count = 0.00
+reactor_microbiome.subpopD['xe'].count = 0.01
 reactor_microbiome.subpopD['xi'].count = 0.01
 reactor_microbiome.subpopD['xb'].count = 0.00
 
-d = 1.1805
+d = 0.615
 d2 = 0
+d3 = 0.615
+
 
 batch0 = Pulse(wc_feed, feed_microbiome, 0, 24, 10000, 0, 0, 0,0)
 
 
-batchA = Pulse(wc_feed, feed_microbiome, 0, 1000, 10000, 0, 0, d,d)
+batchA = Pulse(wc_feed, feed_microbiome, 0, 2000, 10000, 0, 0, d,d)
 
-batchB = Pulse(wc_feed, feed_microbiome, 1000, 1024, 10000, 0, 0, d2,d2)
+batchB = Pulse(wc_feed, feed_microbiome, 2000, 2010, 10000, 0, 0, d2,d2)
 
-batchC = Pulse(wc_feed, feed_microbiome, 1024, 2000, 10000, 0, 0, d,d)
+batchC = Pulse(wc_feed, feed_microbiome, 2010, 4000, 10000, 0, 0, d,d)
 
 
 #simulate
@@ -273,23 +275,23 @@ reactor.makePlots()
 
 # ####################Subpopulations
 
-# makeKineticPlot(x = reactor.time_simul,
-#                 y = reactor.subpop_simul[0],
-#                 color = '#FF10F0',
-#                 legend = 'live_xa (simul)',
-#                 xlabel = 'time (h)',
-#                 ylabel = '$10^5$ cells/uL',
-#                 title = None,
-#                 linestyle = '--')
+makeKineticPlot(x = reactor.time_simul,
+                y = reactor.subpop_simul[0],
+                color = '#FF10F0',
+                legend = 'live_xa (simul)',
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
 
-# makeKineticPlot(x = reactor.time_simul,
-#                 y = reactor.subpop_simul[1],
-#                 color = '#FF2E2EC9',
-#                 legend = 'live_xb (simul)',
-#                 xlabel = 'time (h)',
-#                 ylabel = '$10^5$ cells/uL',
-#                 title = None,
-#                 linestyle = '--')
+makeKineticPlot(x = reactor.time_simul,
+                y = reactor.subpop_simul[1],
+                color = '#FF2E2EC9',
+                legend = 'live_xb (simul)',
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
 
 
 # makeKineticPlot(x = reactor.time_simul,

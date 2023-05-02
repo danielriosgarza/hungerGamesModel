@@ -216,8 +216,8 @@ def assignRiParams(lmfit_params, conn):
     
     #z12
     
-    num = str(lmfit_params['z12_l_s3'].value**lmfit_params['z12_h_s3'].value)
-    denom = num + " + (metObj.metD['glucose'].concentration + metObj.metD['pyruvate'].concentration)**" + str(lmfit_params['z12_h_s3'].value)
+    num = str(lmfit_params['z12_l_s3_s2'].value**lmfit_params['z12_h_s3_s2'].value)
+    denom = num + " + (metObj.metD['glucose'].concentration + metObj.metD['pyruvate'].concentration)**" + str(lmfit_params['z12_h_s3_s2'].value)
     
     zeta12 = "(" + num + "/(" + denom + "))"
     

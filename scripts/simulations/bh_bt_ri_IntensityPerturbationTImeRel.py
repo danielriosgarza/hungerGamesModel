@@ -111,9 +111,7 @@ def getDistance(d1 = 0.615, d2 = 0, d3 = 0.615, pt = 24, plot = False):
         reactor.makePlots()
     
     
-    #dist = cosine(reactor.subpop_simul.T[10000], reactor.subpop_simul.T[-1])
-    
-    dist = reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')][20000]
+    dist = cosine(reactor.subpop_simul.T[10000], reactor.subpop_simul.T[-1])
     
     print('\n', dist, '\n')
     return dist
@@ -138,11 +136,11 @@ from pylab import *
 
 
 for t in times:
-    scatter([t]*100, departure, c=results[t], cmap=cm.coolwarm, vmin=0, vmax=0.6,s=20)
-colorbar(label='trehalose concentration after perturbation')
+    scatter([t]*100, departure, c=results[t], cmap=cm.coolwarm, vmin=0, vmax=0.6,s=20, alpha = .5)
+colorbar(label='cosine distance')
 xlabel('perturbation duration (h)')
 ylabel('distance from threshold ($h^{-1}$)')
 
-xlim(10,48)
-ylim(-0.01,.32)
+#xlim(10,48)
+#ylim(-0.01,.32)
 savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'perturbationTIme.png'), dpi = 600)

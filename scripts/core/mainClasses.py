@@ -381,7 +381,7 @@ class Bacteria:
                 
                 growth[connection[0]] += pop.count * connection[1](metObj) * connection[2]
                 
-                growth[subP] -= min(pop.count, pop.count * connection[1](metObj) * connection[2])
+                growth[subP] -= pop.count * connection[1](metObj) * connection[2]
                 
         return growth
     
@@ -477,7 +477,7 @@ class Reactor:
         
         vec[1 : 1 + self.metabolome.nmets] = self.metabolome.get_concentration()
         vec[1 + self.metabolome.nmets::] = self.microbiome.countSubpops()
-        vec = vec
+        vec = vec*(vec>0)
         return vec
     
     def update_states(self, vec):
@@ -494,7 +494,7 @@ class Reactor:
         self.pH = self.metabolome.pHFunc(self.metabolome.get_concentration())
         self.metabolome.pH = self.pH
         for idx, subP in enumerate(self.microbiome.subpops):
-            self.microbiome.subpopD[subP].count = vec[1 + self.metabolome.nmets + idx]
+            self.microbiome.subpopD[subP].count = max(0,vec[1 + self.metabolome.nmets + idx])
         
         
     
@@ -593,7 +593,7 @@ class Reactor:
             
             # ode.set_initial_value(y_init,pulse.t_start)
             
-            self.solution = solver(fun=self.ode, t_span =(pulse.t_start, pulse.t_end), y0 = self.get_states(), t_eval = pulse.range, args=[pulse])
+            self.solution = solver(fun=self.ode, t_span =(pulse.t_start, pulse.t_end), y0 = self.get_states(), t_eval = pulse.range, args=[pulse], method = 'LSODA', atol=1e-12, rtol=1e-12)
             
             ts = np.concatenate([ts,self.solution.t])
             vol_dyn = np.concatenate([vol_dyn, self.solution.y[0]])
@@ -622,6 +622,10 @@ class Reactor:
         self.met_simul = np.hstack(met_dyn)
         self.pH_simul = np.array([self.metabolome.pHFunc(mc) for mc in self.met_simul.T])
         self.subpop_simul = np.hstack(subpop_dyn)
+        
+        #small deviance from the solver can result in slightly neg numbers when close
+        #to zero. 
+        self.subpop_simul = self.subpop_simul*(self.subpop_simul>0)
         
         cellActive_dyn = {i: np.zeros(len(self.subpop_simul[0])) for i in self.microbiome.species}
         cellInactive_dyn = {i: np.zeros(len(self.subpop_simul[0])) for i in self.microbiome.species}       

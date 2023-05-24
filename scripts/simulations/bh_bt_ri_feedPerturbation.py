@@ -16,9 +16,6 @@ from readModelDB import *
 from mainClasses import *
 from loadParameters import *
 from general import *
-import matplotlib.pyplot as plt
-plt.style.use('seaborn-bright')
-import seaborn as sns
 
 
 
@@ -69,7 +66,7 @@ pH =  predictpH(wc.get_concentration())
 wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 
-wc_feed_pH = createMetabolome(db, 'wc', 2.5, pHFunc=predictpH)
+#wc_feed_pH = createMetabolome(db, 'wc', 2.5, pHFunc=predictpH)
 #wc_reactor.metD['trehalose'].update(5.0)
 #wc_feed.metD['trehalose'].update(5.0)
 
@@ -93,19 +90,18 @@ reactor_microbiome.subpopD['xe'].count = 0.01
 reactor_microbiome.subpopD['xi'].count = 0.01
 reactor_microbiome.subpopD['xb'].count = 0.00
 
-d = 0.615
+d = 0.6014999999999999
 d2 = 0
-d3 = 0.615
+d3 = 1.4
 
 
-batch0 = Pulse(wc_feed, feed_microbiome, 0, 24, 10000, 0, 0, 0,0)
 
 
-batchA = Pulse(wc_feed, feed_microbiome, 0, 2000, 10000, 0, 0, d,d)
+batchA = Pulse(wc_feed, feed_microbiome, 0, 1000, 100, 0, 0, d,d)
 
-batchB = Pulse(wc_feed, feed_microbiome, 2000, 2010, 10000, 0, 0, d2,d2)
+batchB = Pulse(wc_feed, feed_microbiome, 1000, 1030, 100, 0, 0, d2,d2)
 
-batchC = Pulse(wc_feed, feed_microbiome, 2010, 4000, 10000, 0, 0, d,d)
+batchC = Pulse(wc_feed, feed_microbiome, 1030, 2000, 100, 0, 0, d,d)
 
 
 #simulate
@@ -278,7 +274,7 @@ reactor.makePlots()
 makeKineticPlot(x = reactor.time_simul,
                 y = reactor.subpop_simul[0],
                 color = '#FF10F0',
-                legend = 'live_xa (simul)',
+                legend = 'Bh trehalose suppop',
                 xlabel = 'time (h)',
                 ylabel = '$10^5$ cells/uL',
                 title = None,
@@ -287,21 +283,64 @@ makeKineticPlot(x = reactor.time_simul,
 makeKineticPlot(x = reactor.time_simul,
                 y = reactor.subpop_simul[1],
                 color = '#FF2E2EC9',
-                legend = 'live_xb (simul)',
+                legend = 'Bh glucose suppop',
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+plt.title('dilution rate {0:.3f}'.format(d/15))
+#savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'BhSubpopsDilutionRate.png'), dpi = 600)
+plt.show()
+
+
+makeKineticPlot(x = reactor.time_simul,
+                y = reactor.cellActive_dyn[0],
+                color = '#FF6EC7',
+                legend = 'live_bh_cells (simul)',
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+makeKineticPlot(x = reactor.time_simul,
+                y = reactor.cellActive_dyn[1],
+                color = '#FF5F1F',
+                legend = 'live_bt_cells (simul)',
                 xlabel = 'time (h)',
                 ylabel = '$10^5$ cells/uL',
                 title = None,
                 linestyle = '-')
 
 
-# makeKineticPlot(x = reactor.time_simul,
-#                 y = reactor.cellActive_dyn[0],
-#                 color = '#FF6EC7',
-#                 legend = 'live_bh_cells (simul)',
-#                 xlabel = 'time (h)',
-#                 ylabel = '$10^5$ cells/uL',
-#                 title = None,
-#                 linestyle = '-')
+makeKineticPlot(x = reactor.time_simul,
+                y = reactor.cellActive_dyn[2],
+                color = '#1F51FF',
+                legend = 'live_ri_cells (simul)',
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+plt.title('dilution rate {0:.3f}'.format(d/15))
+plt.tight_layout()
+plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', '30hperturbCells.png'), dpi = 600)
+
+plt.show()
+
+makeKineticPlot(x = reactor.time_simul,
+                y = reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')],
+                color = '#8900ff',
+                legend = 'trehalose (simul)',
+                xlabel = 'time (h)',
+                ylabel = '$mM$',
+                title = None,
+                linestyle = '-')
+
+plt.title('dilution rate {0:.3f}'.format(d/15))
+plt.tight_layout()
+plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', '30hperturbTreh.png'), dpi = 600)
+plt.show()
 
 # makeKineticPlot(x = reactor.time_simul,
 #                 y = reactor.subpop_simul[4],
@@ -322,14 +361,7 @@ makeKineticPlot(x = reactor.time_simul,
 #                 linestyle = '--')
 
 
-# makeKineticPlot(x = reactor.time_simul,
-#                 y = reactor.cellActive_dyn[1],
-#                 color = '#FF5F1F',
-#                 legend = 'live_bt_cells (simul)',
-#                 xlabel = 'time (h)',
-#                 ylabel = '$10^5$ cells/uL',
-#                 title = None,
-#                 linestyle = '-')
+
 
 # makeKineticPlot(x = reactor.time_simul,
 #                 y = reactor.subpop_simul[8],

@@ -10,7 +10,10 @@ import sys
 from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
-plt.style.use('seaborn-bright')
+from aquarel import load_theme
+
+theme = load_theme("boxy_light")
+theme.apply()
 import seaborn as sns
 
 import plotly.io as pio
@@ -193,6 +196,7 @@ def makeKineticPlot(x,
     
     #fig, ax = plt.subplots()
     
+    
     plt.plot(x, y, color=color, linestyle = linestyle, lw=2, alpha = 0.9, label=legend)
             
 
@@ -213,6 +217,9 @@ def makeKineticPlot(x,
 
     
     plt.tight_layout()
+    
+    
+
 
 
 

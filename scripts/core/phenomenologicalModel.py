@@ -8,6 +8,8 @@ from pathlib import Path
 import os
 import sys
 
+
+from pylab import *
 import numpy as np
 from scipy.integrate import solve_ivp
 
@@ -98,7 +100,7 @@ def getSS(solObj):
 
 epsilon = 0.01
 mu_xa = 0.18
-mu_xb = 0.71
+mu_xb = 0.79
 mu_xe = 0.802
 mu_xf = 0.99
 mu_xi = 0.8
@@ -115,12 +117,12 @@ k_xe_xf = 0.1
 k_xf_xe = 0.1
 k_xi_xj = 0.1
 k_xj_xi = 0.1
-r_xa_xb = 0.0
-r_xb_xa = 0.0
-r_xe_xf = 0
-r_xf_xe = 0.
-r_xi_xj = 0.0
-r_xj_xi = 0.0
+r_xa_xb = 0.1
+r_xb_xa = 1.5
+r_xe_xf = 0#0.99
+r_xf_xe = 0#0.0001
+r_xi_xj = 0#0.025
+r_xj_xi = 0#0.01
 
 #######Activation functions#########
 
@@ -134,8 +136,8 @@ fxj_xi = getHill(k_xj_xi, h_xj_xi, r_xj_xi, 'inhibition')
 #########Initial condition##########
 
 
-xa = 0.0
-xb = 0.1
+xa = 0.01
+xb = 0.0
 xe = 0.01
 xf = 0.0
 xi = 0.01
@@ -151,22 +153,32 @@ N0[3] = xf
 N0[4] = xi
 N0[5] = xj
 
-ss = []
-for i in np.linspace(0, 0.21, 1000):
-    epsilon = i
-    sol = solve_ivp(ode, (0,1000), y0 = N0, t_eval=np.linspace(0,1000,10000))
-    ss.append(getSS(sol))
+# ss = []
+# for i in np.linspace(0, 0.21, 1000):
+#     epsilon = i
+#     sol = solve_ivp(ode, (0,1000), y0 = N0, t_eval=np.linspace(0,100,10000))
+#     ss.append(getSS(sol))
 
 
-from pylab import *
 
-ss = np.array(ss)
-pcolormesh(ss.T, cmap=cm.coolwarm, vmin = 0.2, vmax = 0.6) 
-colorbar(label='abundance')
-mStates = ['bh', 'bt', 'ri']
-tp = [0,200,400,600,800,999]
-yticks(np.arange(len(mStates))+0.5, mStates)
-xticks(tp, np.round(np.linspace(0, 0.21, 6),3))
-xlabel('environmental cue')
-#savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'twoStatesPhenom.png'), dpi = 600)
+
+# ss = np.array(ss)
+# pcolormesh(ss.T, cmap=cm.coolwarm, vmin = 0.2, vmax = 0.6) 
+# colorbar(label='abundance')
+# mStates = ['bh', 'bt', 'ri']
+# tp = [0,200,400,600,800,999]
+# yticks(np.arange(len(mStates))+0.5, mStates)
+# xticks(tp, np.round(np.linspace(0, 0.21, 6),3))
+# xlabel('environmental cue')
+# #savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'twoStatesPhenom.png'), dpi = 600)
+# show()
+
+epsilon = 0.1355
+sol = solve_ivp(ode, (0,1000), y0 = N0, t_eval=np.linspace(0,100,10000))
+
+y = sol.y
+bh = y[0] + y[1]
+bt = y[2]+y[3]
+ri = y[4]+y[5]
+plot(sol.t, bh, color = 'r', label='bh'); plot(sol.t, bt, color = 'orange', label='bt'); plot(sol.t,ri, color='blue', label='ri');legend()
 show()

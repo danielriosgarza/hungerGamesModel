@@ -76,7 +76,7 @@ reactor_microbiome.subpopD['xe'].count = 0.01
 reactor_microbiome.subpopD['xi'].count = 0.01
 reactor_microbiome.subpopD['xb'].count = 0.00
 
-d = 0.615
+d = 0.9
 d2 = 0
 d3 = 1.4
 

@@ -414,7 +414,7 @@ xticks(tp, np.round((0.4+departure[tp])/15,3))
 colorbar()
 xlabel('dilution rate ($h^{-1}$)')
 tight_layout()
-savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'DrJekyllMrHyde.png'), dpi = 600)
+#savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'DrJekyllMrHyde.png'), dpi = 600)
 show()
 
 

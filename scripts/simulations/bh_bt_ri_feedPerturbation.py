@@ -97,11 +97,11 @@ d3 = 1.4
 
 
 
-batchA = Pulse(wc_feed, feed_microbiome, 0, 1000, 100, 0, 0, d,d)
+batchA = Pulse(wc_feed, feed_microbiome, 0, 600, 100, 0, 0, d,d)
 
-batchB = Pulse(wc_feed, feed_microbiome, 1000, 1030, 100, 0, 0, d2,d2)
+batchB = Pulse(wc_feed, feed_microbiome, 600, 620, 100, 0, 0, d2,d2)
 
-batchC = Pulse(wc_feed, feed_microbiome, 1030, 2000, 100, 0, 0, d,d)
+batchC = Pulse(wc_feed, feed_microbiome, 620, 1750, 100, 0, 0, d,d)
 
 
 #simulate

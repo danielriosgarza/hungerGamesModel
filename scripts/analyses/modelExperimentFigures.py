@@ -88,19 +88,22 @@ r1 = simulateExperiment(species, experiments, params, database, ['live',
 
 
 for i,v in enumerate(states):
-    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [r1, r1, r1], alpha=0.5)
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [r1, None, None], alpha=0.5)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.show()
     
+    #stFile = parseTable(os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh', v + '.tsv'))
     
-    stFile = parseTable(os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh', v + '.tsv'))
+    #st_df = getDFdict(stFile, v, False)
     
-    st_df = getDFdict(stFile, v, False)
-    
-    s = summarizeExperiments(st_df, v, experiments, interval = intervals[i])
-    sp = get_spline('dead', 'something', 'dead' , df_state=s)
-    t = np.linspace(0,120, 1000)
+    # s = summarizeExperiments(st_df, v, experiments, interval = intervals[i])
+    # sp = get_spline('dead', 'something', 'dead' , df_state=s)
+    # t = np.linspace(0,120, 1000)
 
-    plt.plot(s)
-    plt.plot(t, sp(t))
+    # plt.plot(s)
+    # plt.plot(t, sp(t))
 
 plt.show()
 

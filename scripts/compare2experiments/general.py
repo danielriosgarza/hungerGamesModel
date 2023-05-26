@@ -142,19 +142,19 @@ def makeExperimentPlot(species,
         if simulObj[i] is not None:
             
             if state == 'pH':
-                ax.plot(simulObj[i].time_simul, simulObj[i].pH_simul, color=colors[i], label=lables[i] + ' simul', linestyle='--', lw=3)
+                ax.plot(simulObj[i].time_simul, simulObj[i].pH_simul, color='k', label=lables[i] + ' simul', linestyle='--', lw=5)
             
             elif state == 'live':
                 
-                ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[0], color=colors[i], label=lables[i] + ' simul', linestyle='--', lw=3)
+                ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[0], color='k', label=lables[i] + ' simul', linestyle='--', lw=5)
             
             elif state == 'dead':
                 
-                ax.plot(simulObj[i].time_simul, simulObj[i].cellInactive_dyn[0], color=colors[i], label=lables[i] + ' simul', linestyle='--', lw=3)
+                ax.plot(simulObj[i].time_simul, simulObj[i].cellInactive_dyn[0], color='k', label=lables[i] + ' simul', linestyle='--', lw=5)
                 
             else:
                 
-                ax.plot(simulObj[i].time_simul, simulObj[i].met_simul[simulObj[i].metabolome.metabolites.index(state)], color=colors[i], label=lables[i] + ' simul', linestyle='--', lw=3)
+                ax.plot(simulObj[i].time_simul, simulObj[i].met_simul[simulObj[i].metabolome.metabolites.index(state)], color='k', label=lables[i] + ' simul', linestyle='--', lw=5)
                 
            
 

@@ -35,6 +35,10 @@ def getHill(k, h, r, tp = 'inhibition'):
 
 
 
+
+
+
+
 def dxadt(N):
     
     return N[0] * (mu_xa - N[0] - fxa_xb(epsilon)) + N[1] * fxb_xa(epsilon)
@@ -119,10 +123,10 @@ k_xi_xj = 0.1
 k_xj_xi = 0.1
 r_xa_xb = 0.1
 r_xb_xa = 1.5
-r_xe_xf = 0#0.99
-r_xf_xe = 0#0.0001
-r_xi_xj = 0#0.025
-r_xj_xi = 0#0.01
+r_xe_xf = 0.99
+r_xf_xe = 0.0001
+r_xi_xj = 0.025
+r_xj_xi = 0.01
 
 #######Activation functions#########
 

@@ -10,10 +10,12 @@ import os
 import sys
 from pathlib import Path
 
+import numpy as np
 import matplotlib.pyplot as plt
 
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'compare2experiments'))
 from general import *
+from parseTable import *
 
 #chose a species
 species = 'ri'
@@ -33,7 +35,7 @@ measuredState = 'live'
 stateType = 'cells'
 
 #chose the regular interval
-intervals = 8
+intervals = 4
 
 #get the data
 stFile = parseTable(os.path.join(strainSummaryFolder, measuredState +  '.tsv'))
@@ -42,8 +44,23 @@ df_state = getDFdict(stFile, measuredState, False)
 labels = ['ri1', 'ri2', 'ri3']
 colors = ['#00ff26', '#003eff', '#ff0000']
 
-s = summarizeExperiments(df_state, 'ri_live', experiments, interval = 4)
+s = summarizeExperiments(df_state, 'ri_live', experiments, interval = intervals)
 
 makeExperimentPlot(species, measuredState, stateType, stFile, labels, colors)
 plt.plot(s, lw = 5, ls = '--', color = 'k')
 plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'movingAverage.png'), dpi = 100)
+
+
+#get spline
+sp = get_spline('live', strainSummaryFolder, labels, df_state = s)
+
+#define an arbitrary time interval
+t = np.linspace(0, 120, 10000)
+
+#get spline points
+live = sp(t)
+
+#add to plot
+plt.plot(t, live, lw = 8, color='#FF6700', alpha = 0.75)
+
+plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'spline.png'), dpi = 100)

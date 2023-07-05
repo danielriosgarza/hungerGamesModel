@@ -42,7 +42,8 @@ df_state = getDFdict(stFile, measuredState, False)
 labels = ['ri1', 'ri2', 'ri3']
 colors = ['#00ff26', '#003eff', '#ff0000']
 
-s = summarizeExperiments(df_state, 'ri_live', experiments, interval = 8)
+s = summarizeExperiments(df_state, 'ri_live', experiments, interval = 4)
 
 makeExperimentPlot(species, measuredState, stateType, stFile, labels, colors)
 plt.plot(s, lw = 5, ls = '--', color = 'k')
+plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'movingAverage.png'), dpi = 100)

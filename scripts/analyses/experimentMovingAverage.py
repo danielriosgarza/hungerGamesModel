@@ -15,21 +15,34 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'compare2experiments'))
 from general import *
 
- 
-    
-ri_live = parseTable(os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'ri', 'dead.tsv'))
+#chose a species
+species = 'ri'
 
-live_df = getDFdict(ri_live, 'dead', False)
-
+#chose replicates to summarize
 experiments = ['bhri', 'btri', 'bhbtri']
+
+
+#location of the experiment data folder
+strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', species)
+
+
+#chose the state ('live', 'dead', 'glucose', 'acetate', 'pH', etc.)
+measuredState = 'live'
+
+#chose the state type for the plot
+stateType = 'cells'
+
+#chose the regular interval
+intervals = 8
+
+#get the data
+stFile = parseTable(os.path.join(strainSummaryFolder, measuredState +  '.tsv'))
+df_state = getDFdict(stFile, measuredState, False)
 
 labels = ['ri1', 'ri2', 'ri3']
 colors = ['#00ff26', '#003eff', '#ff0000']
 
-s = summarizeExperiments(live_df, 'ri_live', experiments, interval = 8)
-sp = get_spline('dead', 'something', 'dead' , df_state=s)
-t = np.linspace(0,120, 1000)
+s = summarizeExperiments(df_state, 'ri_live', experiments, interval = 8)
 
-makeExperimentPlot('ri', 'dead', 'cells', experiments, labels, colors)
-#plt.plot(s)
-plt.plot(t, sp(t))
+makeExperimentPlot(species, measuredState, stateType, stFile, labels, colors)
+plt.plot(s, lw = 5, ls = '--', color = 'k')

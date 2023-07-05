@@ -22,7 +22,15 @@ from phenomenologicalModelGeneric import *
 
 import numpy as np
 from scipy.stats import beta
-import umap
+
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2, whiten=1)
+
+import matplotlib.pyplot as plt
+from aquarel import load_theme
+
+theme = load_theme("boxy_light")
+theme.apply()
 
 
 def getInteractionV(N, a, b):
@@ -63,9 +71,10 @@ def ode(N, t, epsilon, derivs):
 
 
 N = 50
+negInt = 75
 
 def diffusion(N, t):
-    return np.diag(N*0.1)
+    return np.diag(N*0.3)
 
 
 derivDicts = randomDerivDict(N)
@@ -81,7 +90,7 @@ d1['source'] = [(1, fxb_xa)]
 d1['sink'] = [(0, fxa_xb)]
 d1['interactions'][1] = 0
 
-ssp = getInteractionV(N, 50, 75)
+ssp = getInteractionV(N, 50, negInt)
 
 ssp[0] = 0 #interaction with its other phenotype
 ssp[1] = -1 #self interaction
@@ -118,21 +127,22 @@ def close(func, *args):
     return newfunc
 
 N0 = 0.1*np.ones(N)
-N0[1] = 0.00001
+#N0[1] = 0.00001
 
 
-
+envP = []
 
 ss = []
 for i in range(1000):
     
     print(i)
     epsilon = np.random.uniform(low=0, high = 0.25)
+    envP.append(epsilon)
     
     # N0[0] = 0.00001
     # N0[1] = 0.1
     
-    # if np.round(np.random.uniform()):
+    # if epsilon<0.25/2:
     #     N0[0] = 0.1
     #     N0[1] = 0.00001
     
@@ -143,3 +153,24 @@ for i in range(1000):
 ss = np.array(ss)
 pcolormesh(ss.T, cmap=cm.coolwarm) 
 colorbar(label='abundance')
+plt.show()
+
+pc = pca.fit_transform(ss)
+
+plt.scatter(pc.T[0], pc.T[1], s=10, c=envP, cmap=cm.coolwarm)
+colorbar(label='environment cue')
+plt.show()
+
+
+sspA = getInteractionV(10000, 50,51)
+sspB = getInteractionV(10000, 50,negInt)
+
+
+plt.hist(sspA, bins=100, density=True, histtype='step', color='k')
+plt.hist(sspA, bins=100, density=True, histtype='bar', color='gray')
+
+plt.hist(sspB, bins=100, density=True, histtype='step', color='red')
+plt.hist(sspB, bins=100, density=True, histtype='bar', color='red', alpha=.5)
+
+plt.show()
+

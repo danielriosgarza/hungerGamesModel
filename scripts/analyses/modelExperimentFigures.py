@@ -46,7 +46,7 @@ stTypes = ['cells',
 
 params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv'))
 
-databaseName = 'modelDB_bhbtri.sqlite3'
+databaseName = 'modelDB_bhbtri_bh.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -140,7 +140,7 @@ stTypes = ['cells',
 
 params = getPramsFromFile('bt', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bt.tsv'))
 
-databaseName = 'modelDB_bhbtri.sqlite3'
+databaseName = 'modelDB_bhbtri_bh.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -240,7 +240,7 @@ stTypes = ['cells',
 
 params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
 
-databaseName = 'modelDB_bhbtri.sqlite3'
+databaseName = 'modelDB_bhbtri_bh.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 

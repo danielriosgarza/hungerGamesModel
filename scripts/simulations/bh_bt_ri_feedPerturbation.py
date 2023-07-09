@@ -28,7 +28,7 @@ pio.renderers.default='browser'
 #pH profile
 ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv') 
 
-databaseName = 'modelDB_bhbtri.sqlite3'
+databaseName = 'modelDB_bhbtri_bh.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -88,9 +88,9 @@ reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
 reactor_microbiome.subpopD['xa'].count = 0.01
 reactor_microbiome.subpopD['xe'].count = 0.01
 reactor_microbiome.subpopD['xi'].count = 0.01
-reactor_microbiome.subpopD['xb'].count = 0.00
 
-d = 0.55
+
+d = 0.8
 d2 = 0
 d3 = 1.4
 
@@ -99,9 +99,9 @@ d3 = 1.4
 
 batchA = Pulse(wc_feed, feed_microbiome, 0, 1000, 100, 0, 0, d,d)
 
-batchB = Pulse(wc_feed, feed_microbiome, 1000, 1012, 100, 0, 0, d2,d2)
+batchB = Pulse(wc_feed, feed_microbiome, 1000, 1060, 100, 0, 0, d,d)
 
-batchC = Pulse(wc_feed, feed_microbiome, 1012, 1750, 100, 0, 0, d,d)
+batchC = Pulse(wc_feed, feed_microbiome, 1060, 2000, 100, 0, 0, d,d)
 
 
 #simulate
@@ -324,7 +324,7 @@ makeKineticPlot(x = reactor.time_simul,
 
 plt.title('dilution rate {0:.3f}'.format(d/15))
 plt.tight_layout()
-plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', '30hperturbCells.png'), dpi = 600)
+#plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', '30hperturbCells.png'), dpi = 600)
 
 plt.show()
 
@@ -339,7 +339,7 @@ makeKineticPlot(x = reactor.time_simul,
 
 plt.title('dilution rate {0:.3f}'.format(d/15))
 plt.tight_layout()
-plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', '30hperturbTreh.png'), dpi = 600)
+#plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', '30hperturbTreh.png'), dpi = 600)
 plt.show()
 
 # makeKineticPlot(x = reactor.time_simul,

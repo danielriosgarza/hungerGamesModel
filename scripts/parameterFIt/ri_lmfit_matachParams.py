@@ -86,11 +86,19 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
                            intervals=intervals)
     
     
+    r2 = genericSimulation(db)
+    
+    
+    
     distances = []
+    
+    distances.append(pseudoHuberLoss(coSpline_live(r2.time_simul), r2.cellActive_dyn[2]))
+    distances.append(5*pseudoHuberLoss(coSpline_but(r2.time_simul), r2.met_simul[r.metabolome.metabolites.index('butyrate')]))
     
     for i in measuredStates:
         if i=='live':
             distances.append(5*pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            
         
         elif i=='dead':
             
@@ -135,7 +143,7 @@ inputParams = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 
 outputFile = os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv')
 
 
-databaseName = 'modelDB_bhbtri_ri.sqlite3'
+databaseName = 'modelDB_bhbtri_bh.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -189,6 +197,46 @@ for i,v in enumerate(measuredStates):
     df_state = getDFdict(stFile, v, False)
     summ_state = summarizeExperiments(df_state, v, experimentLabel, interval = intervals[i])
     splines[v] = get_spline(v, 'nothing', experimentLabel, df_state = summ_state)
+
+
+
+strainSummaryFolder_cc = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri')
+stFile  = parseTable(os.path.join(strainSummaryFolder_cc, 'live_ri' + '.tsv'))
+df_state  = getDFdict(stFile, 'live_ri', False)['bhbtri']
+
+timeV = np.array(df_state.index)
+
+stateMean = np.array(df_state.mean(axis=1))
+
+
+coSpline_live = CubicSpline(timeV, stateMean, extrapolate=False)
+
+
+
+
+strainSummaryFolder_cc = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri')
+stFile  = parseTable(os.path.join(strainSummaryFolder_cc, 'butyrate' + '.tsv'))
+df_state  = getDFdict(stFile, 'butyrate', False)['bhbtri']
+
+timeV = np.array(df_state.index)
+
+stateMean = np.array(df_state.mean(axis=1))
+
+
+coSpline_but = CubicSpline(timeV, stateMean, extrapolate=False)
+
+
+strainSummaryFolder_cc = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri')
+stFile  = parseTable(os.path.join(strainSummaryFolder_cc, 'lactate' + '.tsv'))
+df_state  = getDFdict(stFile, 'lactate', False)['bhbtri']
+
+timeV = np.array(df_state.index)
+
+stateMean = np.array(df_state.mean(axis=1))
+
+
+coSpline_lac = CubicSpline(timeV, stateMean, extrapolate=False)
+
 
 
 

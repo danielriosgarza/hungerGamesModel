@@ -50,7 +50,7 @@ def pseudoHuberLoss(y_true, y_pred, delta = 0.50):
     return np.mean(np.where(np.abs(error) <= delta, small_error, large_error))
 
 def sResidual(y_true, y_pred):
-    choice = np.random.choice(np.arange(len(y_true)), size = int(0.7*len(y_true)), replace=False)
+    choice = np.random.choice(np.arange(len(y_true)), size = int(1.0*len(y_true)), replace=False)
     y_t = y_true[choice]
     y_p = y_pred[choice]
     
@@ -86,20 +86,26 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
                            intervals=intervals)
     
     
+    r2 = genericSimulation(db)
+    
     distances = []
+    distances.append(pseudoHuberLoss(coSpline(r2.time_simul), r2.cellActive_dyn[0]))
+    distances.append(pseudoHuberLoss(coSpline_treh(r2.time_simul), r2.met_simul[r.metabolome.metabolites.index('trehalose')]))
     
     for i in measuredStates:
         if i=='live':
-            distances.append(5*pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            distances.append(10*pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            
+            
         
         elif i=='dead':
             
-            distances.append(pseudoHuberLoss(splines['dead'](r.time_simul), r.cellInactive_dyn[0]))
+            distances.append(10*pseudoHuberLoss(splines['dead'](r.time_simul), r.cellInactive_dyn[0]))
         
         elif i=='pH':
             distances.append(pseudoHuberLoss(splines['pH'](r.time_simul), r.pH_simul))
         
-        elif i=='acetate':
+        elif i=='glucose':
             distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
         
         elif i=='lactate':
@@ -195,6 +201,29 @@ for i,v in enumerate(measuredStates):
     summ_state = summarizeExperiments(df_state, v, experimentLabel, interval = intervals[i])
     splines[v] = get_spline(v, 'nothing', experimentLabel, df_state = summ_state)
 
+
+
+strainSummaryFolder_cc = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri')
+stFile  = parseTable(os.path.join(strainSummaryFolder_cc, 'live_bh' + '.tsv'))
+df_state  = getDFdict(stFile, 'live_bh', False)['bhbtri']
+
+timeV = np.array(df_state.index)
+
+stateMean = np.array(df_state.mean(axis=1))
+
+
+coSpline = CubicSpline(timeV, stateMean, extrapolate=False)
+
+strainSummaryFolder_cc = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri')
+stFile  = parseTable(os.path.join(strainSummaryFolder_cc, 'trehalose' + '.tsv'))
+df_state  = getDFdict(stFile, 'trehalose', False)['bhbtri']
+
+timeV = np.array(df_state.index)
+
+stateMean = np.array(df_state.mean(axis=1))
+
+
+coSpline_treh = CubicSpline(timeV, stateMean, extrapolate=False)
 
 
 evals = []

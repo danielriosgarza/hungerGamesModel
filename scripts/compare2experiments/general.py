@@ -67,7 +67,7 @@ def simulateExperiment(species,
     
     
     for state in initialStates:
-        if state!='live':
+        if (state!='live') and (state!='dead') and (state!='pH'):
             wc.metD[state].update(initialStates[state])
 
 
@@ -80,7 +80,7 @@ def simulateExperiment(species,
     
     
     for state in initialStates:
-        if state!='live':
+        if (state!='live') and (state!='dead') and (state!='pH'):
             wc_f.metD[state].update(initialStates[state])
     
     
@@ -89,7 +89,7 @@ def simulateExperiment(species,
     
     
     for state in initialStates:
-        if state!='live':
+        if (state!='live') and (state!='dead') and (state!='pH'):
             wc_r.metD[state].update(initialStates[state])
     
 
@@ -121,6 +121,45 @@ def simulateExperiment(species,
     
     return r_species
 
+
+
+
+def genericSimulation(db):
+    ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv')
+        
+    wc = createMetabolome(db, 'wc')
+
+    predictpH = getpH(wc.metabolites, ipH_path)
+
+    pH =  predictpH(wc.get_concentration())
+
+
+    wc_f = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
+
+    wc_r = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
+
+
+    species_f = Microbiome({'bh':createBacteria(db, 'bh', 'wc'), 'bt':createBacteria(db, 'bt', 'wc'), 'ri':createBacteria(db, 'ri', 'wc')})
+    species_f.subpopD['xa'].count = 0
+    species_f.subpopD['xe'].count = 0
+    species_f.subpopD['xi'].count = 0
+        
+
+    species_r = Microbiome({'bh':createBacteria(db, 'bh', 'wc'), 'bt':createBacteria(db, 'bt', 'wc'), 'ri':createBacteria(db, 'ri', 'wc')})
+
+
+    p1 = Pulse(wc_f, species_f, 0, 120, 10000, 0, 0, 0, 0)
+
+    r_species = Reactor(species_r, wc_r, [p1], 60)
+
+    r_species.simulate()
+    
+    return r_species
+
+
+
+
+
 def makeExperimentPlot(species, 
              state, 
              stateType = 'metabolite',
@@ -142,19 +181,31 @@ def makeExperimentPlot(species,
         if simulObj[i] is not None:
             
             if state == 'pH':
-                ax.plot(simulObj[i].time_simul, simulObj[i].pH_simul, color='k', label=lables[i] + ' simul', linestyle='--', lw=5)
+                ax.plot(simulObj[i].time_simul, simulObj[i].pH_simul, color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
             
             elif state == 'live':
                 
-                ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[0], color='k', label=lables[i] + ' simul', linestyle='--', lw=5)
+                ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[0], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
+            
+            elif state == 'live_bh':
+                
+                ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[0], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
+            
+            elif state == 'live_bt':
+                
+                ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[1], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
+            
+            elif state == 'live_ri':
+                
+                ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[2], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
             
             elif state == 'dead':
                 
-                ax.plot(simulObj[i].time_simul, simulObj[i].cellInactive_dyn[0], color='k', label=lables[i] + ' simul', linestyle='--', lw=5)
+                ax.plot(simulObj[i].time_simul, simulObj[i].cellInactive_dyn[0], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
                 
             else:
                 
-                ax.plot(simulObj[i].time_simul, simulObj[i].met_simul[simulObj[i].metabolome.metabolites.index(state)], color='k', label=lables[i] + ' simul', linestyle='--', lw=5)
+                ax.plot(simulObj[i].time_simul, simulObj[i].met_simul[simulObj[i].metabolome.metabolites.index(state)], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
                 
            
 

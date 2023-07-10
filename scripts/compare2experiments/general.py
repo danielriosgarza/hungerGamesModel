@@ -226,6 +226,7 @@ def makeExperimentPlot(group,
             else:
                 
                 ax.plot(simulObj[i].time_simul, simulObj[i].met_simul[simulObj[i].metabolome.metabolites.index(state)], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
+                #ax.set_ylim(0, 30)
                 
            
 

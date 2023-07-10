@@ -90,7 +90,7 @@ reactor_microbiome.subpopD['xe'].count = 0.01
 reactor_microbiome.subpopD['xi'].count = 0.01
 
 
-d = 0.8
+d = 0.64
 d2 = 0
 d3 = 1.4
 
@@ -99,9 +99,9 @@ d3 = 1.4
 
 batchA = Pulse(wc_feed, feed_microbiome, 0, 1000, 100, 0, 0, d,d)
 
-batchB = Pulse(wc_feed, feed_microbiome, 1000, 1060, 100, 0, 0, d,d)
+batchB = Pulse(wc_feed, feed_microbiome, 1000, 1024, 100, 0, 0, d2,d2)
 
-batchC = Pulse(wc_feed, feed_microbiome, 1060, 2000, 100, 0, 0, d,d)
+batchC = Pulse(wc_feed, feed_microbiome, 1024, 2000, 100, 0, 0, d,d)
 
 
 #simulate

@@ -46,9 +46,9 @@ def assignBhParams(lmfit_params, conn):
     
     #z2
     
-    num = "metObj.metD['trehalose'].concentration**10" #+ str(lmfit_params['z1_h_s1'].value)
+    num = "metObj.metD['trehalose'].concentration**10.0" #+ str(lmfit_params['z1_h_s1'].value)
     
-    denom = num + " + 0.1**10" #str(lmfit_params['z1_l_s1'].value**lmfit_params['z1_h_s1'].value)
+    denom = num + " + 0.12**10.0" #str(lmfit_params['z1_l_s1'].value**lmfit_params['z1_h_s1'].value)
     
        
     zeta2 = "(" + num + ")/(" + denom + ")"
@@ -90,7 +90,7 @@ def assignBhParams(lmfit_params, conn):
         
         update_subpopulations2subpopulations(conn, (zeta1, lmfit_params['z1_r'].value, 1))
         
-        update_subpopulations2subpopulations(conn, (zeta2, 1.5, 2))
+        update_subpopulations2subpopulations(conn, (zeta2, 0.8, 2))
         
         update_subpopulations2subpopulations(conn, (zeta3, lmfit_params['z3_r'].value, 3))
         

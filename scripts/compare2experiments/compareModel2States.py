@@ -79,6 +79,11 @@ bh3 = simulateExperiment('bh',
                        intervals=intervals)
 
 
+
+
+
+
+
 states = ['live',
           'dead',
           'pH',
@@ -104,3 +109,29 @@ for i,v in enumerate(states):
     plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
     plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()
+    
+
+measuredStates = [
+                  'trehalose',
+                  'pyruvate',
+                  'glucose',
+                  'lactate',
+                  'acetate']
+
+bhwctreh = simulateExperiment('bh', 
+                       'bhwctreh', 
+                       params, 
+                       database, 
+                       measuredStates, 
+                       combined=False, 
+                       intervals=intervals,
+                       starttime=17,
+                       endtime = 90)
+
+bhwc1 = simulateExperiment('bh', 
+                       'bhwc1', 
+                       params, 
+                       database, 
+                       measuredStates, 
+                       combined=False, 
+                       intervals=intervals)

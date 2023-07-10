@@ -88,19 +88,43 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     r2 = genericSimulation(db)
     
+    measuredStates_treh = [
+                      'trehalose',
+                      'pyruvate',
+                      'glucose',
+                      'lactate',
+                      'acetate']
+
+    bhwctreh = simulateExperiment('bh', 
+                           'bhwctreh', 
+                           lmfit_params, 
+                           database, 
+                           measuredStates_treh, 
+                           combined=False, 
+                           intervals=intervals,
+                           starttime=17,
+                           endtime = 90)
+    
+    
+    
     distances = []
     distances.append(pseudoHuberLoss(coSpline(r2.time_simul), r2.cellActive_dyn[0]))
-    distances.append(pseudoHuberLoss(coSpline_treh(r2.time_simul), r2.met_simul[r.metabolome.metabolites.index('trehalose')]))
+    distances.append(pseudoHuberLoss(5*coSpline_treh(r2.time_simul), r2.met_simul[r.metabolome.metabolites.index('trehalose')]))
+    
+    #distances.append(sResidual(coSpline_treh_treh(bhwctreh.time_simul), bhwctreh.met_simul[r.metabolome.metabolites.index('trehalose')]))
+    #distances.append(sResidual(5*coSpline_treh_glc(bhwctreh.time_simul), bhwctreh.met_simul[r.metabolome.metabolites.index('glucose')]))
+    #distances.append(pseudoHuberLoss(coSpline_treh_ace(bhwctreh.time_simul), bhwctreh.met_simul[r.metabolome.metabolites.index('acetate')]))
+    #distances.append(pseudoHuberLoss(coSpline_treh_lac(bhwctreh.time_simul), bhwctreh.met_simul[r.metabolome.metabolites.index('lactate')]))
     
     for i in measuredStates:
         if i=='live':
-            distances.append(10*pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            distances.append(pseudoHuberLoss(5*splines['live'](r.time_simul), r.cellActive_dyn[0]))
             
             
         
         elif i=='dead':
             
-            distances.append(10*pseudoHuberLoss(splines['dead'](r.time_simul), r.cellInactive_dyn[0]))
+            distances.append(5*pseudoHuberLoss(splines['dead'](r.time_simul), r.cellInactive_dyn[0]))
         
         elif i=='pH':
             distances.append(pseudoHuberLoss(splines['pH'](r.time_simul), r.pH_simul))
@@ -225,6 +249,55 @@ stateMean = np.array(df_state.mean(axis=1))
 
 coSpline_treh = CubicSpline(timeV, stateMean, extrapolate=False)
 
+
+
+strainSummaryFolder_cc = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh')
+stFile  = parseTable(os.path.join(strainSummaryFolder_cc, 'trehalose' + '.tsv'))
+df_state  = getDFdict(stFile, 'trehalose', False)['bhwctreh']
+
+timeV = np.array(df_state.index)
+
+stateMean = np.array(df_state.mean(axis=1))
+
+
+coSpline_treh_treh = CubicSpline(timeV, stateMean, extrapolate=False)
+
+
+strainSummaryFolder_cc = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh')
+stFile  = parseTable(os.path.join(strainSummaryFolder_cc, 'glucose' + '.tsv'))
+df_state  = getDFdict(stFile, 'glucose', False)['bhwctreh']
+
+timeV = np.array(df_state.index)
+
+stateMean = np.array(df_state.mean(axis=1))
+
+
+coSpline_treh_glc = CubicSpline(timeV, stateMean, extrapolate=False)
+
+
+
+strainSummaryFolder_cc = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh')
+stFile  = parseTable(os.path.join(strainSummaryFolder_cc, 'acetate' + '.tsv'))
+df_state  = getDFdict(stFile, 'acetate', False)['bhwctreh']
+
+timeV = np.array(df_state.index)
+
+stateMean = np.array(df_state.mean(axis=1))
+
+
+coSpline_treh_ace = CubicSpline(timeV, stateMean, extrapolate=False)
+
+
+strainSummaryFolder_cc = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh')
+stFile  = parseTable(os.path.join(strainSummaryFolder_cc, 'lactate' + '.tsv'))
+df_state  = getDFdict(stFile, 'lactate', False)['bhwctreh']
+
+timeV = np.array(df_state.index)
+
+stateMean = np.array(df_state.mean(axis=1))
+
+
+coSpline_treh_lac = CubicSpline(timeV, stateMean, extrapolate=False)
 
 evals = []
 

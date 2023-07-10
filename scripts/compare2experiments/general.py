@@ -39,7 +39,9 @@ def simulateExperiment(species,
                        dbPath, 
                        measuredStates, 
                        combined=False, 
-                       intervals=None):
+                       intervals=None,
+                       starttime = 0,
+                       endtime = 120):
     
     
     if intervals is None:
@@ -51,6 +53,7 @@ def simulateExperiment(species,
     initialStates = {}
     
     for i,v in enumerate(measuredStates):
+        
         initialStates[v] = get_initialState(v, strainSummaryFolder, experimentLabel, combined, intervals[i]) 
 
     conn = create_connection(dbPath)
@@ -105,15 +108,25 @@ def simulateExperiment(species,
         
 
     species_r = Microbiome({species:createBacteria(db, species, 'wc')})
-    if species == 'bh':
-        species_r.subpopD['xa'].count = initialStates['live']
-    elif species == 'bt':
-        species_r.subpopD['xe'].count = initialStates['live']
-    elif species == 'ri':
-        species_r.subpopD['xi'].count = initialStates['live']
+    
+    if 'live' in measuredStates:
+        if species == 'bh':
+            species_r.subpopD['xa'].count = initialStates['live']
+        elif species == 'bt':
+            species_r.subpopD['xe'].count = initialStates['live']
+        elif species == 'ri':
+            species_r.subpopD['xi'].count = initialStates['live']
+    
+    else:
+        if species == 'bh':
+            species_r.subpopD['xa'].count = 0.001
+        elif species == 'bt':
+            species_r.subpopD['xe'].count = 0.01
+        elif species == 'ri':
+            species_r.subpopD['xi'].count = 0.001
 
 
-    p1 = Pulse(wc_f, species_f, 0, 120, 10000, 0, 0, 0, 0)
+    p1 = Pulse(wc_f, species_f, starttime, endtime, 10000, 0, 0, 0, 0)
 
     r_species = Reactor(species_r, wc_r, [p1], 60)
 

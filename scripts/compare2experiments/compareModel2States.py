@@ -43,15 +43,7 @@ measuredStates = ['live',
                   'lactate',
                   'acetate']
 
-intervals = [4,
-             12,
-             4,
-             
-             4,
-             4,
-             4,
-             16,
-             4]
+
 
 
 bh1 = simulateExperiment('bh', 
@@ -60,7 +52,7 @@ bh1 = simulateExperiment('bh',
                        database, 
                        measuredStates, 
                        combined=False, 
-                       intervals=intervals)
+                       intervals=None)
 
 bh2 = simulateExperiment('bh', 
                        'bhri', 
@@ -68,7 +60,7 @@ bh2 = simulateExperiment('bh',
                        database, 
                        measuredStates, 
                        combined=False, 
-                       intervals=intervals)
+                       intervals=None)
 
 bh3 = simulateExperiment('bh', 
                        'bhbtri', 
@@ -76,7 +68,7 @@ bh3 = simulateExperiment('bh',
                        database, 
                        measuredStates, 
                        combined=False, 
-                       intervals=intervals)
+                       intervals=None)
 
 
 
@@ -108,30 +100,93 @@ for i,v in enumerate(states):
     makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bh1, bh2, bh3], alpha=0.5)
     #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
     #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
-    #plt.show()
+    plt.show()
     
 
-measuredStates = [
-                  'trehalose',
-                  'pyruvate',
-                  'glucose',
-                  'lactate',
-                  'acetate']
 
-bhwctreh = simulateExperiment('bh', 
-                       'bhwctreh', 
+####################################################################################
+
+species = 'bt'
+experiments = ['bhbt', 'btri', 'bhbtri']
+labels = ['bt1', 'bt2', 'bt3']
+colors = ['#00ff26', '#003eff', '#ff0000']
+
+params = getPramsFromFile('bt', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bt.tsv'))
+
+databaseName = 'modelDB_bhbtri_bh.sqlite3'
+
+databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
+
+database = os.path.join(databaseFolder, databaseName)
+
+conn = create_connection(os.path.join(databaseFolder, databaseName))
+assignBtParams(params, conn)
+
+
+
+
+
+
+measuredStates = ['live',
+          
+          
+          'pyruvate',
+          'glucose',
+          'acetate',
+          'lactate',
+          'formate',
+          'succinate']
+
+bt1 = simulateExperiment('bt', 
+                       'bhbt', 
                        params, 
                        database, 
                        measuredStates, 
                        combined=False, 
-                       intervals=intervals,
-                       starttime=17,
-                       endtime = 90)
+                       intervals=None)
 
-bhwc1 = simulateExperiment('bh', 
-                       'bhwc1', 
+bt2 = simulateExperiment('bt', 
+                       'btri', 
                        params, 
                        database, 
                        measuredStates, 
                        combined=False, 
-                       intervals=intervals)
+                       intervals=None)
+
+bt3 = simulateExperiment('bt', 
+                       'bhbtri', 
+                       params, 
+                       database, 
+                       measuredStates, 
+                       combined=False, 
+                       intervals=None)
+
+figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
+
+states = ['live',
+          'dead',
+          'pH',
+          
+          'pyruvate',
+          'glucose',
+          'acetate',
+          'lactate',
+          'formate',
+          'succinate']
+
+
+stTypes = ['cells',
+            'cells',
+            'pH',
+            'metabolite',
+            'metabolite',
+            'metabolite',
+            'metabolite',
+            'metabolite',
+            'metabolite']
+
+for i,v in enumerate(states):
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bt1, bt2, bt3], alpha=0.5)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.show()

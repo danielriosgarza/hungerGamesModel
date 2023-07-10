@@ -33,9 +33,8 @@ from loadParameters import *
 
 ###setup####
 
-def simulateExperiment(species, 
+def simulateExperiment(group, 
                        experimentLabel, 
-                       params, 
                        dbPath, 
                        measuredStates, 
                        combined=False, 
@@ -48,7 +47,7 @@ def simulateExperiment(species,
         intervals = [4]*len(measuredStates) 
     ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv')
     
-    strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', species)
+    strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', group)
     
     initialStates = {}
     
@@ -56,21 +55,16 @@ def simulateExperiment(species,
         
         initialStates[v] = get_initialState(v, strainSummaryFolder, experimentLabel, combined, intervals[i]) 
 
-    conn = create_connection(dbPath)
-    
-    assignParameters2db(species, params, conn)     
-        
-    states = []
     
     db = get_database(dbPath)
-    
     
 
     wc = createMetabolome(db, 'wc')
     
     
+    
     for state in initialStates:
-        if (state!='live') and (state!='dead') and (state!='pH'):
+        if ('live' not in state) and (state!='dead') and (state!='pH'):
             wc.metD[state].update(initialStates[state])
 
 
@@ -83,7 +77,7 @@ def simulateExperiment(species,
     
     
     for state in initialStates:
-        if (state!='live') and (state!='dead') and (state!='pH'):
+        if ('live' not in state) and (state!='dead') and (state!='pH'):
             wc_f.metD[state].update(initialStates[state])
     
     
@@ -92,38 +86,43 @@ def simulateExperiment(species,
     
     
     for state in initialStates:
-        if (state!='live') and (state!='dead') and (state!='pH'):
+        if ('live' not in state) and (state!='dead') and (state!='pH'):
             wc_r.metD[state].update(initialStates[state])
     
 
 
 
-    species_f = Microbiome({species:createBacteria(db, species, 'wc')})
-    if species == 'bh':
-        species_f.subpopD['xa'].count = 0
-    elif species == 'bt':
-        species_f.subpopD['xe'].count = 0
-    elif species == 'ri':
-        species_f.subpopD['xi'].count = 0
+    species_f = Microbiome({'bh':createBacteria(db, 'bh', 'wc'), 'bt':createBacteria(db, 'bt', 'wc'), 'ri':createBacteria(db, 'ri', 'wc')})
+    species_f.subpopD['xa'].count = 0
+    species_f.subpopD['xe'].count = 0
+    species_f.subpopD['xi'].count = 0
         
 
-    species_r = Microbiome({species:createBacteria(db, species, 'wc')})
+    species_r = Microbiome({'bh':createBacteria(db, 'bh', 'wc'), 'bt':createBacteria(db, 'bt', 'wc'), 'ri':createBacteria(db, 'ri', 'wc')})
+    species_r.subpopD['xa'].count = 0
+    species_r.subpopD['xe'].count = 0
+    species_r.subpopD['xi'].count = 0
     
     if 'live' in measuredStates:
-        if species == 'bh':
+        if group == 'bh':
             species_r.subpopD['xa'].count = initialStates['live']
-        elif species == 'bt':
+            
+        elif group == 'bt':
             species_r.subpopD['xe'].count = initialStates['live']
-        elif species == 'ri':
+        
+        elif group == 'ri':
             species_r.subpopD['xi'].count = initialStates['live']
+            
+    if 'live_bh' in measuredStates:
+        species_r.subpopD['xa'].count = initialStates['live_bh']
     
-    else:
-        if species == 'bh':
-            species_r.subpopD['xa'].count = 0.001
-        elif species == 'bt':
-            species_r.subpopD['xe'].count = 0.01
-        elif species == 'ri':
-            species_r.subpopD['xi'].count = 0.001
+    if 'live_bt' in measuredStates:
+        species_r.subpopD['xe'].count = initialStates['live_bt']
+    
+    if 'live_ri' in measuredStates:
+        species_r.subpopD['xi'].count = initialStates['live_ri']
+    
+    
 
 
     p1 = Pulse(wc_f, species_f, starttime, endtime, 10000, 0, 0, 0, 0)
@@ -173,7 +172,7 @@ def genericSimulation(db):
 
 
 
-def makeExperimentPlot(species, 
+def makeExperimentPlot(group, 
              state, 
              stateType = 'metabolite',
              experiments = ['bhbtri'],
@@ -183,7 +182,7 @@ def makeExperimentPlot(species,
              alpha=1):
     
     fig, ax = plt.subplots()
-    strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', species)
+    strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', group)
     
     stateTable = parseTable(os.path.join(strainSummaryFolder, state + '.tsv'))
             
@@ -198,7 +197,14 @@ def makeExperimentPlot(species,
             
             elif state == 'live':
                 
-                ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[0], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
+                if group == 'bh':
+                    ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[0], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
+                
+                if group == 'bt':
+                    ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[1], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
+                
+                if group == 'ri':
+                    ax.plot(simulObj[i].time_simul, simulObj[i].cellActive_dyn[2], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
             
             elif state == 'live_bh':
                 
@@ -214,7 +220,8 @@ def makeExperimentPlot(species,
             
             elif state == 'dead':
                 
-                ax.plot(simulObj[i].time_simul, simulObj[i].cellInactive_dyn[0], color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
+               
+              ax.plot(simulObj[i].time_simul, np.sum(simulObj[i].cellInactive_dyn, axis=0), color = colors[i], label=lables[i] + ' simul', linestyle='--', lw=5)
                 
             else:
                 

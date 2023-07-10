@@ -34,8 +34,6 @@ conn = create_connection(os.path.join(databaseFolder, databaseName))
 assignBhParams(params, conn)
 
 measuredStates = ['live', 
-                  'dead',
-                  'pH',
                   
                   'trehalose',
                   'pyruvate',
@@ -46,29 +44,23 @@ measuredStates = ['live',
 
 
 
-bh1 = simulateExperiment('bh', 
-                       'bhbt', 
-                       params, 
-                       database, 
-                       measuredStates, 
-                       combined=False, 
-                       intervals=None)
+bh1 = simulateExperiment(group = 'bh', 
+                       experimentLabel = 'bhbt', 
+                       dbPath = database, 
+                       measuredStates = measuredStates, 
+                       )
 
-bh2 = simulateExperiment('bh', 
-                       'bhri', 
-                       params, 
-                       database, 
-                       measuredStates, 
-                       combined=False, 
-                       intervals=None)
+bh2 = simulateExperiment(group = 'bh', 
+                       experimentLabel = 'bhri', 
+                       dbPath = database, 
+                       measuredStates = measuredStates
+                       )
 
-bh3 = simulateExperiment('bh', 
-                       'bhbtri', 
-                       params, 
-                       database, 
-                       measuredStates, 
-                       combined=False, 
-                       intervals=None)
+bh3 = simulateExperiment(group = 'bh', 
+                       experimentLabel = 'bhbtri', 
+                       dbPath = database, 
+                       measuredStates = measuredStates
+                       )
 
 
 
@@ -137,29 +129,24 @@ measuredStates = ['live',
           'formate',
           'succinate']
 
-bt1 = simulateExperiment('bt', 
-                       'bhbt', 
-                       params, 
-                       database, 
-                       measuredStates, 
-                       combined=False, 
-                       intervals=None)
+bt1 = simulateExperiment(group = 'bt', 
+                       experimentLabel = 'bhbt', 
+                       dbPath = database, 
+                       measuredStates = measuredStates
+                       )
 
-bt2 = simulateExperiment('bt', 
-                       'btri', 
-                       params, 
-                       database, 
-                       measuredStates, 
-                       combined=False, 
-                       intervals=None)
+bt2 = simulateExperiment(group = 'bt', 
+                       experimentLabel = 'btri', 
+                       dbPath = database, 
+                       measuredStates = measuredStates
+                       )
 
-bt3 = simulateExperiment('bt', 
-                       'bhbtri', 
-                       params, 
-                       database, 
-                       measuredStates, 
-                       combined=False, 
-                       intervals=None)
+bt3 = simulateExperiment(group = 'bt', 
+                       experimentLabel = 'bhbtri', 
+                       dbPath = database, 
+                       measuredStates = measuredStates
+                       )
+
 
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 
@@ -222,31 +209,24 @@ measuredStates = ['live',
           'lactate',
           'butyrate']
 
-ri1 = simulateExperiment('ri', 
-                       'bhri', 
-                       params, 
-                       database, 
-                       measuredStates, 
-                       combined=False, 
-                       intervals=None)
+ri1 = simulateExperiment(group = 'ri', 
+                       experimentLabel = 'bhri', 
+                       dbPath = database, 
+                       measuredStates = measuredStates
+                       )
 
-ri2 = simulateExperiment('ri', 
-                       'btri', 
-                       params, 
-                       database, 
-                       measuredStates, 
-                       combined=False, 
-                       intervals=None)
+ri2 = simulateExperiment(group = 'ri', 
+                       experimentLabel = 'btri', 
+                       dbPath = database, 
+                       measuredStates = measuredStates
+                       )
 
-ri3 = simulateExperiment('ri', 
-                       'bhbtri', 
-                       params, 
-                       database, 
-                       measuredStates, 
-                       combined=False, 
-                       intervals=None)
+ri3 = simulateExperiment(group = 'ri', 
+                       experimentLabel = 'bhbtri', 
+                       dbPath = database, 
+                       measuredStates = measuredStates
+                       )
 
-figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 
 states = ['live',
           'dead',
@@ -268,9 +248,84 @@ stTypes = ['cells',
             'metabolite',
             'metabolite']
 
-
+figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 for i,v in enumerate(states):
     makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [ri1, ri2, ri3], alpha=0.5)
+    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.show()
+
+####################################################################################
+
+species = 'bhbt'
+experiments = ['bhbt']
+labels = ['bhbt']
+colors = ['#00ff26']
+
+#params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
+
+databaseName = 'modelDB_bhbtri_bh.sqlite3'
+
+databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
+
+database = os.path.join(databaseFolder, databaseName)
+
+#conn = create_connection(os.path.join(databaseFolder, databaseName))
+#assignRiParams(params, conn)
+
+
+
+
+
+
+measuredStates = ['live_bh',
+                  'live_bt',
+          
+            'trehalose',
+          'pyruvate',
+          'glucose',
+          'acetate',
+          'lactate',
+          'succinate',
+          'formate']
+
+bhbt = simulateExperiment(group = 'bhbt', 
+                       experimentLabel = 'bhbt', 
+                       dbPath = database, 
+                       measuredStates = measuredStates
+                       )
+
+
+states = ['live_bh',
+          'live_bt',
+          'dead',
+          
+          'pH',
+          
+          'trehalose',
+        'pyruvate',
+        'glucose',
+        'acetate',
+        'lactate',
+        'succinate',
+        'formate']
+
+
+stTypes = ['cells',
+            'cells',
+            'cells',
+            'pH',
+            'metabolite',
+            'metabolite',
+            'metabolite',
+            'metabolite',
+            'metabolite',
+            'metabolite',
+            'metabolite']
+
+figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
+for i,v in enumerate(states):
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbt, None, None], alpha=0.5)
     plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
     plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()

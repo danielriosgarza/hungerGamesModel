@@ -260,7 +260,7 @@ for i,v in enumerate(states):
 species = 'bhbt'
 experiments = ['bhbt']
 labels = ['bhbt']
-colors = ['#00ff26']
+colors = ['#003eff']
 
 #params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
 

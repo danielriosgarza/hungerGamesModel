@@ -90,7 +90,7 @@ def assignBhParams(lmfit_params, conn):
         
         update_subpopulations2subpopulations(conn, (zeta1, lmfit_params['z1_r'].value, 1))
         
-        update_subpopulations2subpopulations(conn, (zeta2, 0.8, 2))
+        update_subpopulations2subpopulations(conn, (zeta2, 1.0, 2))
         
         update_subpopulations2subpopulations(conn, (zeta3, lmfit_params['z3_r'].value, 3))
         
@@ -145,7 +145,7 @@ def assignBtParams(lmfit_params, conn):
     
     denom = num + " + (metObj.metD['glucose'].concentration**" + str(lmfit_params['z7_h_s3'].value) +")"
     
-    zeta7 = "(" + num + "/(" + denom + "))" + "*(5.75**100)/((metObj.pH**100)+(5.75**100))"
+    zeta7 = "(" + num + "/(" + denom + "))" + "*(5.5**10)/((metObj.pH**10)+(5.5**10))"
     
     
     #z8
@@ -154,7 +154,7 @@ def assignBtParams(lmfit_params, conn):
     
     denom = num + " + (metObj.metD['mannose'].concentration**" + str(lmfit_params['z8_h_s7'].value) +")"
     
-    zeta8 = "(" + num + "/(" + denom + "))" + "*(6.0**100)/((metObj.pH**100)+(6.0**100))" #roughly pH<5.5 "*float(metObj.pH<5.5)"
+    zeta8 = "(" + num + "/(" + denom + "))" + "*(5.5**10)/((metObj.pH**10)+(5.5**10))" #roughly pH<5.5 "*float(metObj.pH<5.5)"
     
     #z9
 

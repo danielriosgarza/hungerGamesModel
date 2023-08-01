@@ -11,6 +11,7 @@ import sys
 
 from scipy.interpolate import PchipInterpolator as CubicSpline
 from lmfit import minimize, Parameters, fit_report
+from scipy.stats import pearsonr
 
 
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'core'))
@@ -50,13 +51,32 @@ def pseudoHuberLoss(y_true, y_pred, delta = 0.50):
     return np.mean(np.where(np.abs(error) <= delta, small_error, large_error))
 
 def sResidual(y_true, y_pred):
-    choice = np.random.choice(np.arange(len(y_true)), size = int(0.3*len(y_true)), replace=False)
+    choice = np.random.choice(np.arange(len(y_true)), size = int(1.0*len(y_true)), replace=False)
     y_t = y_true[choice]
     y_p = y_pred[choice]
     
     return np.sqrt(np.mean((y_t-y_p)**2))
     
+def rmsle(y_true, y_pred):
+    # Ensure the predicted and true values have no negative values
+    assert (y_true >= 0).all() 
+    assert (y_pred >= 0).all()
     
+    # Compute RMSLE
+    log_error = np.log1p(y_pred) - np.log1p(y_true)
+    return np.sqrt(np.mean(log_error**2))    
+
+
+
+def custom_loss(y_true, y_pred):
+    # Compute MSE
+    mse_loss = sResidual(y_true, y_pred)
+    
+    # Compute Pearson correlation coefficient
+    corr, _ = pearsonr(y_true, y_pred)
+    
+    # Return a combination of MSE and negative correlation
+    return mse_loss - corr 
 
 ####################################################################
 def writeOutput(lmfit_params, outputFile):
@@ -77,11 +97,10 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     db = get_database(database)
     
-    r = simulateExperiment(species, 
-                           experimentLabel, 
-                           lmfit_params, 
-                           database, 
-                           initialStates,
+    r = simulateExperiment(group = species, 
+                           experimentLabel = experimentLabel,  
+                           dbPath = database, 
+                           measuredStates = initialStates,
                            combined=combined, 
                            intervals=intervals)
     
@@ -94,16 +113,16 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     distances.append(pseudoHuberLoss(coSpline_live(r2.time_simul), r2.cellActive_dyn[1]))
     #distances.append(pseudoHuberLoss(coSpline_live_ri(r2.time_simul), r2.cellActive_dyn[2]))
-    distances.append(pseudoHuberLoss(coSpline_suc(r2.time_simul), r2.met_simul[r.metabolome.metabolites.index('succinate')]))
+    #distances.append(sResidual(coSpline_suc(r2.time_simul), r2.met_simul[r.metabolome.metabolites.index('succinate')]))
     
     
     for i in measuredStates:
         if i=='live':
-            distances.append(5*pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            distances.append(5*custom_loss(splines['live'](r.time_simul), np.sum(r.cellActive_dyn,axis=0)))
         
         elif i=='dead':
             
-            distances.append(pseudoHuberLoss(splines['dead'](r.time_simul), r.cellInactive_dyn[0]))
+            distances.append(pseudoHuberLoss(splines['dead'](r.time_simul), np.sum(r.cellInactive_dyn,axis=0)))
         
         elif i=='pH':
             distances.append(pseudoHuberLoss(splines['pH'](r.time_simul), r.pH_simul))

@@ -11,7 +11,7 @@ import sys
 
 from scipy.interpolate import PchipInterpolator as CubicSpline
 from lmfit import minimize, Parameters, fit_report
-
+from scipy.stats import pearsonr
 
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'core'))
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'db'))
@@ -56,7 +56,15 @@ def sResidual(y_true, y_pred):
     
     return np.sqrt(np.mean((y_t-y_p)**2))
     
+def custom_loss(y_true, y_pred):
+    # Compute MSE
+    mse_loss = sResidual(y_true, y_pred)
     
+    # Compute Pearson correlation coefficient
+    corr, _ = pearsonr(y_true, y_pred)
+    
+    # Return a combination of MSE and negative correlation
+    return mse_loss - corr     
 
 ####################################################################
 def writeOutput(lmfit_params, outputFile):
@@ -77,11 +85,10 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     db = get_database(database)
     
-    r = simulateExperiment(species, 
-                           experimentLabel, 
-                           lmfit_params, 
-                           database, 
-                           initialStates,
+    r = simulateExperiment(group = species, 
+                           experimentLabel = experimentLabel, 
+                           dbPath = database, 
+                           measuredStates = initialStates,
                            combined=combined, 
                            intervals=intervals)
     
@@ -92,17 +99,17 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     distances = []
     
-    distances.append(pseudoHuberLoss(coSpline_live(r2.time_simul), r2.cellActive_dyn[2]))
-    distances.append(5*pseudoHuberLoss(coSpline_but(r2.time_simul), r2.met_simul[r.metabolome.metabolites.index('butyrate')]))
+    distances.append(5*custom_loss(coSpline_live(r2.time_simul), r2.cellActive_dyn[2]))
+    distances.append(custom_loss(coSpline_but(r2.time_simul), r2.met_simul[r.metabolome.metabolites.index('butyrate')]))
     
     for i in measuredStates:
         if i=='live':
-            distances.append(5*pseudoHuberLoss(splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            distances.append(5*custom_loss(splines['live'](r.time_simul), np.sum(r.cellActive_dyn,axis=0)))
             
         
         elif i=='dead':
             
-            distances.append(pseudoHuberLoss(splines['dead'](r.time_simul), r.cellInactive_dyn[0]))
+            distances.append(pseudoHuberLoss(splines['dead'](r.time_simul), np.sum(r.cellInactive_dyn,axis=0)))
         
         elif i=='pH':
             distances.append(pseudoHuberLoss(splines['pH'](r.time_simul), r.pH_simul))

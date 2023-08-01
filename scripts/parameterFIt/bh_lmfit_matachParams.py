@@ -11,6 +11,7 @@ import sys
 
 from scipy.interpolate import PchipInterpolator as CubicSpline
 from lmfit import minimize, Parameters, fit_report
+from scipy.stats import pearsonr
 
 
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'core'))
@@ -56,7 +57,26 @@ def sResidual(y_true, y_pred):
     
     return np.sqrt(np.mean((y_t-y_p)**2))
     
+def rmsle(y_true, y_pred):
+    # Ensure the predicted and true values have no negative values
+    assert (y_true >= 0).all() 
+    assert (y_pred >= 0).all()
     
+    # Compute RMSLE
+    log_error = np.log1p(y_pred) - np.log1p(y_true)
+    return np.sqrt(np.mean(log_error**2))    
+
+
+
+def custom_loss(y_true, y_pred):
+    # Compute MSE
+    mse_loss = sResidual(y_true, y_pred)
+    
+    # Compute Pearson correlation coefficient
+    corr, _ = pearsonr(y_true, y_pred)
+    
+    # Return a combination of MSE and negative correlation
+    return mse_loss - corr    
 
 ####################################################################
 def writeOutput(lmfit_params, outputFile):
@@ -77,11 +97,10 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     db = get_database(database)
     
-    r = simulateExperiment(species, 
-                           experimentLabel, 
-                           lmfit_params, 
-                           database, 
-                           initialStates,
+    r = simulateExperiment(group = species, 
+                           experimentLabel = experimentLabel, 
+                           dbPath = database, 
+                           measuredStates = initialStates,
                            combined=combined, 
                            intervals=intervals)
     
@@ -95,21 +114,12 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
                       'lactate',
                       'acetate']
 
-    bhwctreh = simulateExperiment('bh', 
-                           'bhwctreh', 
-                           lmfit_params, 
-                           database, 
-                           measuredStates_treh, 
-                           combined=False, 
-                           intervals=intervals,
-                           starttime=17,
-                           endtime = 90)
-    
+   
     
     
     distances = []
     distances.append(pseudoHuberLoss(coSpline(r2.time_simul), r2.cellActive_dyn[0]))
-    distances.append(pseudoHuberLoss(5*coSpline_treh(r2.time_simul), r2.met_simul[r.metabolome.metabolites.index('trehalose')]))
+    distances.append(pseudoHuberLoss(coSpline_treh(r2.time_simul), r2.met_simul[r.metabolome.metabolites.index('trehalose')]))
     
     #distances.append(sResidual(coSpline_treh_treh(bhwctreh.time_simul), bhwctreh.met_simul[r.metabolome.metabolites.index('trehalose')]))
     #distances.append(sResidual(5*coSpline_treh_glc(bhwctreh.time_simul), bhwctreh.met_simul[r.metabolome.metabolites.index('glucose')]))
@@ -118,19 +128,19 @@ def distance(lmfit_params, database, initialStates, measuredStates, splines, exp
     
     for i in measuredStates:
         if i=='live':
-            distances.append(pseudoHuberLoss(5*splines['live'](r.time_simul), r.cellActive_dyn[0]))
+            distances.append(5*custom_loss(splines['live'](r.time_simul), np.sum(r.cellActive_dyn,axis=0)))
             
             
         
         elif i=='dead':
             
-            distances.append(5*pseudoHuberLoss(splines['dead'](r.time_simul), r.cellInactive_dyn[0]))
+            distances.append(pseudoHuberLoss(splines['dead'](r.time_simul), np.sum(r.cellInactive_dyn,axis=0)))
         
         elif i=='pH':
             distances.append(pseudoHuberLoss(splines['pH'](r.time_simul), r.pH_simul))
         
         elif i=='glucose':
-            distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
+            distances.append(5*custom_loss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))
         
         elif i=='lactate':
             distances.append(pseudoHuberLoss(splines[i](r.time_simul), r.met_simul[r.metabolome.metabolites.index(i)]))

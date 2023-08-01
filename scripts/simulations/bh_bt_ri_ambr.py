@@ -63,8 +63,8 @@ predictpH = getpH(wc.metabolites, ipH_path)
 pH =  predictpH(wc.get_concentration())
 
 #get the feed media and the reactor media
-wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
-wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
+wc_feed = createMetabolome(db, 'wc', pH, pHFunc=None)
+wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=None)
 
 #wc_feed_pH = createMetabolome(db, 'wc', 2.5, pHFunc=predictpH)
 #wc_reactor.metD['trehalose'].update(5.0)
@@ -85,32 +85,30 @@ feed_microbiome.subpopD['xi'].count = 0
 reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
                                  'bt':createBacteria(db, 'bt', 'wc'),
                                  'ri':createBacteria(db, 'ri', 'wc')})
-reactor_microbiome.subpopD['xa'].count = 0.01
+reactor_microbiome.subpopD['xb'].count = 0.1
 reactor_microbiome.subpopD['xe'].count = 0.01
 reactor_microbiome.subpopD['xi'].count = 0.01
 
 
-d = 0.8
+d = 0.30
 d2 = 0
 d3 = 1.4
 
 
 
 
-batchA = Pulse(wc_feed, feed_microbiome, 0, 1000, 100, 0, 0, d,d)
+batchA = Pulse(wc_feed, feed_microbiome, 0, 12, 100, 0, 0, d,0)
 
-batchB = Pulse(wc_feed, feed_microbiome, 1000, 1024, 100, 0, 0, d,d)
 
-batchC = Pulse(wc_feed, feed_microbiome, 1024, 2000, 100, 0, 0, d,d)
+p = [batchA]
+
+for i in range(1000):
+    p.append(Pulse(wc_feed, feed_microbiome, 12+i, 13+i, 100, 0, 0.30, d,0))
+
 
 
 #simulate
-reactor = Reactor(reactor_microbiome, wc_reactor,[
-                                                  batchA,
-                                                  batchB,
-                                                  batchC
-                                                  
-                                                   ], 15)
+reactor = Reactor(reactor_microbiome, wc_reactor,p, 15)
 reactor.simulate()
 reactor.makePlots()
 

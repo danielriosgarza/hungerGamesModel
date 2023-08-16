@@ -90,8 +90,8 @@ figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species
 
 for i,v in enumerate(states):
     makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bh1, bh2, bh3], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()
     
 
@@ -103,7 +103,7 @@ experiments = ['bhbt', 'btri', 'bhbtri']
 labels = ['bt1', 'bt2', 'bt3']
 colors = ['#00ff26', '#003eff', '#ff0000']
 
-params = getPramsFromFile('bt', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bt.tsv'))
+params = getPramsFromFile('bhbtri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'btri.tsv'))
 
 databaseName = 'modelDB_bhbtri_bh.sqlite3'
 
@@ -174,8 +174,8 @@ stTypes = ['cells',
 
 for i,v in enumerate(states):
     makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bt1, bt2, bt3], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()
     
 ####################################################################################
@@ -185,7 +185,7 @@ experiments = ['bhri', 'btri', 'bhbtri']
 labels = ['ri1', 'ri2', 'ri3']
 colors = ['#00ff26', '#003eff', '#ff0000']
 
-params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
+params = getPramsFromFile('bhbtri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'btri.tsv'))
 
 databaseName = 'modelDB_bhbtri_bh.sqlite3'
 
@@ -251,8 +251,8 @@ stTypes = ['cells',
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 for i,v in enumerate(states):
     makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [ri1, ri2, ri3], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()
 
 ####################################################################################
@@ -326,8 +326,8 @@ stTypes = ['cells',
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 for i,v in enumerate(states):
     makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbt, None, None], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()
     
     
@@ -401,8 +401,8 @@ stTypes = ['cells',
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 for i,v in enumerate(states):
     makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhri, None, None], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()
     
     
@@ -482,8 +482,8 @@ stTypes = ['cells',
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 for i,v in enumerate(states):
     makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [btri, None, None], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()
 
 
@@ -571,6 +571,6 @@ stTypes = ['cells',
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 for i,v in enumerate(states):
     makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbtri, None, None], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()

@@ -22,8 +22,7 @@ def getPramsFromFile(species, filePath):
         f.readline()
         for line in f:
             a = line.strip().split('\t')
-            if a[0] == species:
-                lmfit_params.add(a[1], value = float(a[2]), min = float(a[3]), max = float(a[4]), vary=True)
+            lmfit_params.add(a[1], value = float(a[2]), min = float(a[3]), max = float(a[4]), vary=True)
     
     return lmfit_params
     

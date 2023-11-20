@@ -28,7 +28,7 @@ pio.renderers.default='browser'
 #pH profile
 ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv') 
 
-databaseName = 'modelDB_bhbtri_bh.sqlite3'
+databaseName = 'modelDB_bhbtri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -67,10 +67,12 @@ wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
 
 #wc_feed_pH = createMetabolome(db, 'wc', 2.5, pHFunc=predictpH)
-#wc_reactor.metD['trehalose'].update(5.0)
-#wc_feed.metD['trehalose'].update(5.0)
-
-
+#wc_reactor.metD['trehalose'].update(0.0)
+#wc_feed.metD['trehalose'].update(0.0)
+#wc_reactor.metD['pyruvate'].update(0.0)
+#wc_feed.metD['pyruvate'].update(0.0)
+#wc_reactor.metD['mannose'].update(0.0)
+#wc_feed.metD['mannose'].update(0.0)
 
 
 #get the feed obj. Make it sterile
@@ -86,22 +88,23 @@ reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
                                  'bt':createBacteria(db, 'bt', 'wc'),
                                  'ri':createBacteria(db, 'ri', 'wc')})
 reactor_microbiome.subpopD['xa'].count = 0.01
+reactor_microbiome.subpopD['xb'].count = 0.00
 reactor_microbiome.subpopD['xe'].count = 0.01
 reactor_microbiome.subpopD['xi'].count = 0.01
 
 
-d = 0.8
-d2 = 0
-d3 = 1.4
+d = 0.5
+d2 = 0.5
+d3 = 0.5
 
 
 
 
 batchA = Pulse(wc_feed, feed_microbiome, 0, 1000, 100, 0, 0, d,d)
 
-batchB = Pulse(wc_feed, feed_microbiome, 1000, 1024, 100, 0, 0, d,d)
+batchB = Pulse(wc_feed, feed_microbiome, 1000, 1048, 100, 0, 0, d2,d2)
 
-batchC = Pulse(wc_feed, feed_microbiome, 1024, 2000, 100, 0, 0, d,d)
+batchC = Pulse(wc_feed, feed_microbiome, 1048, 2000, 100, 0, 0, d3,d3)
 
 
 #simulate
@@ -113,6 +116,45 @@ reactor = Reactor(reactor_microbiome, wc_reactor,[
                                                    ], 15)
 reactor.simulate()
 reactor.makePlots()
+
+
+
+b = reactor.cellActive_dyn.T[-1]
+
+bac_composition = b/sum(b)
+
+bac_labels = ['Bh', 'Bt', 'Ri']
+
+bac_colors = ['#FF10F0', '#ff8300', '#00B8FF']
+
+
+
+pyru = reactor.met_simul[reactor.metabolome.metabolites.index('pyruvate')]
+gluc = reactor.met_simul[reactor.metabolome.metabolites.index('glucose')]
+treh = reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')]
+acet = reactor.met_simul[reactor.metabolome.metabolites.index('acetate')]
+lact = reactor.met_simul[reactor.metabolome.metabolites.index('lactate')]
+succ = reactor.met_simul[reactor.metabolome.metabolites.index('succinate')]
+buty = reactor.met_simul[reactor.metabolome.metabolites.index('butyrate')]
+
+mets = [pyru[-1]*wc_feed.metD['pyruvate'].carbons,
+        gluc[-1]*wc_feed.metD['glucose'].carbons,
+        treh[-1]*wc_feed.metD['trehalose'].carbons,
+        acet[-1]*wc_feed.metD['acetate'].carbons,
+        lact[-1]*wc_feed.metD['lactate'].carbons,
+        succ[-1]*wc_feed.metD['succinate'].carbons,
+        buty[-1]*wc_feed.metD['butyrate'].carbons
+        ] 
+
+met_composition = mets/sum(mets)
+
+met_labels = ['Pyru', 'Gluc', 'Treh', 'Acet', 'Lact', 'Succ', 'Buty']
+
+met_colors = ['#ff8900', '#ff0000', '#8900ff', '#003eff', '#00ffaf', '#00ff26', '#ff00a1']
+
+
+plot_stacked_bar_charts(bac_composition, bac_labels, bac_colors, 'Rel_Ab', met_composition, met_labels, met_colors, 'Rel_C_mM')
+
 
 
 # #########fermentation acids ###################
@@ -271,76 +313,76 @@ reactor.makePlots()
 
 # ####################Subpopulations
 
-makeKineticPlot(x = reactor.time_simul,
-                y = reactor.subpop_simul[0],
-                color = '#FF10F0',
-                legend = 'Bh trehalose suppop',
-                xlabel = 'time (h)',
-                ylabel = '$10^5$ cells/uL',
-                title = None,
-                linestyle = '-')
+# makeKineticPlot(x = reactor.time_simul,
+#                 y = reactor.subpop_simul[0],
+#                 color = '#FF10F0',
+#                 legend = 'Bh trehalose suppop',
+#                 xlabel = 'time (h)',
+#                 ylabel = '$10^5$ cells/uL',
+#                 title = None,
+#                 linestyle = '-')
 
-makeKineticPlot(x = reactor.time_simul,
-                y = reactor.subpop_simul[1],
-                color = '#FF2E2EC9',
-                legend = 'Bh glucose suppop',
-                xlabel = 'time (h)',
-                ylabel = '$10^5$ cells/uL',
-                title = None,
-                linestyle = '-')
+# makeKineticPlot(x = reactor.time_simul,
+#                 y = reactor.subpop_simul[1],
+#                 color = '#FF2E2EC9',
+#                 legend = 'Bh glucose suppop',
+#                 xlabel = 'time (h)',
+#                 ylabel = '$10^5$ cells/uL',
+#                 title = None,
+#                 linestyle = '-')
 
-plt.title('dilution rate {0:.3f}'.format(d/15))
-#savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'BhSubpopsDilutionRate.png'), dpi = 600)
-plt.show()
-
-
-makeKineticPlot(x = reactor.time_simul,
-                y = reactor.cellActive_dyn[0],
-                color = '#FF6EC7',
-                legend = 'live_bh_cells (simul)',
-                xlabel = 'time (h)',
-                ylabel = '$10^5$ cells/uL',
-                title = None,
-                linestyle = '-')
-
-makeKineticPlot(x = reactor.time_simul,
-                y = reactor.cellActive_dyn[1],
-                color = '#FF5F1F',
-                legend = 'live_bt_cells (simul)',
-                xlabel = 'time (h)',
-                ylabel = '$10^5$ cells/uL',
-                title = None,
-                linestyle = '-')
+# plt.title('dilution rate {0:.3f}'.format(d/15))
+# #savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'BhSubpopsDilutionRate.png'), dpi = 600)
+# plt.show()
 
 
-makeKineticPlot(x = reactor.time_simul,
-                y = reactor.cellActive_dyn[2],
-                color = '#1F51FF',
-                legend = 'live_ri_cells (simul)',
-                xlabel = 'time (h)',
-                ylabel = '$10^5$ cells/uL',
-                title = None,
-                linestyle = '-')
+# makeKineticPlot(x = reactor.time_simul,
+#                 y = reactor.cellActive_dyn[0],
+#                 color = '#FF6EC7',
+#                 legend = 'live_bh_cells (simul)',
+#                 xlabel = 'time (h)',
+#                 ylabel = '$10^5$ cells/uL',
+#                 title = None,
+#                 linestyle = '-')
 
-plt.title('dilution rate {0:.3f}'.format(d/15))
-plt.tight_layout()
-#plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', '30hperturbCells.png'), dpi = 600)
+# makeKineticPlot(x = reactor.time_simul,
+#                 y = reactor.cellActive_dyn[1],
+#                 color = '#FF5F1F',
+#                 legend = 'live_bt_cells (simul)',
+#                 xlabel = 'time (h)',
+#                 ylabel = '$10^5$ cells/uL',
+#                 title = None,
+#                 linestyle = '-')
 
-plt.show()
 
-makeKineticPlot(x = reactor.time_simul,
-                y = reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')],
-                color = '#8900ff',
-                legend = 'trehalose (simul)',
-                xlabel = 'time (h)',
-                ylabel = '$mM$',
-                title = None,
-                linestyle = '-')
+# makeKineticPlot(x = reactor.time_simul,
+#                 y = reactor.cellActive_dyn[2],
+#                 color = '#1F51FF',
+#                 legend = 'live_ri_cells (simul)',
+#                 xlabel = 'time (h)',
+#                 ylabel = '$10^5$ cells/uL',
+#                 title = None,
+#                 linestyle = '-')
 
-plt.title('dilution rate {0:.3f}'.format(d/15))
-plt.tight_layout()
-#plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', '30hperturbTreh.png'), dpi = 600)
-plt.show()
+# plt.title('dilution rate {0:.3f}'.format(d/15))
+# plt.tight_layout()
+# #plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', '30hperturbCells.png'), dpi = 600)
+
+# plt.show()
+
+# makeKineticPlot(x = reactor.time_simul,
+#                 y = reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')],
+#                 color = '#8900ff',
+#                 legend = 'trehalose (simul)',
+#                 xlabel = 'time (h)',
+#                 ylabel = '$mM$',
+#                 title = None,
+#                 linestyle = '-')
+
+# plt.title('dilution rate {0:.3f}'.format(d/15))
+# plt.tight_layout()
+# #plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', '30hperturbTreh.png'), dpi = 600)
+# plt.show()
 
 # makeKineticPlot(x = reactor.time_simul,
 #                 y = reactor.subpop_simul[4],

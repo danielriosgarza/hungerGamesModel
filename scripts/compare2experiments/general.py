@@ -10,6 +10,8 @@ import sys
 from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
 from aquarel import load_theme
 
 theme = load_theme("boxy_light")
@@ -293,8 +295,43 @@ def makeKineticPlot(x,
     
 
 
+def plot_stacked_bar_charts(data1, labels1, colors1, ylabel1, data2, labels2, colors2, ylabel2):
+    """
+    Plots two bar charts, one on top of the other, with given data, labels, colors, and y-axis labels.
+    """
+    # Create figure and subplots
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 8)) # Adjusted for two stacked subplots
+    
+    # Plot first bar chart
+    
+    for i, (value, color) in enumerate(zip(data1, colors1)):
+        ax1.bar(i + 1, value, color=color)
+    
+    ax1.set_xlim(0, len(labels1) + .5)
+    ax1.set_ylabel(ylabel1, fontsize=15)
+    ax1.set_xticks([])
+    
+    # Add legend for the first plot
+    patches1 = [mpatches.Patch(color=color, label=label) for label, color in zip(labels1, colors1)]
+    ax1.legend(handles=patches1, loc='upper left', bbox_to_anchor=(1, 1), fontsize=12)
 
-
+    # Plot second bar chart
+    
+    for i, (value, color) in enumerate(zip(data2, colors2)):
+        ax2.bar(i + 1, value, color=color)
+    ax2.set_xlim(0, len(labels2) + .5)
+    ax2.set_ylabel(ylabel2, fontsize=15)
+    ax2.set_xticks([])
+    
+    # Add legend for the second plot
+    patches2 = [mpatches.Patch(color=color, label=label) for label, color in zip(labels2, colors2)]
+    ax2.legend(handles=patches2, loc='upper left', bbox_to_anchor=(1, 1), fontsize=12)
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    # Show plot
+    plt.show()
             
 
 

@@ -10,7 +10,7 @@ from scipy.interpolate import PchipInterpolator as CubicSpline
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-plt.style.use('seaborn-bright')
+plt.style.use('seaborn-v0_8-bright')
 
 def parseTable(filePath):
     d = {}

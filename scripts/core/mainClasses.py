@@ -593,7 +593,7 @@ class Reactor:
             
             # ode.set_initial_value(y_init,pulse.t_start)
             
-            self.solution = solver(fun=self.ode, t_span =(pulse.t_start, pulse.t_end), y0 = self.get_states(), t_eval = pulse.range, args=[pulse], method = 'LSODA', atol=1e-12, rtol=1e-12)
+            self.solution = solver(fun=self.ode, t_span =(pulse.t_start, pulse.t_end), y0 = self.get_states(), t_eval = pulse.range, args=[pulse], method = 'DOP853', atol=1e-12, rtol=1e-12)
             
             ts = np.concatenate([ts,self.solution.t])
             vol_dyn = np.concatenate([vol_dyn, self.solution.y[0]])

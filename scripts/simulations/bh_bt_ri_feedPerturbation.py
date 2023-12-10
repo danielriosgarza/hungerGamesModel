@@ -52,6 +52,10 @@ assignRiParams(ri_params, conn)
 #Load database
 db = get_database(os.path.join(databaseFolder, databaseName))
 
+def mockpHfunc(metObj, pH=7.0):
+    def pHfunc(metObj):
+        return pH
+    return pHfunc
 
 
 
@@ -60,19 +64,28 @@ db = get_database(os.path.join(databaseFolder, databaseName))
 #getStarting pH
 wc = createMetabolome(db, 'wc')
 predictpH = getpH(wc.metabolites, ipH_path)
+fixedpHA = mockpHfunc(wc.metabolites,pH=5.6)
+fixedpHB = mockpHfunc(wc.metabolites,pH=3.5)
+fixedpHC = mockpHfunc(wc.metabolites,pH=3.5)
 pH =  predictpH(wc.get_concentration())
 
 #get the feed media and the reactor media
 wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
+wc_feedA = createMetabolome(db, 'wc', pH, pHFunc=fixedpHA)
+wc_feedB = createMetabolome(db, 'wc', pH, pHFunc=fixedpHB)
+
 wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
+wc_reactorA = createMetabolome(db, 'wc', pH, pHFunc=fixedpHA)
+wc_reactorB = createMetabolome(db, 'wc', pH, pHFunc=fixedpHB)
+
 
 #wc_feed_pH = createMetabolome(db, 'wc', 2.5, pHFunc=predictpH)
-#wc_reactor.metD['trehalose'].update(0.0)
-#wc_feed.metD['trehalose'].update(0.0)
-#wc_reactor.metD['pyruvate'].update(0.0)
-#wc_feed.metD['pyruvate'].update(0.0)
-#wc_reactor.metD['mannose'].update(0.0)
-#wc_feed.metD['mannose'].update(0.0)
+#wc_reactor.metD['trehalose'].update(0.1)
+#wc_feed.metD['trehalose'].update(0.000)
+#wc_reactor.metD['pyruvate'].update(0.1)
+#wc_feed.metD['pyruvate'].update(0.000)
+#wc_reactor.metD['mannose'].update(0.1)
+#wc_feed.metD['mannose'].update(0.000)
 
 
 #get the feed obj. Make it sterile
@@ -90,70 +103,232 @@ reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
 reactor_microbiome.subpopD['xa'].count = 0.01
 reactor_microbiome.subpopD['xb'].count = 0.00
 reactor_microbiome.subpopD['xe'].count = 0.01
+reactor_microbiome.subpopD['xf'].count = 0.0
 reactor_microbiome.subpopD['xi'].count = 0.01
+reactor_microbiome.subpopD['xj'].count = 0.
 
 
-d = 0.5
-d2 = 0.5
-d3 = 0.5
+d = 1.0
+d2 = 1.0
+d3 = 0.85
 
 
 
 
-batchA = Pulse(wc_feed, feed_microbiome, 0, 1000, 100, 0, 0, d,d)
+batchA = Pulse(wc_feedA, feed_microbiome, 0, 600, 100, 0, 0, d,d)
 
-batchB = Pulse(wc_feed, feed_microbiome, 1000, 1048, 100, 0, 0, d2,d2)
+batchB = Pulse(wc_feedA, feed_microbiome, 600, 700, 100, 0, 0, d2,d2)
 
-batchC = Pulse(wc_feed, feed_microbiome, 1048, 2000, 100, 0, 0, d3,d3)
+batchC = Pulse(wc_feedA, feed_microbiome, 700, 1200, 100, 0, 0, d,d)
 
 
 #simulate
-reactor = Reactor(reactor_microbiome, wc_reactor,[
+reactorA = Reactor(reactor_microbiome, wc_reactorA,[
                                                   batchA,
-                                                  batchB,
-                                                  batchC
+                                                  
+                                                  
                                                   
                                                    ], 15)
-reactor.simulate()
-reactor.makePlots()
 
 
 
-b = reactor.cellActive_dyn.T[-1]
+reactorA.simulate()
+#reactorA.makePlots()
 
-bac_composition = b/sum(b)
+reactorB = Reactor(reactorA.microbiome, wc_reactorA,[
+                                                  
+                                                  batchB,
+                                                  
+                                                   ], 15)
 
-bac_labels = ['Bh', 'Bt', 'Ri']
+reactorB.simulate()
+#reactorB.makePlots()
 
-bac_colors = ['#FF10F0', '#ff8300', '#00B8FF']
-
-
-
-pyru = reactor.met_simul[reactor.metabolome.metabolites.index('pyruvate')]
-gluc = reactor.met_simul[reactor.metabolome.metabolites.index('glucose')]
-treh = reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')]
-acet = reactor.met_simul[reactor.metabolome.metabolites.index('acetate')]
-lact = reactor.met_simul[reactor.metabolome.metabolites.index('lactate')]
-succ = reactor.met_simul[reactor.metabolome.metabolites.index('succinate')]
-buty = reactor.met_simul[reactor.metabolome.metabolites.index('butyrate')]
-
-mets = [pyru[-1]*wc_feed.metD['pyruvate'].carbons,
-        gluc[-1]*wc_feed.metD['glucose'].carbons,
-        treh[-1]*wc_feed.metD['trehalose'].carbons,
-        acet[-1]*wc_feed.metD['acetate'].carbons,
-        lact[-1]*wc_feed.metD['lactate'].carbons,
-        succ[-1]*wc_feed.metD['succinate'].carbons,
-        buty[-1]*wc_feed.metD['butyrate'].carbons
-        ] 
-
-met_composition = mets/sum(mets)
-
-met_labels = ['Pyru', 'Gluc', 'Treh', 'Acet', 'Lact', 'Succ', 'Buty']
-
-met_colors = ['#ff8900', '#ff0000', '#8900ff', '#003eff', '#00ffaf', '#00ff26', '#ff00a1']
+reactorC = Reactor(reactorB.microbiome, wc_reactorA,[
+                                                  batchC
+                                                  
+                                                  
+                                                   ], 15)
 
 
-plot_stacked_bar_charts(bac_composition, bac_labels, bac_colors, 'Rel_Ab', met_composition, met_labels, met_colors, 'Rel_C_mM')
+
+reactorC.simulate()
+#reactorC.makePlots()
+
+
+
+
+
+
+
+
+
+
+
+
+# ####################Subpopulations
+
+makeKineticPlot(x = reactorA.time_simul*0.1,
+                y = reactorA.cellActive_dyn[0],
+                color = '#FF10F0',
+                legend = None,
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+
+makeKineticPlot(x = reactorB.time_simul*0.1,
+                y = reactorB.cellActive_dyn[0],
+                color = '#FF10F0',
+                legend = None,
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+makeKineticPlot(x = reactorC.time_simul*0.1,
+                y = reactorC.cellActive_dyn[0],
+                color = '#FF10F0',
+                legend = None,
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+
+
+
+makeKineticPlot(x = reactorA.time_simul*0.1,
+                y = reactorA.cellActive_dyn[1],
+                color = '#ff8300',
+                legend = None,
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+
+makeKineticPlot(x = reactorB.time_simul*0.1,
+                y = reactorB.cellActive_dyn[1],
+                color = '#ff8300',
+                legend = None,
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+
+makeKineticPlot(x = reactorC.time_simul*0.1,
+                y = reactorC.cellActive_dyn[1],
+                color = '#ff8300',
+                legend = None,
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+
+makeKineticPlot(x = reactorA.time_simul*0.1,
+                y = reactorA.cellActive_dyn[2],
+                color = '#00B8FF',
+                legend = None,
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+makeKineticPlot(x = reactorB.time_simul*0.1,
+                y = reactorB.cellActive_dyn[2],
+                color = '#00B8FF',
+                legend = None,
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+
+makeKineticPlot(x = reactorC.time_simul*0.1,
+                y = reactorC.cellActive_dyn[2],
+                color = '#00B8FF',
+                legend = None,
+                xlabel = 'time (h)',
+                ylabel = '$10^5$ cells/uL',
+                title = None,
+                linestyle = '-')
+
+
+title = 'stateD'
+plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', title + '.png'), transparent=True, dpi=600)
+
+
+plt.show()
+
+# makeKineticPlot(x = reactor.time_simul,
+#                 y = reactor.subpop_simul[1],
+#                 color = '#FF2E2EC9',
+#                 legend = 'Bh glucose suppop',
+#                 xlabel = 'time (h)',
+#                 ylabel = '$10^5$ cells/uL',
+#                 title = None,
+#                 linestyle = '-')
+
+
+
+
+
+
+
+
+# b = reactor.cellActive_dyn.T[-1]
+
+# bac_composition = b/sum(b)
+
+# bac_labels = ['Bh', 'Bt', 'Ri']
+
+# bac_colors = ['#FF10F0', '#ff8300', '#00B8FF']
+
+
+
+# pyru = reactor.met_simul[reactor.metabolome.metabolites.index('pyruvate')]
+# gluc = reactor.met_simul[reactor.metabolome.metabolites.index('glucose')]
+# treh = reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')]
+# mann = reactor.met_simul[reactor.metabolome.metabolites.index('mannose')]
+# acet = reactor.met_simul[reactor.metabolome.metabolites.index('acetate')]
+# lact = reactor.met_simul[reactor.metabolome.metabolites.index('lactate')]
+# succ = reactor.met_simul[reactor.metabolome.metabolites.index('succinate')]
+# buty = reactor.met_simul[reactor.metabolome.metabolites.index('butyrate')]
+
+# metsA = np.array([pyru[0]*wc_feed.metD['pyruvate'].carbons,
+#         gluc[0]*wc_feed.metD['glucose'].carbons,
+#         treh[0]*wc_feed.metD['trehalose'].carbons,
+#         mann[0]*wc_feed.metD['mannose'].carbons,
+#         acet[0]*wc_feed.metD['acetate'].carbons,
+#         lact[0]*wc_feed.metD['lactate'].carbons,
+#         succ[0]*wc_feed.metD['succinate'].carbons,
+#         buty[0]*wc_feed.metD['butyrate'].carbons
+#         ])
+
+
+
+# metsB = np.array([pyru[-1]*wc_feed.metD['pyruvate'].carbons,
+#         gluc[-1]*wc_feed.metD['glucose'].carbons,
+#         treh[-1]*wc_feed.metD['trehalose'].carbons,
+#         mann[-1]*wc_feed.metD['mannose'].carbons,
+#         acet[-1]*wc_feed.metD['acetate'].carbons,
+#         lact[-1]*wc_feed.metD['lactate'].carbons,
+#         succ[-1]*wc_feed.metD['succinate'].carbons,
+#         buty[-1]*wc_feed.metD['butyrate'].carbons
+#         ])
+
+# met_composition = metsB/sum(metsB) - metsA/sum(metsA)
+
+# met_labels = ['Pyru', 'Gluc', 'Treh', 'Mann','Acet', 'Lact', 'Succ', 'Buty']
+
+# met_colors = ['#ff8900', '#ff0000', '#8900ff', '#024059', '#003eff', '#00ffaf', '#00ff26', '#ff00a1']
+
+
+# plot_stacked_bar_charts(bac_composition, bac_labels, bac_colors, 'Rel_Ab', met_composition, met_labels, met_colors, 'Rel_C_mM')
 
 
 

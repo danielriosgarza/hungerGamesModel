@@ -181,7 +181,8 @@ def makeExperimentPlot(group,
              lables = ['bh3'],
              colors = ['#ff0000'],
              simulObj = [None, None, None],
-             alpha=1):
+             alpha=1,
+             legend = True):
     
     fig, ax = plt.subplots()
     strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', group)
@@ -232,20 +233,25 @@ def makeExperimentPlot(group,
                 
            
 
-    legend_properties = {'size':12}
-    ax.legend(fontsize=16, prop=legend_properties, bbox_to_anchor=(1.0, 1.0))
+    if legend:
+        legend_properties = {'size': 18}
+        # Set the location of the legend to be outside the plot area
+        plt.legend(loc='upper left', bbox_to_anchor=(1, 1), prop=legend_properties)
+        plt.subplots_adjust(right=0.75)
+    else:
+        ax.get_legend().remove()
 
     if stateType =='metabolite':
-        ax.set_ylabel(state + ' (mM)', fontsize=16)
-        plt.title(state, fontsize=16)
+        ax.set_ylabel(state + ' (mM)', fontsize=26)
+        plt.title(state, fontsize=32)
     
     elif stateType =='cells':
-        ax.set_ylabel('$10^5$ cells/uL', fontsize=16)
-        plt.title(state + ' cells', fontsize=16)
+        ax.set_ylabel('$10^5$ cells/uL', fontsize=26)
+        plt.title(state + ' cells', fontsize=32)
     else:
-        ax.set_ylabel('pH', fontsize=16)
-        plt.title('pH', fontsize=16)
-    ax.set_xlabel('Time (h)', fontsize=16)
+        ax.set_ylabel('pH', fontsize=26)
+        plt.title('pH', fontsize=32)
+    ax.set_xlabel('Time (h)', fontsize=26)
 
     
     plt.tight_layout()
@@ -271,11 +277,12 @@ def makeKineticPlot(x,
     #fig, ax = plt.subplots()
     
     
-    plt.plot(x, y, color=color, linestyle = linestyle, lw=2, alpha = 0.9, label=legend)
+    plt.plot(x, y, color=color, linestyle = linestyle, lw=3, alpha = 1.0, label=legend)
             
-
-    legend_properties = {'size':12}
-    plt.legend(fontsize=16, prop=legend_properties, bbox_to_anchor=(1.0, 1.0))
+    if legend is not None:
+    
+        legend_properties = {'size':18}
+        plt.legend(fontsize=16, prop=legend_properties, bbox_to_anchor=(1.0, 1.0))
     
     ax = plt.gca()
 
@@ -292,10 +299,12 @@ def makeKineticPlot(x,
     
     plt.tight_layout()
     
+
+
     
 
 
-def plot_stacked_bar_charts(data1, labels1, colors1, ylabel1, data2, labels2, colors2, ylabel2):
+def plot_stacked_bar_charts(data1, labels1, colors1, ylabel1, data2, labels2, colors2, ylabel2, figPath = None):
     """
     Plots two bar charts, one on top of the other, with given data, labels, colors, and y-axis labels.
     """
@@ -330,6 +339,8 @@ def plot_stacked_bar_charts(data1, labels1, colors1, ylabel1, data2, labels2, co
     # Adjust layout
     plt.tight_layout()
     
+    if figPath is not None:
+        plt.savefig(figpath, dpi = 600)
     # Show plot
     plt.show()
             

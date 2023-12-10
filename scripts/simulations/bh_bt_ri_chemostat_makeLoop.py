@@ -17,10 +17,15 @@ from mainClasses import *
 from loadParameters import *
 from general import *
 import matplotlib.pyplot as plt
-plt.style.use('seaborn-bright')
+plt.style.use('seaborn-v0_8-bright')
 import seaborn as sns
-from scipy.spatial.distance import cosine
+from aquarel import load_theme
 
+theme = load_theme("boxy_light")
+theme.apply()
+
+from scipy.spatial.distance import cosine
+from tqdm import tqdm
 
 
 
@@ -44,8 +49,8 @@ conn = create_connection(os.path.join(databaseFolder, databaseName))
 
 #load the parameter file (parameter files are located at "/files/params" )
 bh_params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv'))
-bt_params = getPramsFromFile('bt', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bt.tsv'))
-ri_params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
+bt_params = getPramsFromFile('bhbtri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'btri.tsv'))
+ri_params = getPramsFromFile('bhbtri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'btri.tsv'))
 
 
 #assign these parameters (depending on the strain, use the specific function)
@@ -58,19 +63,18 @@ db = get_database(os.path.join(databaseFolder, databaseName))
 
 
 
-xa_1, xb_1, xi_1, xj_1, xe_1, xf_1, treh_1, glc_1, pyr_1,phvar_1 = [],[],[],[],[],[],[],[],[],[]
-xa_2, xb_2, xi_2, xj_2, xe_2, xf_2, treh_2, glc_2, pyr_2,phvar_2 = [],[],[],[],[],[],[],[],[],[]
+bh, bt, ri = [],[],[]
 
 
 
 
 
-counter = 0
 
-for i in np.linspace(0.1,1.6, 50):
+
+for i in tqdm(np.linspace(0.5,0.65, 10)):
     
-    print(counter)
-    counter+=1
+    
+    
         
     
     #getStarting pH
@@ -81,8 +85,6 @@ for i in np.linspace(0.1,1.6, 50):
     #get the feed media and the reactor media
     wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
     wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
-    #wc_reactor.metD['trehalose'].update(i)
-    #wc_feed.metD['trehalose'].update(i)
     
     
     #get the feed obj. Make it sterile
@@ -100,103 +102,105 @@ for i in np.linspace(0.1,1.6, 50):
     reactor_microbiome.subpopD['xa'].count = 0.01
     reactor_microbiome.subpopD['xe'].count = 0.01
     reactor_microbiome.subpopD['xi'].count = 0.01
-    reactor_microbiome.subpopD['xb'].count = 0.00
     
     
     
-    chemostatA = Pulse(wc_feed, feed_microbiome, 0, 600, 100, 0, 0, 0.4,0.4)
-    chemostatB = Pulse(wc_feed, feed_microbiome, 600, 2000, 100, 0, 0, i,i)
+    chemostatA = Pulse(wc_feed, feed_microbiome, 0, 1000, 100, 0, 0, 0.58,0.58)
+    chemostatB = Pulse(wc_feed, feed_microbiome, 1000, 2000, 100, 0, 0, i,i)
     
     #simulate
     reactor = Reactor(reactor_microbiome, wc_reactor,[chemostatA, chemostatB], 15)
     reactor.simulate()
-    #reactor.makePlots()
-    xa_1.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xa')][-1])
-    xb_1.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xb')][-1])
-    xe_1.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xe')][-1])
-    xf_1.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xf')][-1])
-    xi_1.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xi')][-1])
-    xj_1.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xj')][-1])
-    treh_1.append(reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')][-1])
-    glc_1.append(reactor.met_simul[reactor.metabolome.metabolites.index('glucose')][-1])
-    pyr_1.append(reactor.met_simul[reactor.metabolome.metabolites.index('pyruvate')][-1])
-    phvar_1.append(reactor.pH)
-
-
-
-
-counter = 0
-
-for i in np.linspace(0.1,1.6, 50):
     
-    print(counter)
-    counter+=1
+    bh.append(reactor.cellActive_dyn[0])
+    bt.append(reactor.cellActive_dyn[0])
+    ri.append(reactor.cellActive_dyn[0])
+   
+
+
+
+
+# counter = 0
+
+# for i in tqdm(np.linspace(0.1,1.6, 10)):
+    
+    
+#     counter+=1
         
     
-    #getStarting pH
-    wc = createMetabolome(db, 'wc')
-    predictpH = getpH(wc.metabolites, ipH_path)
-    pH =  predictpH(wc.get_concentration())
+#     #getStarting pH
+#     wc = createMetabolome(db, 'wc')
+#     predictpH = getpH(wc.metabolites, ipH_path)
+#     pH =  predictpH(wc.get_concentration())
     
-    #get the feed media and the reactor media
-    wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
-    wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
-    #wc_reactor.metD['trehalose'].update(i)
-    #wc_feed.metD['trehalose'].update(i)
-    
-    
-    #get the feed obj. Make it sterile
-    feed_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
-                                  'bt':createBacteria(db, 'bt', 'wc'),
-                                  'ri':createBacteria(db, 'ri', 'wc')})
-    feed_microbiome.subpopD['xa'].count = 0
-    feed_microbiome.subpopD['xe'].count = 0
-    feed_microbiome.subpopD['xi'].count = 0
-    
-    #create the reactor obj, with starting populations
-    reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
-                                     'bt':createBacteria(db, 'bt', 'wc'),
-                                     'ri':createBacteria(db, 'ri', 'wc')})
-    reactor_microbiome.subpopD['xa'].count = 0.01
-    reactor_microbiome.subpopD['xe'].count = 0.01
-    reactor_microbiome.subpopD['xi'].count = 0.01
-    reactor_microbiome.subpopD['xb'].count = 0.00
+#     #get the feed media and the reactor media
+#     wc_feed = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
+#     wc_reactor = createMetabolome(db, 'wc', pH, pHFunc=predictpH)
+#     #wc_reactor.metD['trehalose'].update(i)
+#     #wc_feed.metD['trehalose'].update(i)
     
     
+#     #get the feed obj. Make it sterile
+#     feed_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
+#                                   'bt':createBacteria(db, 'bt', 'wc'),
+#                                   'ri':createBacteria(db, 'ri', 'wc')})
+#     feed_microbiome.subpopD['xa'].count = 0
+#     feed_microbiome.subpopD['xe'].count = 0
+#     feed_microbiome.subpopD['xi'].count = 0
     
-    chemostatA = Pulse(wc_feed, feed_microbiome, 0, 600, 100, 0, 0, 1.3,1.3)
-    chemostatB = Pulse(wc_feed, feed_microbiome, 600, 2000, 100, 0, 0, i,i)
+#     #create the reactor obj, with starting populations
+#     reactor_microbiome = Microbiome({'bh':createBacteria(db, 'bh', 'wc'),
+#                                      'bt':createBacteria(db, 'bt', 'wc'),
+#                                      'ri':createBacteria(db, 'ri', 'wc')})
+#     reactor_microbiome.subpopD['xa'].count = 0.01
+#     reactor_microbiome.subpopD['xe'].count = 0.01
+#     reactor_microbiome.subpopD['xi'].count = 0.01
+#     reactor_microbiome.subpopD['xb'].count = 0.00
     
-    #simulate
-    reactor = Reactor(reactor_microbiome, wc_reactor,[chemostatA, chemostatB], 15)
-    reactor.simulate()
-    #reactor.makePlots()
-    xa_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xa')][-1])
-    xb_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xb')][-1])
-    xe_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xe')][-1])
-    xf_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xf')][-1])
-    xi_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xi')][-1])
-    xj_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xj')][-1])
-    treh_2.append(reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')][-1])
-    glc_2.append(reactor.met_simul[reactor.metabolome.metabolites.index('glucose')][-1])
-    pyr_2.append(reactor.met_simul[reactor.metabolome.metabolites.index('pyruvate')][-1])
-    phvar_2.append(reactor.pH)
+    
+    
+#     chemostatA = Pulse(wc_feed, feed_microbiome, 0, 1000, 100, 0, 0, 1.3,1.3)
+#     chemostatB = Pulse(wc_feed, feed_microbiome, 1000, 2000, 100, 0, 0, i,i)
+    
+#     #simulate
+#     reactor = Reactor(reactor_microbiome, wc_reactor,[chemostatA, chemostatB], 15)
+#     reactor.simulate()
+#     #reactor.makePlots()
+#     xa_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xa')][-1])
+#     xb_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xb')][-1])
+#     xe_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xe')][-1])
+#     xf_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xf')][-1])
+#     xi_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xi')][-1])
+#     xj_2.append(reactor.subpop_simul[reactor.microbiome.subpops.index('xj')][-1])
+#     treh_2.append(reactor.met_simul[reactor.metabolome.metabolites.index('trehalose')][-1])
+#     glc_2.append(reactor.met_simul[reactor.metabolome.metabolites.index('glucose')][-1])
+#     pyr_2.append(reactor.met_simul[reactor.metabolome.metabolites.index('pyruvate')][-1])
+#     phvar_2.append(reactor.pH)
 
 
     
     
     
-from pylab import *
-s1 = np.array([xa_1, xb_1, xi_1, xj_1, xe_1, xf_1, treh_1, glc_1, pyr_1,phvar_1]).T
-s2 = np.array([xa_2, xb_2, xi_2, xj_2, xe_2, xf_2, treh_2, glc_2, pyr_2,phvar_2]).T
+# from pylab import *
+s1 = np.array([[i[-1] for i in bh], [i[-1] for i in bt], [i[-1] for i in ri]]).T
+# s2 = np.array([xa_2, xb_2, xi_2, xj_2, xe_2, xf_2, treh_2, glc_2, pyr_2,phvar_2]).T
 
 cos_1 = np.array([cosine(s1[0], i) for i in s1])
-cos_2 = np.array([cosine(s2[0], i) for i in s2])
+# cos_2 = np.array([cosine(s2[0], i) for i in s2])
 
-x = np.linspace(0.1,1.6, 50)
+# x = np.linspace(0.1,1.6, 10)
 
-plot(x, cos_2, 'o-', color='r');plot(x,cos_1, 'o-', color='b')
-show()
+# plot(x, cos_2, 'o-', color='r')
+# plot(x,cos_1, 'o-', color='b')
+# show()
+
+
+
+
+
+
+
+
 
 # #########fermentation acids ###################
 # makeKineticPlot(x = reactor.time_simul,

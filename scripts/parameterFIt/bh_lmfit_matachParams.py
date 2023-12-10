@@ -175,10 +175,10 @@ experimentLabel = ['bhbt', 'bhri', 'bhbtri']
 
 strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bh')
 
-inputParams = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv'))
+inputParams = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh_2.txt'))
 
 
-outputFile = os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv')
+outputFile = os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh_2.txt')
 
 
 databaseName = 'modelDB_bhbtri_bh.sqlite3'

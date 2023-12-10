@@ -24,7 +24,7 @@ colors = ['#00ff26', '#003eff', '#ff0000']
 
 params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv'))
 
-databaseName = 'modelDB_bhbtri_bh.sqlite3'
+databaseName = 'modelDB_bhbtri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -89,11 +89,18 @@ stTypes = ['cells',
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 
 for i,v in enumerate(states):
-    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bh1, bh2, bh3], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bh1, bh2, bh3], alpha=0.5, legend=False)
+    #plt.savefig(os.path.join(figPath, v + 'noLegend_model.png'), dpi = 300)
     plt.show()
     
+
+
+for i,v in enumerate(states):
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bh1, bh2, bh3], alpha=0.5, legend=True)
+    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    plt.show()
+
 
 
 ####################################################################################
@@ -105,7 +112,7 @@ colors = ['#00ff26', '#003eff', '#ff0000']
 
 params = getPramsFromFile('bhbtri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'btri.tsv'))
 
-databaseName = 'modelDB_bhbtri_bh.sqlite3'
+databaseName = 'modelDB_bhbtri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -172,11 +179,21 @@ stTypes = ['cells',
             'metabolite',
             'metabolite']
 
+
+
 for i,v in enumerate(states):
-    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bt1, bt2, bt3], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bt1, bt2, bt3], alpha=0.5, legend=False)
+    #plt.savefig(os.path.join(figPath, v + 'noLegend_model.png'), dpi = 300)
+    plt.show()
+    
+
+
+for i,v in enumerate(states):
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bt1, bt2, bt3], alpha=0.5, legend=True)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
     #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()
+
     
 ####################################################################################
 
@@ -187,7 +204,7 @@ colors = ['#00ff26', '#003eff', '#ff0000']
 
 params = getPramsFromFile('bhbtri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'btri.tsv'))
 
-databaseName = 'modelDB_bhbtri_bh.sqlite3'
+databaseName = 'modelDB_bhbtri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -249,10 +266,20 @@ stTypes = ['cells',
             'metabolite']
 
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
+
+
+
 for i,v in enumerate(states):
-    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [ri1, ri2, ri3], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [ri1, ri2, ri3], alpha=0.5, legend=False)
+    plt.savefig(os.path.join(figPath, v + 'noLegend_model.png'), dpi = 300)
+    plt.show()
+    
+
+
+for i,v in enumerate(states):
+    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [ri1, ri2, ri3], alpha=0.5, legend=True)
+    plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+    plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
     plt.show()
 
 ####################################################################################
@@ -264,7 +291,7 @@ colors = ['#003eff']
 
 #params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
 
-databaseName = 'modelDB_bhbtri_bh.sqlite3'
+databaseName = 'modelDB_bhbtri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -340,7 +367,7 @@ colors = ['#003eff']
 
 #params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
 
-databaseName = 'modelDB_bhbtri_bh.sqlite3'
+databaseName = 'modelDB_bhbtri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -415,7 +442,7 @@ colors = ['#003eff']
 
 #params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
 
-databaseName = 'modelDB_bhbtri_bh.sqlite3'
+databaseName = 'modelDB_bhbtri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
@@ -496,7 +523,7 @@ colors = ['#003eff']
 
 #params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'ri.tsv'))
 
-databaseName = 'modelDB_bhbtri_bh.sqlite3'
+databaseName = 'modelDB_bhbtri.sqlite3'
 
 databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 

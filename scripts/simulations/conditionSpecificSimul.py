@@ -53,7 +53,7 @@ def getComposition(compVec):
     
     
 def makeContour(x, y, z, xlabel, ylabel, title, vmin = 0, vmax = 1, cbar=False, cmap = 'cmr.lavender'):
-    cmap = cmr.rainforest  
+    cmap = cmap  
     cmap = plt.get_cmap(cmap)   # MPL
     xd, yd = np.meshgrid(x, y)
     zd = np.array(z).reshape(len(x), len(y))
@@ -73,6 +73,7 @@ def makeContour(x, y, z, xlabel, ylabel, title, vmin = 0, vmax = 1, cbar=False, 
     # plt.title(title)
 
     # Show the plot
+    plt.tight_layout()
     if title is not None:
         plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'contours', title),transparent=True, dpi=600)
     plt.show()
@@ -110,6 +111,7 @@ def makeDiscreteContour(x, y, z, xlabel, ylabel, title):
     plt.xlabel(xlabel, fontsize=14)
     plt.ylabel(ylabel, fontsize=14)
     
+    plt.tight_layout()
     if title is not None:
         plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'contours', title + '.png'), transparent=True, dpi=600)
     plt.show()
@@ -287,62 +289,62 @@ def makeSimulation(pHControl = None,
 
 
 
-pH_points = np.linspace(5,6.5,30)
-dilution_rate_points = np.linspace(0,3,30)
+pH_points = np.linspace(5,7.0,100)
+dilution_rate_points = np.linspace(0,3,100)
 
 
 
-bh_mA = []
-bh_mB = []
-bh_b = []
+# bh_mA = []
+# bh_mB = []
+# bh_b = []
 
-for ph in tqdm(pH_points):
-    for d in tqdm(dilution_rate_points):
-        bac, metA, metB = makeSimulation(pHControl=ph,
-                                          dilutionRate=d,
-                                          bhA = 0,
-                                          bhB =0.0,
-                                          bt = 0.0,
-                                          ri = 0.0)
-        bh_b.append(bac)
-        bh_mA.append(metA)
-        bh_mB.append(metB)
-
-
-bt_mA = []
-bt_mB = []
-bt_b = []
-
-for ph in tqdm(pH_points):
-    for d in tqdm(dilution_rate_points):
-        bac, metA, metB = makeSimulation(pHControl=ph,
-                                          dilutionRate=d,
-                                          bhA = 0,
-                                          bhB =0.0,
-                                          bt = 0.01,
-                                          ri = 0.0)
-        bt_b.append(bac)
-        bt_mA.append(metA)
-        bt_mB.append(metB)
+# for ph in tqdm(pH_points):
+#     for d in tqdm(dilution_rate_points):
+#         bac, metA, metB = makeSimulation(pHControl=ph,
+#                                           dilutionRate=d,
+#                                           bhA = 0,
+#                                           bhB =0.0,
+#                                           bt = 0.0,
+#                                           ri = 0.0)
+#         bh_b.append(bac)
+#         bh_mA.append(metA)
+#         bh_mB.append(metB)
 
 
+# bt_mA = []
+# bt_mB = []
+# bt_b = []
+
+# for ph in tqdm(pH_points):
+#     for d in tqdm(dilution_rate_points):
+#         bac, metA, metB = makeSimulation(pHControl=ph,
+#                                           dilutionRate=d,
+#                                           bhA = 0,
+#                                           bhB =0.0,
+#                                           bt = 0.01,
+#                                           ri = 0.0)
+#         bt_b.append(bac)
+#         bt_mA.append(metA)
+#         bt_mB.append(metB)
 
 
-ri_mA = []
-ri_mB = []
-ri_b = []
 
-for ph in tqdm(pH_points):
-    for d in tqdm(dilution_rate_points):
-        bac, metA, metB = makeSimulation(pHControl=ph,
-                                          dilutionRate=d,
-                                          bhA = 0,
-                                          bhB =0.0,
-                                          bt = 0.0,
-                                          ri = 0.01)
-        ri_b.append(bac)
-        ri_mA.append(metA)
-        ri_mB.append(metB)
+
+# ri_mA = []
+# ri_mB = []
+# ri_b = []
+
+# for ph in tqdm(pH_points):
+#     for d in tqdm(dilution_rate_points):
+#         bac, metA, metB = makeSimulation(pHControl=ph,
+#                                           dilutionRate=d,
+#                                           bhA = 0,
+#                                           bhB =0.0,
+#                                           bt = 0.0,
+#                                           ri = 0.01)
+#         ri_b.append(bac)
+#         ri_mA.append(metA)
+#         ri_mB.append(metB)
 
 
 
@@ -374,82 +376,82 @@ for ph in tqdm(pH_points):
 
 
 
-pH_points = np.linspace(5,6.5,30)
-dilution_rate_points = np.linspace(0,3,30)/15
+pH_points = np.linspace(5,7.0,100)
+dilution_rate_points = np.linspace(0,3,100)/15
 
 
-pyru_bh = np.array([i[0] for i in bh_mB])
-gluc_bh = np.array([i[1] for i in bh_mB])
-treh_bh = np.array([i[2] for i in bh_mB])
+# pyru_bh = np.array([i[0] for i in bh_mB])
+# gluc_bh = np.array([i[1] for i in bh_mB])
+# treh_bh = np.array([i[2] for i in bh_mB])
 
 
-acet_bh = np.array([i[4] for i in bh_mB])
-lact_bh = np.array([i[5] for i in bh_mB])
+# acet_bh = np.array([i[4] for i in bh_mB])
+# lact_bh = np.array([i[5] for i in bh_mB])
 
-bh_bh = np.array([i[0] for i in bh_b])
+# bh_bh = np.array([i[0] for i in bh_b])
 bh_bhbtri = np.array([i[0] for i in bhbtri2_b])
 
 
-pyru_bh = pyru_bh/np.max(pyru_bh)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            pyru_bh,   
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'pyruvate_bh.png'
-            )
+# pyru_bh = pyru_bh/np.max(pyru_bh)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             pyru_bh,   
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'pyruvate_bh.png'
+#             )
 
 
 
-gluc_bh = gluc_bh/np.max(gluc_bh)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            gluc_bh, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'glucose_bh.png'
-            )
+# gluc_bh = gluc_bh/np.max(gluc_bh)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             gluc_bh, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'glucose_bh.png'
+#             )
 
 
-treh_bh = treh_bh/np.max(treh_bh)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            treh_bh, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'trehalose_bh.png'
-            )
+# treh_bh = treh_bh/np.max(treh_bh)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             treh_bh, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'trehalose_bh.png'
+#             )
 
 
 
-acet_bh = acet_bh/np.max(acet_bh)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            acet_bh, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'acetate_bh.png'
-            )
+# acet_bh = acet_bh/np.max(acet_bh)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             acet_bh, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'acetate_bh.png'
+#             )
 
 
-lact_bh = lact_bh/np.max(lact_bh)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            lact_bh, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'lactate_bh.png'
-            )
+# lact_bh = lact_bh/np.max(lact_bh)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             lact_bh, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'lactate_bh.png'
+#             )
 
 
-bh_bh = bh_bh/np.max(bh_bh)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            bh_bh, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'bh_bh.png'
-            )
+# bh_bh = bh_bh/np.max(bh_bh)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             bh_bh, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'bh_bh.png'
+#             )
 
 bh_bhbtri = bh_bhbtri/np.max(bh_bhbtri)
 makeContour(dilution_rate_points, 
@@ -457,93 +459,94 @@ makeContour(dilution_rate_points,
             bh_bhbtri, 
             'dilution rate ($h^{-1}$)', 
             'pH',
-            'bh_bhbtri.png'
+            'bh_bhbtri.png',
+            cmap='RdGy'
             )
 
 
-pyru_bt = np.array([i[0] for i in bt_mB])
-gluc_bt = np.array([i[1] for i in bt_mB])
-mann_bt = np.array([i[3] for i in bt_mB])
+# pyru_bt = np.array([i[0] for i in bt_mB])
+# gluc_bt = np.array([i[1] for i in bt_mB])
+# mann_bt = np.array([i[3] for i in bt_mB])
 
 
-acet_bt = np.array([i[4] for i in bt_mB])
-lact_bt = np.array([i[5] for i in bt_mB])
-succ_bt = np.array([i[6] for i in bt_mB])
+# acet_bt = np.array([i[4] for i in bt_mB])
+# lact_bt = np.array([i[5] for i in bt_mB])
+# succ_bt = np.array([i[6] for i in bt_mB])
 
-bt_bt = np.array([i[1] for i in bt_b])
+# bt_bt = np.array([i[1] for i in bt_b])
 bt_bhbtri = np.array([i[1] for i in bhbtri2_b])
 
 
-pyru_bt = pyru_bt/np.max(pyru_bt)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            pyru_bt,   
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'pyruvate_bt.png'
-            )
+# pyru_bt = pyru_bt/np.max(pyru_bt)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             pyru_bt,   
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'pyruvate_bt.png'
+#             )
 
 
 
-gluc_bt = gluc_bt/np.max(gluc_bt)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            gluc_bt, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'glucose_bt.png'
-            )
+# gluc_bt = gluc_bt/np.max(gluc_bt)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             gluc_bt, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'glucose_bt.png'
+#             )
 
 
-mann_bt = mann_bt/np.max(mann_bt)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            mann_bt, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'mannose_bt.png'
-            )
+# mann_bt = mann_bt/np.max(mann_bt)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             mann_bt, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'mannose_bt.png'
+#             )
 
 
 
-acet_bt = acet_bt/np.max(acet_bt)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            acet_bt, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'acetate_bt.png'
-            )
+# acet_bt = acet_bt/np.max(acet_bt)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             acet_bt, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'acetate_bt.png'
+#             )
 
 
-lact_bt = lact_bt/np.max(lact_bt)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            lact_bt, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'lactate_bt.png'
-            )
+# lact_bt = lact_bt/np.max(lact_bt)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             lact_bt, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'lactate_bt.png'
+#             )
 
 
-succ_bt = succ_bt/np.max(succ_bt)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            succ_bt, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'succinate_bt.png'
-            )
+# succ_bt = succ_bt/np.max(succ_bt)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             succ_bt, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'succinate_bt.png'
+#             )
 
 
-bt_bt = bt_bt/np.max(bt_bt)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            bt_bt, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'bt_bt.png'
-            )
+# bt_bt = bt_bt/np.max(bt_bt)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             bt_bt, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'bt_bt.png'
+#             )
 
 bt_bhbtri = bt_bhbtri/np.max(bt_bhbtri)
 makeContour(dilution_rate_points, 
@@ -555,79 +558,79 @@ makeContour(dilution_rate_points,
             )
 
 
-pyru_ri = np.array([i[0] for i in ri_mB])
-gluc_ri = np.array([i[1] for i in ri_mB])
+# pyru_ri = np.array([i[0] for i in ri_mB])
+# gluc_ri = np.array([i[1] for i in ri_mB])
 
 
-acet_ri = np.array([i[4] for i in ri_mB])
-lact_ri = np.array([i[5] for i in ri_mB])
-buty_ri = np.array([i[7] for i in ri_mB])
+# acet_ri = np.array([i[4] for i in ri_mB])
+# lact_ri = np.array([i[5] for i in ri_mB])
+# buty_ri = np.array([i[7] for i in ri_mB])
 
-ri_ri = np.array([i[2] for i in ri_b])
+# ri_ri = np.array([i[2] for i in ri_b])
 ri_bhbtri = np.array([i[2] for i in bhbtri2_b])
 
 
-pyru_ri = pyru_ri/np.max(pyru_ri)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            pyru_ri,   
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'pyruvate_ri.png'
-            )
+# pyru_ri = pyru_ri/np.max(pyru_ri)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             pyru_ri,   
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'pyruvate_ri.png'
+#             )
 
 
 
-gluc_ri = gluc_ri/np.max(gluc_ri)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            gluc_ri, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'glucose_ri.png'
-            )
+# gluc_ri = gluc_ri/np.max(gluc_ri)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             gluc_ri, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'glucose_ri.png'
+#             )
 
 
 
 
-acet_ri = acet_ri/np.max(acet_ri)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            acet_ri, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'acetate_ri.png'
-            )
+# acet_ri = acet_ri/np.max(acet_ri)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             acet_ri, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'acetate_ri.png'
+#             )
 
 
-lact_ri = lact_ri/np.max(lact_ri)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            lact_ri, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'lactate_ri.png'
-            )
+# lact_ri = lact_ri/np.max(lact_ri)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             lact_ri, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'lactate_ri.png'
+#             )
 
 
-buty_ri = buty_ri/np.max(buty_ri)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            buty_ri, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'butyrate_ri.png'
-            )
+# buty_ri = buty_ri/np.max(buty_ri)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             buty_ri, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'butyrate_ri.png'
+#             )
 
 
-ri_ri = ri_ri/np.max(ri_ri)
-makeContour(dilution_rate_points, 
-            pH_points, 
-            ri_ri, 
-            'dilution rate ($h^{-1}$)', 
-            'pH',
-            'ri_ri.png'
-            )
+# ri_ri = ri_ri/np.max(ri_ri)
+# makeContour(dilution_rate_points, 
+#             pH_points, 
+#             ri_ri, 
+#             'dilution rate ($h^{-1}$)', 
+#             'pH',
+#             'ri_ri.png'
+#             )
 
 ri_bhbtri = ri_bhbtri/np.max(ri_bhbtri)
 makeContour(dilution_rate_points, 

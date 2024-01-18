@@ -5,30 +5,35 @@ Created on Wed Jun 14 12:31:00 2023
 @author: danie
 """
 
-from pathlib import Path
-import os
-import sys
-
-
-from pylab import *
 import numpy as np
-from scipy.integrate import solve_ivp
 
-def getHill(k, h, r, tp = 'inhibition'):
+
+from enum import Enum
+
+class HillType(Enum):
+    INHIBITION = 'inhibition'
+    ACTIVATION = 'activation'
+    INDEPENDENT = 'independent'
     
-    def hill(envP):
-        if tp=='inhibition':
-            return r*(k**h)/(k**h + envP**h)
+    
+
+def get_hill(k: float, h: float, r: float, tp: HillType = HillType.INHIBITION):
+    """
+    Generates a Hill function based on the provided parameters.
+    """
+    def hill(envP: float) -> float:
+        if tp == HillType.INHIBITION:
+            return r * (k**h) / (k**h + envP**h)
+        elif tp== HillType.ACTIVATION:
+            return r * (envP**h) / (k**h + envP**h)
         else:
-            return r*(envP**h)/(k**h + envP**h)
-    
-    
+            return r
+            
+
     return hill
 
 
-
-
-def buildDerivative(derivDict):
+def build_derivative(derivDict: dict):
     '''
     
 
@@ -54,26 +59,16 @@ def buildDerivative(derivDict):
 
     '''
     
-    def dxdt(N, epsilon):
+    index = derivDict['index']
+    growth_rate = derivDict['growthRate']
+
+    def dxdt(N: np.ndarray, epsilon: float) -> float:
+        interactions = sum(max(0,N[i]) * derivDict['interactions'][i] for i in range(len(N)))
+        sink = sum(t[1](epsilon) * N[index] for t in derivDict['sink'])
+        source = sum(max(N[t[0]],0) * t[1](epsilon) for t in derivDict['source'])
         
-        interactions = 0
-        
-        for i,v in enumerate(N):
-            interactions+=v*derivDict['interactions'][i]
-        sink = 0
-        
-        for t in derivDict['sink']:
-            sink+=t[1](epsilon)*N[derivDict['index']]
-            
-        
-        source = 0
-        
-        for t in derivDict['source']:
-            source+=N[t[0]]*t[1](epsilon)
-            
-            
-        return N[derivDict['index']]*(derivDict['growthRate'] + interactions) - sink + source
-    
+        return max(0,N[index]) * (growth_rate + interactions) - sink + source
+
     return dxdt
 
 

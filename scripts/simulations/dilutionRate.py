@@ -313,7 +313,14 @@ rows = ['pyruvate',
         'butyrate',
         'Blautia hydrogenotrophica',
         'Bacteroides thetaiotaomicron',
-        'Roseburia intinalis'
+        'Roseburia intestinalis'
         ]
 
-create_heatmap(dataM, rows, np.linspace(0,149, 6), np.round(np.linspace(0, 3/15, 6),3), 'dilution rate($h^{-1})$', None, None, fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution.png'))
+create_heatmap(dataM, 
+               rows, 
+               np.linspace(0,149, 6), 
+               np.round(np.linspace(0, 3/15, 6),3), 
+               'dilution rate($h^{-1})$', 
+               None, 
+               None, 
+               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution.png'))

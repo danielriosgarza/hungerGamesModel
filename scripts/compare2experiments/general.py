@@ -182,7 +182,8 @@ def makeExperimentPlot(group,
              colors = ['#ff0000'],
              simulObj = [None, None, None],
              alpha=1,
-             legend = True):
+             legend = True,
+             ylim = None):
     
     fig, ax = plt.subplots()
     strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', group)
@@ -252,6 +253,9 @@ def makeExperimentPlot(group,
         ax.set_ylabel('pH', fontsize=26)
         plt.title('pH', fontsize=32)
     ax.set_xlabel('Time (h)', fontsize=26)
+    
+    if ylim is not None:
+        ax.set_ylim(ylim[0], ylim[1])
 
     
     plt.tight_layout()

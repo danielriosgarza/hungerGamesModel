@@ -312,7 +312,12 @@ rows = ['pyruvate',
         'butyrate',
         'Blautia hydrogenotrophica',
         'Bacteroides thetaiotaomicron',
-        'Roseburia intinalis'
+        'Roseburia intestinalis'
         ]
 
-create_heatmap(dataM, rows, np.linspace(0,149, 6), np.round(np.linspace(5, 6.5, 6),3), 'pH', None, None, fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'ph.png'))
+create_heatmap(dataM, rows, np.linspace(0,149, 6), 
+               np.round(np.linspace(5, 6.5, 6),3), 
+               'pH', 
+               None, 
+               None, 
+               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'ph.png'))

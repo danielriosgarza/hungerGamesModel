@@ -23,6 +23,13 @@ PC = PCA(n_components=2)
 
 import matplotlib.pyplot as plt
 
+from scipy.spatial.distance import pdist, squareform
+from sklearn.manifold import MDS
+import matplotlib.pyplot as plt
+
+
+
+
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'compare2experiments'))
 from general import *
 
@@ -42,7 +49,7 @@ def create_heatmap(data, row_labels, x_positions, x_values, xlabel, ylabel, titl
 
     # Set specific x-ticks and labels (x-axis)
     ax.set_xticks(x_positions)
-    ax.set_xticklabels(x_values, rotation =90)
+    ax.set_xticklabels(x_values, rotation =90, fontsize=4)
 
     # Set labels and title
     ax.set_xlabel(xlabel)
@@ -67,7 +74,7 @@ def create_heatmap(data, row_labels, x_positions, x_values, xlabel, ylabel, titl
 
 
 
-def plot_pca_scatter(data, point_labels=None, labels=None, colors=None, title=None, xlabel='PC1', ylabel='PC2', jitter_amount=0.1, label_offset=0.02, point_size=100, fileName=None):
+def plot_pca_scatter(data, point_labels=None, labels=None, colors=None, title=None, xlabel='PC1', ylabel='PC2', jitter_amount=0.1, label_offset=0.08, point_size=100, fileName=None):
     """
     Plots a scatter plot of the first two principal components of the given data with jitter and point labels.
 
@@ -104,10 +111,10 @@ def plot_pca_scatter(data, point_labels=None, labels=None, colors=None, title=No
         for i, label in enumerate(set(labels)):
             subset = jittered_data[labels == label]
             plt.scatter(subset[:, 0], subset[:, 1], s=point_size, 
-                        label=label, c=(np.array(colors)[labels == label] if colors is not None else None))
+                        label=label, c=(np.array(colors)[labels == label] if colors is not None else None), alpha = 0.1)
         plt.legend()
     else:
-        plt.scatter(jittered_data[:, 0], jittered_data[:, 1], color=colors, s=point_size)
+        plt.scatter(jittered_data[:, 0], jittered_data[:, 1], c=colors, s=point_size, alpha = 0.1)
 
     # Overlay point labels with an offset
     if point_labels is not None:
@@ -130,6 +137,73 @@ def plot_pca_scatter(data, point_labels=None, labels=None, colors=None, title=No
         plt.savefig(fileName, transparent=True, dpi=600)
     plt.show()
 
+def plot_pcoa_scatter(data, point_labels=None, labels=None, colors=None, title=None, xlabel='PCoA1', ylabel='PCoA2', jitter_amount=0.1, label_offset=0.02, point_size=10, fileName=None):
+    """
+    Plots a scatter plot of the first two principal components of the given data with jitter and point labels.
+
+    :param data: 2D numpy array or list of lists with the data.
+    :param point_labels: Optional; List of short labels for each data point.
+    :param labels: Optional; List of labels for each data point.
+    :param colors: Optional; Color for each data point or a single color for all.
+    :param title: Optional; Title of the plot.
+    :param xlabel: Optional; Label for the x-axis.
+    :param ylabel: Optional; Label for the y-axis.
+    :param jitter_amount: Amount of jitter to apply (default 0.1).
+    :param label_offset: Offset for the point labels in the x-direction.
+    :param point_size: Size of the points in the scatter plot.
+    :param fileName: Optional; If provided, the plot will be saved to this file.
+    """
+    # Scale the data
+    scaler = StandardScaler()
+    scaled_data = scaler.fit_transform(data)
+
+    # Step 1: Compute Distance Matrix
+    distance_matrix = squareform(pdist(data, metric='jensenshannon'))
+
+    # Step 2: Perform MDS with the Precomputed Distance Matrix
+    mds = MDS(n_components=2, dissimilarity='precomputed', random_state=42)
+    transformed_data = mds.fit_transform(distance_matrix)
+
+    
+
+    # Add jitter
+    jittered_data = transformed_data + np.random.normal(0, jitter_amount, transformed_data.shape)
+
+    # Explained variance
+    #explained_variance = pca.explained_variance_ratio_
+    #print(f"Explained Variance: PC1: {explained_variance[0]:.2f}, PC2: {explained_variance[1]:.2f}")
+
+    # Plotting
+    plt.figure(figsize=(8, 6))
+    if labels is not None:
+        for i, label in enumerate(set(labels)):
+            subset = jittered_data[labels == label]
+            plt.scatter(subset[:, 0], subset[:, 1], s=point_size, 
+                        label=label, c=(np.array(colors)[labels == label] if colors is not None else None))
+        plt.legend()
+    else:
+        plt.scatter(jittered_data[:, 0], jittered_data[:, 1], c=colors, s=point_size)
+
+    # Overlay point labels with an offset
+    if point_labels is not None:
+        for (x, y), label in zip(jittered_data, point_labels):
+            plt.text(x + label_offset, y, label, fontsize=14)
+
+    # Labels and title
+    #plt.xlabel(f'{xlabel} ({explained_variance[0]*100:.2f} %)', fontsize=16)
+    #plt.ylabel(f'{ylabel} ({explained_variance[1]*100:.2f} %)', fontsize=16)
+    plt.title(title)
+
+    # Adjust plot margins
+    #plt.xlim(min(jittered_data[:, 0])-1, max(jittered_data[:, 0])+1)
+    #plt.ylim(min(jittered_data[:, 1])-1, max(jittered_data[:, 1])+1)
+    plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+
+    plt.grid(True)
+    plt.tight_layout()
+    if fileName is not None:
+        plt.savefig(fileName, transparent=True, dpi=600)
+    plt.show()
 
 
 
@@ -145,24 +219,47 @@ strainSummaryFolder = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strai
 
 
 
-with open(os.path.join(strainSummaryFolder, 'ambrAll.txt')) as f:
-    labels = f.readline().strip().split('\t')[1:]
+with open(os.path.join(strainSummaryFolder, 'ambrSS.txt')) as f:
+    labels = f.readline().strip().split('\t')[5::]
     experiments = []
+    condition = []
     data = {i:[] for i in labels}
     
     for line in f:
         a = line.strip().split('\t')
         experiments.append(a[0])
+        condition.append(a[1])
         for i in range(len(labels)):
-            data[labels[i]].append(float(a[i+1]))
+            data[labels[i]].append(float(a[i+5]))
 
 
+
+cols = []
+
+for i in condition:
+    if 'E1_c' in i:
+        cols.append('red')
+    
+    if 'E1_p' in i:
+        cols.append('blue')
+    
+    if 'E2_c' in i:
+        cols.append('green')
+    if 'E2_p' in i:
+        cols.append('purple')
+        
+    if i=='E2_Co':
+        cols.append('black')
 dataM = np.array([np.array(data[i]) for i in labels]).T
 
 pca = PC.fit_transform(dataM)
 
-create_heatmap(dataM.T, labels, np.arange(len(experiments)), experiments, None, None, None, fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'ambrHM.png'))
+create_heatmap(dataM.T, labels, np.arange(len(experiments)), condition, None, None, None, fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'ambrHM.png'))
 
-plot_pca_scatter(dataM, point_labels=experiments, jitter_amount=0.4, fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'ambrPC.png'))
+#plot_pca_scatter(dataM, point_labels=None, jitter_amount=0.4, point_size=25, fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'ambrPC.png'), colors = cols)
+
+#plot_pcoa_scatter(dataM, point_labels=None, jitter_amount=0.0, fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'ambrPC.png'), colors = cols)
+
+
 
 

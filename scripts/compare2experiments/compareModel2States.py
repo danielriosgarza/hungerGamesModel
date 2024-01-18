@@ -351,11 +351,38 @@ stTypes = ['cells',
             'metabolite']
 
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
+
+
+
+
+
 for i,v in enumerate(states):
-    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbt, None, None], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
-    plt.show()
+    if (v=='live_bh') or (v=='live_bt'):
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbt, None, None], alpha=0.5, legend=False, ylim = [0,13])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    elif v=='pH':
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbt, None, None], alpha=0.5, legend=False, ylim = [0,8])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    elif (v=='glucose') or (v=='pyruvate') or (v=='trehalose'):
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbt, None, None], alpha=0.5, legend=False, ylim = [0,9])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    else:
+ 
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbt, None, None], alpha=0.5, legend=False, ylim = [0,26])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+
+
     
     
 ####################################################################################
@@ -426,12 +453,33 @@ stTypes = ['cells',
             ]
 
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
+
+
 for i,v in enumerate(states):
-    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhri, None, None], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
-    plt.show()
+    if (v=='live_bh') or (v=='live_ri'):
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhri, None, None], alpha=0.5, legend=False, ylim = [0,13])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
     
+    elif v=='pH':
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhri, None, None], alpha=0.5, legend=False, ylim = [0,8])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    elif (v=='glucose') or (v=='pyruvate') or (v=='trehalose'):
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhri, None, None], alpha=0.5, legend=False, ylim = [0,9])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    else:
+ 
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhri, None, None], alpha=0.5, legend=False, ylim = [0,26])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()    
     
 ####################################################################################
 
@@ -508,11 +556,30 @@ stTypes = ['cells',
 
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 for i,v in enumerate(states):
-    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [btri, None, None], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
-    plt.show()
-
+    if (v=='live_bt') or (v=='live_ri'):
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [btri, None, None], alpha=0.5, legend=False, ylim = [0,13])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    elif v=='pH':
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [btri, None, None], alpha=0.5, legend=False, ylim = [0,8])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    elif (v=='glucose') or (v=='pyruvate') or (v=='trehalose'):
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [btri, None, None], alpha=0.5, legend=False, ylim = [0,9])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    else:
+ 
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [btri, None, None], alpha=0.5, legend=False, ylim = [0,26])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()   
 
 ####################################################################################
 
@@ -597,7 +664,27 @@ stTypes = ['cells',
 
 figPath = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', species+'Experiments')
 for i,v in enumerate(states):
-    makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbtri, None, None], alpha=0.5)
-    #plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 150)
-    #plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
-    plt.show()
+    if (v=='live_bh') or (v=='live_bt') or (v=='live_ri'):
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbtri, None, None], alpha=0.5, legend=False, ylim = [0,13])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    elif v=='pH':
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbtri, None, None], alpha=0.5, legend=False, ylim = [0,8])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    elif (v=='glucose') or (v=='pyruvate') or (v=='trehalose'):
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbtri, None, None], alpha=0.5, legend=False, ylim = [0,9])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()
+    
+    else:
+ 
+        makeExperimentPlot(species, v, stTypes[i], experiments, labels, colors, simulObj = [bhbtri, None, None], alpha=0.5, legend=False, ylim = [0,26])
+        plt.savefig(os.path.join(figPath, v + '_model.png'), dpi = 300)
+        plt.savefig(os.path.join(figPath, 'logos', v + '_model.png'), dpi = 50)
+        plt.show()   

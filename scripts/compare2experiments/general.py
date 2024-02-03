@@ -243,16 +243,20 @@ def makeExperimentPlot(group,
         ax.get_legend().remove()
 
     if stateType =='metabolite':
-        ax.set_ylabel(state + ' (mM)', fontsize=26)
-        plt.title(state, fontsize=32)
+        ax.set_ylabel('mM', fontsize=0)
+        #plt.title(state, fontsize=0)
     
     elif stateType =='cells':
-        ax.set_ylabel('$10^5$ cells/uL', fontsize=26)
-        plt.title(state + ' cells', fontsize=32)
+        ax.set_ylabel('$10^5$ cells/uL', fontsize=0)
+        #plt.title(state + ' cells', fontsize=0)
     else:
-        ax.set_ylabel('pH', fontsize=26)
-        plt.title('pH', fontsize=32)
-    ax.set_xlabel('Time (h)', fontsize=26)
+        ax.set_ylabel('pH', fontsize=0)
+        #plt.title('pH', fontsize=32)
+    ax.set_xlabel('Time (h)', fontsize=0)
+    
+    # Increase font size of x and y ticks
+    ax.tick_params(axis='x', labelsize=20)
+    ax.tick_params(axis='y', labelsize=20)
     
     if ylim is not None:
         ax.set_ylim(ylim[0], ylim[1])

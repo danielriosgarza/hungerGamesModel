@@ -12,7 +12,7 @@ import cobra
 from sklearn.linear_model import LinearRegression as LR
 import scipy.stats as sts
 import matplotlib.pyplot as plt
-plt.style.use('seaborn-bright')
+plt.style.use('seaborn-v0_8-bright')
 
 
 class GeneExpr:

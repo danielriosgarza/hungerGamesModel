@@ -111,8 +111,8 @@ def main(N = 50,
     
     derivDicts = random_deriv_dict(N)
     
-    fxa_xb = get_hill(0.1, 9, 0.1, HillType.ACTIVATION)
-    fxb_xa = get_hill(0.1, 10, 1.5, HillType.INHIBITION)
+    fxa_xb = get_hill(0.1, 10, 0.1, HillType.ACTIVATION)
+    fxb_xa = get_hill(0.1, 10, 0.5, HillType.INHIBITION)
     
     
     d1 = derivDicts[0]
@@ -235,5 +235,5 @@ def main(N = 50,
 
 
 for i in tqdm(np.linspace(51,100, 5)):
-    main(Nc=500, negInt1=i, gr=0.9, diffusion_coeff=0.40, root = 'NC_' + str(np.round(i)) + '_gr_0.5_DC_0.2')
+    main(Nc=100, negInt1=i, gr=0.1, diffusion_coeff=0.40, root = 'NC_' + str(np.round(i)) + '_gr_0.5_DC_0.2')
     

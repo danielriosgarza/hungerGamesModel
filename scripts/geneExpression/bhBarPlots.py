@@ -131,7 +131,7 @@ ax.text(fcRange/2, len(x) + .1, gB)
 plt.rcParams["figure.figsize"] = (3 ,9)
 plt.tight_layout()
 
-plt.savefig(os.path.join(figuresFolder,  'geneExp_' + gA + 'vs' + gB + '.png'), dpi = 300)
+#plt.savefig(os.path.join(figuresFolder,  'geneExp_' + gA + 'vs' + gB + '.png'), dpi = 300)
 
 plt.show()
 
@@ -173,7 +173,7 @@ ax.text(fcRange/2, len(x) + .1, gB)
 plt.rcParams["figure.figsize"] = (3 ,9)
 plt.tight_layout()
 
-plt.savefig(os.path.join(figuresFolder,  'geneExp_' + gA + 'vs' + gB + '.png'), dpi = 300)
+#plt.savefig(os.path.join(figuresFolder,  'geneExp_' + gA + 'vs' + gB + '.png'), dpi = 300)
 
 plt.show()
 #########################t32 vs 72 #########################
@@ -214,4 +214,5 @@ ax.text(fcRange/2, len(x) + .1, gB)
 plt.rcParams["figure.figsize"] = (3 ,9)
 plt.tight_layout()
 
-plt.savefig(os.path.join(figuresFolder,  'geneExp_' + gA + 'vs' + gB + '.png'), dpi = 300)
+#plt.savefig(os.path.join(figuresFolder,  'geneExp_' + gA + 'vs' + gB + '.png'), dpi = 300)
+plt.show()

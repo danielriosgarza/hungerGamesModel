@@ -150,7 +150,7 @@ class GeneExpr:
     def __getPvalsDeseq(self):
         pvals = {gene:{comp:np.nan for comp in self.groupComparison} for gene in self.genes}
         self.notInPatric = []
-        print(self.genes)
+        
         for comp in self.groupComparison:
             with open(os.path.join(self.geneFolder, self.groupComparison[comp])) as f:
                 f.readline()

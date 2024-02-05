@@ -234,6 +234,6 @@ def main(N = 50,
 
 
 
-for i in tqdm(np.linspace(51,100, 5)):
-    main(Nc=100, negInt1=i, gr=0.1, diffusion_coeff=0.40, root = 'NC_' + str(np.round(i)) + '_gr_0.5_DC_0.2')
+for i in tqdm(np.linspace(51,85, 3)):
+    main(Nc=1000, negInt1=i, gr=0.5, diffusion_coeff=0.20, root = 'NC_' + str(np.round(i)) + '_gr_0.5_DC_0.2')
     

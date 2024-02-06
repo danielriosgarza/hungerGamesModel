@@ -80,7 +80,9 @@ def makeSimulation(pHControl = None,
     
     #pH profile
     ipH_path = os.path.join(Path(os.getcwd()).parents[1], 'files', 'strainSummaries', 'bhbtri_ipH4.tsv') 
+
     databaseName = 'modelDB_bhbtri.sqlite3'
+
     databaseFolder =  os.path.join(Path(os.getcwd()).parents[1], 'files', 'dbs')
 
     #update database with parameters from a file
@@ -103,6 +105,11 @@ def makeSimulation(pHControl = None,
     #Load database
     db = get_database(os.path.join(databaseFolder, databaseName))
 
+
+
+
+
+
     #getStarting pH
     wc = createMetabolome(db, 'wc')
     
@@ -110,6 +117,14 @@ def makeSimulation(pHControl = None,
         predictpH = getpH(wc.metabolites, ipH_path)
     else:
         predictpH = mockpHfunc(wc.metabolites,pH=pHControl)
+    
+    if perturbation:
+        predictpHB = mockpHfunc(wc.metabolites,pH=5.6)
+        pHB =  predictpHB(wc.get_concentration())
+
+        #get the feed media and the reactor media
+        wc_feedB = createMetabolome(db, 'wc', pHB, pHFunc=predictpHB)
+        wc_reactorB = createMetabolome(db, 'wc', pHB, pHFunc=predictpHB)
      
     pH =  predictpH(wc.get_concentration())
 
@@ -134,38 +149,53 @@ def makeSimulation(pHControl = None,
     reactor_microbiome.subpopD['xi'].count = ri
     
     if perturbation:
-        batchA = Pulse(wc_feed, feed_microbiome, 0, 2400, 100, 0, 0, dilutionFactor,dilutionFactor)
+        batchA = Pulse(wc_feed, feed_microbiome, 0, 600, 100, 0, 0, dilutionFactor,dilutionFactor)
 
-        batchB = Pulse(wc_feed, feed_microbiome, 2400, 2640, 100, 0, 0, 0, 0)
+        batchB = Pulse(wc_feed, feed_microbiome, 600, 5040, 100, 0, 0, dilutionFactor,dilutionFactor)
 
-        batchC = Pulse(wc_feed, feed_microbiome, 2640, 6000, 100, 0, 0, dilutionFactor,dilutionFactor)
         
         
-        reactor = Reactor(reactor_microbiome, wc_reactor,[
-                                                      batchA,
-                                                      batchB,
-                                                      batchC,
-                                                       ], 15)
-    
+        #simulate
+        reactorA = Reactor(reactor_microbiome, wc_reactorB,[
+                                                          batchA,
+                                                          
+                                                          
+                                                          
+                                                           ], 15)
+
+
+
+        reactorA.simulate()
+        #reactorA.makePlots()
+
+
+
+        for i in wc_reactorB.metD:
+            wc_reactor.metD[i].update(wc_reactorB.metD[i].concentration)
+            
+
+        reactor = Reactor(reactorA.microbiome, wc_reactor,[
+                                                          
+                                                          batchB,
+                                                          
+                                                           ], 15)
+
+        reactor.simulate()
+
+        
+        
+        
+        
     else:
         
-        batchA = Pulse(wc_feed, feed_microbiome, 0, 6000, 100, 0, 0, dilutionFactor,dilutionFactor)
+        batchA = Pulse(wc_feed, feed_microbiome, 0, 5040, 100, 0, 0, dilutionFactor,dilutionFactor)
     
         #simulate
         reactor = Reactor(reactor_microbiome, wc_reactor,[
                                                       batchA
                                                        ], 15)
-    reactor.simulate()
+        reactor.simulate()
     
-    
-    
-    batchA = Pulse(wc_feed, feed_microbiome, 0, 6000, 100, 0, 0, dilutionFactor,dilutionFactor)
-
-    #simulate
-    reactor = Reactor(reactor_microbiome, wc_reactor,[
-                                                  batchA
-                                                   ], 15)
-    reactor.simulate()
     b = reactor.cellActive_dyn.T[-1]
     bac_composition = b
     pyru = reactor.met_simul[reactor.metabolome.metabolites.index('pyruvate')]
@@ -203,23 +233,23 @@ def makeSimulation(pHControl = None,
 
 
 
-#pH_points = np.linspace(5,6.5,30)
+
+    
+    
 simulation_points = 150 
-dilution_rate_points = np.linspace(0,3,simulation_points)
+
+pH_points = np.linspace(5,6.5,simulation_points)
 
 
 bhbtri2_mA = []
 bhbtri2_mB = []
 bhbtri2_b = []
-bhbtri2_pH = []
 
-for d in tqdm(dilution_rate_points):
+for pH in tqdm(pH_points):
     
     
-    
-    
-    bac, metA, metB, pH = makeSimulation(pHControl=None,
-                                      dilutionFactor=d,
+    bac, metA, metB,_ = makeSimulation(pHControl=pH,
+                                      dilutionFactor=1.0,
                                      
                                       bh = 0.003,
                                       bt = 0.003,
@@ -227,7 +257,6 @@ for d in tqdm(dilution_rate_points):
     bhbtri2_b.append(bac)
     bhbtri2_mA.append(metA)
     bhbtri2_mB.append(metB)
-    bhbtri2_pH.append(pH)
 
 
 
@@ -246,22 +275,7 @@ succ_bhbtri = np.array([i[7] for i in bhbtri2_mB])
 buty_bhbtri = np.array([i[8] for i in bhbtri2_mB])
 
 
-pH_bhbtri = np.array(bhbtri2_pH)
-
-
-dataM = np.array([pyru_bhbtri, 
-                  gluc_bhbtri, 
-                  treh_bhbtri, 
-                  mann_bhbtri, 
-                  acet_bhbtri, 
-                  lact_bhbtri, 
-                  form_bhbtri, 
-                  succ_bhbtri, 
-                  buty_bhbtri, 
-                  pH_bhbtri, 
-                  bh_bhbtri, 
-                  bt_bhbtri, 
-                  ri_bhbtri])
+dataM = np.array([pyru_bhbtri, gluc_bhbtri, treh_bhbtri, mann_bhbtri, acet_bhbtri, lact_bhbtri, form_bhbtri, succ_bhbtri, buty_bhbtri, bh_bhbtri, bt_bhbtri, ri_bhbtri])
 
 rows = ['pyruvate', 
         'glucose', 
@@ -272,17 +286,16 @@ rows = ['pyruvate',
         'succinate',
         'formate',
         'butyrate',
-        'pH',
         'Blautia hydrogenotrophica',
         'Bacteroides thetaiotaomicron',
-        'Roseburia intinalis'
+        'Roseburia intestinalis'
         ]
 
 create_heatmap(dataM, 
                rows, 
                np.linspace(0,simulation_points-1, 6), 
-               np.round(np.linspace(0, 3/15, 6),3), 
-               'dilution rate($h^{-1})$', 
+               np.round(np.linspace(5, 6.5, 6),3), 
+               'pH', 
                None, 
                None, 
                fileName = None) #os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution.png'))
@@ -295,15 +308,14 @@ pc = pca.fit_transform(dataM.T).flatten()
 bhbtri1_mA = []
 bhbtri1_mB = []
 bhbtri1_b = []
-bhbtri1_pH = []
-for d in tqdm(dilution_rate_points):
+
+for pH in tqdm(pH_points):
     
     
     
     
-    bac, metA, metB, pH = makeSimulation(pHControl=None,
-                                      dilutionFactor=d,
-                                     
+    bac, metA, metB,_ = makeSimulation(pHControl=pH,
+                                      dilutionFactor=1.0,
                                       bh = 0.003,
                                       bt = 0.003,
                                       ri = 0.003,
@@ -311,7 +323,6 @@ for d in tqdm(dilution_rate_points):
     bhbtri1_b.append(bac)
     bhbtri1_mA.append(metA)
     bhbtri1_mB.append(metB)
-    bhbtri1_pH.append(pH)
 
 
 
@@ -330,8 +341,6 @@ succ_bhbtri_p = np.array([i[7] for i in bhbtri1_mB])
 buty_bhbtri_p = np.array([i[8] for i in bhbtri1_mB])
 
 
-pH_bhbtri_p = np.array(bhbtri1_pH)
-
 dataM_p = np.array([pyru_bhbtri_p, 
                     gluc_bhbtri_p, 
                     treh_bhbtri_p, 
@@ -340,8 +349,7 @@ dataM_p = np.array([pyru_bhbtri_p,
                     lact_bhbtri_p, 
                     form_bhbtri_p, 
                     succ_bhbtri_p, 
-                    buty_bhbtri_p,
-                    pH_bhbtri_p,
+                    buty_bhbtri_p, 
                     bh_bhbtri_p, 
                     bt_bhbtri_p, 
                     ri_bhbtri_p])
@@ -355,7 +363,6 @@ rows = ['pyruvate',
         'succinate',
         'formate',
         'butyrate',
-        'pH',
         'Blautia hydrogenotrophica',
         'Bacteroides thetaiotaomicron',
         'Roseburia intestinalis'
@@ -363,31 +370,33 @@ rows = ['pyruvate',
 
 create_heatmap(dataM_p, 
                rows, 
-               np.linspace(0,simulation_points-1, 6), 
-               np.round(np.linspace(0, 3/15, 6),3), 
-               'dilution rate($h^{-1})$', 
+               np.linspace(0,149, 6), 
+               np.round(np.linspace(5, 6.5, 6),3), 
+               'pH', 
                None, 
                None, 
-               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution.png'))
+               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'pH_perturbation.png'))
 
 pc_p = pca.fit_transform(dataM_p.T).flatten()
 
 
 
-dilution_values = dilution_rate_points/15
+pH_values = np.linspace(5,6.5,simulation_points)
+plt.plot(pH_values[pc>5], pc[pc>5], 'o', color='red')
 
-plt.plot(dilution_values[pc_p>2], pc_p[pc_p>2], '-o', color='blue')
+plt.plot(pH_values[pc_p<5], pc_p[pc_p<5], 'o', color='red')
+plt.vlines(x = max(pH_values[pc_p>2]), 
+            ymin = min(pc[pc<2])-1,
+            ymax = max(pc_p[pc_p>2])+1,
+            linestyles = 'dashed',
+            color='k')
 
-plt.plot(dilution_values[pc<2], pc[pc<2], '-o', color='blue')
-plt.vlines(x = max(dilution_values[pc_p>2]), 
-           ymin = min(pc[pc<2])-1,
-           ymax = max(pc_p[pc_p>2])+1,
-           linestyles = 'dashed',
-           color='k')
-
-plt.vlines(x = min(dilution_values[pc<2]), 
-           ymin = min(pc[pc<2])-1,
-           ymax = max(pc_p[pc_p>2])+1,
-           linestyles = 'dashed',
-           color='k')
+plt.vlines(x = min(pH_values[pc<2]), 
+            ymin = min(pc[pc<2])-1,
+            ymax = max(pc_p[pc_p>2])+1,
+            linestyles = 'dashed',
+            color='k')
+plt.xlabel('pH')
+plt.ylabel('first principle component score')
+plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'pH_hysterysis.png'), transparent=True, dpi=600)
 plt.show()

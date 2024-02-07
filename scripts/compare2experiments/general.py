@@ -274,7 +274,8 @@ def makeKineticPlot(x,
                     xlabel,
                     ylabel,
                     title = None,
-                    linestyle = 'o-'):
+                    linestyle = 'o-',
+                    legendSize = 18):
     '''
     '$10^5$ cells/uL'
     'Time (h)'
@@ -289,7 +290,7 @@ def makeKineticPlot(x,
             
     if legend is not None:
     
-        legend_properties = {'size':18}
+        legend_properties = {'size':legendSize}
         plt.legend(fontsize=16, prop=legend_properties, bbox_to_anchor=(1.0, 1.0))
     
     ax = plt.gca()

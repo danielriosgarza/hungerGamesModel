@@ -2,4 +2,4 @@
 
 Read the [wiki](https://github.com/danielriosgarza/hungerGamesModel/wiki).
 
-Reproduce all the manuscript figures [here]().
+Reproduce all the manuscript figures [here](https://colab.research.google.com/github/danielriosgarza/hungerGamesModel/blob/main/multistabilitymanuscript.ipynb).

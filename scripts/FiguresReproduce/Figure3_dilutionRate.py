@@ -285,7 +285,7 @@ create_heatmap(dataM,
                'dilution rate($h^{-1})$', 
                None, 
                None, 
-               fileName = None) #os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution.png'))
+               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution.png'))
 
 
 
@@ -368,7 +368,7 @@ create_heatmap(dataM_p,
                'dilution rate($h^{-1})$', 
                None, 
                None, 
-               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution.png'))
+               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution_perturbation.png'))
 
 pc_p = pca.fit_transform(dataM_p.T).flatten()
 

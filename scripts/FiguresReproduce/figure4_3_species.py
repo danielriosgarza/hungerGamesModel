@@ -306,7 +306,7 @@ ss = np.array([ss[i]/sum_ss[i] for i in range(len(ss))])
 
 mStates = ['Blautia hydrogenotrophica',
            'Bacteroides thetaiotaomicron',
-           'Roseburia intinalis']
+           'Roseburia intestinalis']
 tp = np.linspace(0, simls,6 )
 
 

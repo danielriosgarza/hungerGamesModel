@@ -287,11 +287,14 @@ class Subpopulation:
         self.intrinsicMetabolism = self.__getIntrMetabolism()
     
     def __getpHSensitivity(self):
+        
         self.pHbeta = (self.pHalpha-1)/self.pHopt
         
         maxima = self.gammaD(self.pHopt, self.pHalpha, self.pHbeta)
     
         def pHSensitivity(pH):
+            if self.pHalpha == 0:
+                return 0.0
             return (1/maxima) * self.gammaD(pH, self.pHalpha, self.pHbeta)
         
         return pHSensitivity
@@ -593,7 +596,7 @@ class Reactor:
             
             # ode.set_initial_value(y_init,pulse.t_start)
             
-            self.solution = solver(fun=self.ode, t_span =(pulse.t_start, pulse.t_end), y0 = self.get_states(), t_eval = pulse.range, args=[pulse], method = 'DOP853', atol=1e-12, rtol=1e-12)
+            self.solution = solver(fun=self.ode, t_span =(pulse.t_start, pulse.t_end), y0 = self.get_states(), t_eval = pulse.range, args=[pulse], method = 'RK23', atol=1e-6, rtol=1e-6)
             
             ts = np.concatenate([ts,self.solution.t])
             vol_dyn = np.concatenate([vol_dyn, self.solution.y[0]])

@@ -290,7 +290,8 @@ class Subpopulation:
         
         self.pHbeta = (self.pHalpha-1)/self.pHopt
         
-        maxima = self.gammaD(self.pHopt, self.pHalpha, self.pHbeta)
+        if self.pHalpha !=0:
+            maxima = self.gammaD(self.pHopt, self.pHalpha, self.pHbeta)
     
         def pHSensitivity(pH):
             if self.pHalpha == 0:

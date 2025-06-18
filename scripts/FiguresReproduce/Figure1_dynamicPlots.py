@@ -11,6 +11,11 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from aquarel import load_theme
+
+theme = load_theme("boxy_light")
+theme.apply()
+
 
 sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'compare2experiments'))
 

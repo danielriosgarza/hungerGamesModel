@@ -1,4 +1,4 @@
-# Repository of the manuscript **"Phenotype switching explains the emergence of alternative stable states in a gut microbial community"** by Garza, Liu, Van der Velde et al. (2024)
+# Repository of the manuscript **"Discovery of alternative stable states in a synthetic human gut microbial community"** by Garza, Liu, Van der Velde et al. (2024)
 
 Read the [wiki](https://github.com/danielriosgarza/hungerGamesModel/wiki).
 

@@ -128,7 +128,7 @@ def assignBtParams(lmfit_params, conn):
     z6_h_s3 = " ** " + str(lmfit_params['z6_h_s3'].value)
     z6_l_s7 = str(lmfit_params['z6_l_s7'].value)
     z6_h_s7 = " ** " + str(lmfit_params['z6_h_s7'].value)
-    z6 = "(" + z6_l_s3 + z6_h_s3 + "/(" + z6_l_s3 + z6_h_s3 + " + (metObj.metD['glucose'].concentration" + z6_h_s7 + ")) * (" + z6_l_s7 + z6_h_s7 + "/(" + z6_l_s7 + z6_h_s7 + " + metObj.metD['mannose'].concentration" + z6_h_s7 + "))"
+    z6 = "(" + z6_l_s3 + z6_h_s3 + "/(" + z6_l_s3 + z6_h_s3 + " + (metObj.metD['glucose'].concentration" + z6_h_s7 + "))) * (" + z6_l_s7 + z6_h_s7 + "/(" + z6_l_s7 + z6_h_s7 + " + metObj.metD['mannose'].concentration" + z6_h_s7 + "))"
 
     #z7
     
@@ -137,7 +137,7 @@ def assignBtParams(lmfit_params, conn):
     z7_l_pH = str(lmfit_params['z7_l_pH'].value)
     z7_h_pH = " ** " + str(lmfit_params['z7_h_pH'].value)
     
-    z7 = "(" + z7_l_s3 + z7_h_s3 + "/(" + z7_l_s3 + z7_h_s3 + " + (metObj.metD['glucose'].concentration" + z7_h_s3+ ")) * (" + z7_l_pH + z7_h_pH + "/(" + z7_l_pH + z7_h_pH + " + metObj.pH" + z7_h_pH + "))"
+    z7 = "(" + z7_l_s3 + z7_h_s3 + "/(" + z7_l_s3 + z7_h_s3 + " + (metObj.metD['glucose'].concentration" + z7_h_s3+ "))) * (" + z7_l_pH + z7_h_pH + "/(" + z7_l_pH + z7_h_pH + " + metObj.pH" + z7_h_pH + "))"
 
     
     
@@ -149,7 +149,7 @@ def assignBtParams(lmfit_params, conn):
     
     z8_h_pH = " ** " + str(lmfit_params['z8_h_pH'].value)
     
-    z8 = "(" + z8_l_s7 + z8_h_s7 + "/(" + z8_l_s7 + z8_h_s7 + " + (metObj.metD['mannose'].concentration" + z8_h_s7+ ")) * (" + z8_l_pH + z8_h_pH + "/(" + z8_l_pH + z8_h_pH + " + metObj.pH" + z8_h_pH + "))"
+    z8 = "(" + z8_l_s7 + z8_h_s7 + "/(" + z8_l_s7 + z8_h_s7 + " + (metObj.metD['mannose'].concentration" + z8_h_s7+ "))) * (" + z8_l_pH + z8_h_pH + "/(" + z8_l_pH + z8_h_pH + " + metObj.pH" + z8_h_pH + "))"
     
     
     #z9

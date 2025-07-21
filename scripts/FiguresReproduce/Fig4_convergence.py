@@ -68,7 +68,7 @@ def add_jitter(arr, scale=0.5):
     np.random.seed(666)
     return arr + np.random.uniform(-scale, scale, size=arr.shape)
 
-def get_cosine_d(chunk_array):
+def get_cosine_d(chunk_array, w = 2):
     distances = []
     
     #chunk_array = [(i.T/i.max(axis=1)).T for i in control_data_chunks]
@@ -76,8 +76,8 @@ def get_cosine_d(chunk_array):
         
         nd = chunk_array[i] / np.max(chunk_array[i], axis=1, keepdims=True)
         cosine_distances = np.array([
-            braycurtis(nd[z], nd[z+2])
-            for z in range(len(nd) - 2)
+            braycurtis(nd[z], nd[z+w])
+            for z in range(len(nd) - w)
         ])
         distances.append(cosine_distances[:])
     
@@ -85,32 +85,27 @@ def get_cosine_d(chunk_array):
 
 def plot_cosine_chunks(time_chunks, cosine_chunks, highlight=100, fileName=None, ball_color="tab:blue"):
     plt.figure(figsize=(8, 5))
-    
+
     for i in range(len(cosine_chunks)):
-        t = np.linspace(0, time_chunks[i][-1], len(cosine_chunks[i]))
         y = cosine_chunks[i]
+        t = time_chunks[i][0:len(y)]  # Match X and Y dynamically
+        plt.plot(t, y, color='k', linewidth=0.5, zorder=1)
+        plt.scatter(t, y, color=ball_color, edgecolors='black', s=50, zorder=2)
 
-        # Line: dark gray
-        plt.plot(time_chunks[i][0:-2], y, color='k', linewidth=0.5, zorder=1)
-
-        # Balls: user-defined color
-        plt.scatter(time_chunks[i][0:-2], y, color=ball_color, edgecolors='black', s=50, zorder=2)  # s = marker size
-
-        # Gray background area
-    
     t_max = max(np.concatenate(time_chunks).flatten())
     plt.axvspan(highlight, t_max, color='lightgray', alpha=0.5, zorder=0)
-    
+
     plt.ylim(0, 1)
     plt.axvline(highlight, linestyle='--', color='gray', linewidth=1.5)
     plt.xlabel('Time (h)', fontsize=20)
-    plt.ylabel('Bray-Curtis dissimilarity (t vs t+2)', fontsize=20)
+    plt.ylabel('Bray-Curtis dissimilarity', fontsize=20)
     plt.tick_params(axis='both', which='major', labelsize=16)
     plt.tight_layout()
-    
+
     if fileName is not None:
         plt.savefig(fileName, dpi=600, transparent=True)
     plt.show()
+
 
 
 labels, experiments, description, conditions, time, timeCond, replicate, dataM = get_data('ambrAll.txt')
@@ -199,3 +194,62 @@ fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures',
 plot_cosine_chunks(pHfeed_time_chunks, pHfeed_cosine, 88, fileName, '#FFD700')
     
 plt.show()
+
+# =========================
+# Control conditions (ambr_8)
+# =========================
+
+control_ambr8_data = dataM[idx_control_ambr_8]
+control_ambr8_time = np.array(time)[idx_control_ambr_8]
+
+# Identify starting indices
+control_ambr8_zero_indices = np.where(control_ambr8_time == 0)[0]
+control_ambr8_zero_indices = np.append(control_ambr8_zero_indices, len(control_ambr8_time))
+
+# Split into chunks
+control_ambr8_time_chunks = [
+    control_ambr8_time[control_ambr8_zero_indices[i]:control_ambr8_zero_indices[i+1]]
+    for i in range(len(control_ambr8_zero_indices)-1) if control_ambr8_zero_indices[i+1] > control_ambr8_zero_indices[i]
+]
+control_ambr8_data_chunks = [
+    control_ambr8_data[control_ambr8_zero_indices[i]:control_ambr8_zero_indices[i+1]]
+    for i in range(len(control_ambr8_zero_indices)-1) if control_ambr8_zero_indices[i+1] > control_ambr8_zero_indices[i]
+]
+
+control_ambr8_cosine = get_cosine_d(control_ambr8_data_chunks)
+
+fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures',
+                        'multistability', 'ambr_path', 'convergence_control_ambr8.png')
+
+plot_cosine_chunks(control_ambr8_time_chunks, control_ambr8_cosine, 94, fileName, '#00FF00')  # Blue color
+
+
+# =========================
+# pH/feed perturbation (ambr_8)
+# =========================
+
+pHfeed_ambr8_data = dataM[idx_pHfeed_ambr_8]
+pHfeed_ambr8_time = np.array(time)[idx_pHfeed_ambr_8]
+
+# Align zero point
+pHfeed_ambr8_time -= 268  # Same shift as before
+
+pHfeed_ambr8_zero_indices = np.where(pHfeed_ambr8_time == 0)[0]
+pHfeed_ambr8_zero_indices = np.append(pHfeed_ambr8_zero_indices, len(pHfeed_ambr8_time))
+
+# Split into chunks
+pHfeed_ambr8_time_chunks = [
+    pHfeed_ambr8_time[pHfeed_ambr8_zero_indices[i]:pHfeed_ambr8_zero_indices[i+1]]
+    for i in range(len(pHfeed_ambr8_zero_indices)-1) if pHfeed_ambr8_zero_indices[i+1] > pHfeed_ambr8_zero_indices[i]
+]
+pHfeed_ambr8_data_chunks = [
+    pHfeed_ambr8_data[pHfeed_ambr8_zero_indices[i]:pHfeed_ambr8_zero_indices[i+1]]
+    for i in range(len(pHfeed_ambr8_zero_indices)-1) if pHfeed_ambr8_zero_indices[i+1] > pHfeed_ambr8_zero_indices[i]
+]
+
+pHfeed_ambr8_cosine = get_cosine_d(pHfeed_ambr8_data_chunks, w=1)
+
+fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures',
+                        'multistability', 'ambr_path', 'convergence_pHfeed_ambr8.png')
+
+plot_cosine_chunks(pHfeed_ambr8_time_chunks, pHfeed_ambr8_cosine, 60, fileName, '#FFD700')  #

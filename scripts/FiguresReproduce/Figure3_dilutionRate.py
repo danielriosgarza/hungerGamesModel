@@ -90,9 +90,9 @@ def makeSimulation(pHControl = None,
     conn = create_connection(os.path.join(databaseFolder, databaseName))
 
     #load the parameter file (parameter files are located at "/files/params" )
-    bh_params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv'))
-    bt_params = getPramsFromFile('bhbtri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'btri.tsv'))
-    ri_params = getPramsFromFile('bhbtri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'btri.tsv'))
+    bh_params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'allParamsFitted.tsv'))
+    bt_params = getPramsFromFile('bt', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'allParamsFitted.tsv'))
+    ri_params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'allParamsFitted.tsv'))
 
 
     #assign these parameters (depending on the strain, use the specific function)
@@ -275,7 +275,7 @@ rows = ['pyruvate',
         'pH',
         'Blautia hydrogenotrophica',
         'Bacteroides thetaiotaomicron',
-        'Roseburia intinalis'
+        'Roseburia intestinalis'
         ]
 
 create_heatmap(dataM, 
@@ -285,7 +285,7 @@ create_heatmap(dataM,
                'dilution rate($h^{-1})$', 
                None, 
                None, 
-               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution.png'))
+               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution_2.png'))
 
 
 
@@ -368,7 +368,7 @@ create_heatmap(dataM_p,
                'dilution rate($h^{-1})$', 
                None, 
                None, 
-               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution_perturbation.png'))
+               fileName = os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'dilution_perturbation_2.png'))
 
 pc_p = pca.fit_transform(dataM_p.T).flatten()
 

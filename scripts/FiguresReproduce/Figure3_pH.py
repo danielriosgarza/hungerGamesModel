@@ -315,7 +315,7 @@ for pH in tqdm(pH_points):
     
     
     bac, metA, metB,_ = makeSimulation(pHControl=pH,
-                                      dilutionFactor=1.0,
+                                      dilutionFactor=0.615,
                                       bh = 0.003,
                                       bt = 0.003,
                                       ri = 0.003,
@@ -398,5 +398,5 @@ plt.vlines(x = min(pH_values[pc<2]),
             color='k')
 plt.xlabel('pH')
 plt.ylabel('first principle component score')
-plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'pH_hysterysis.png'), transparent=True, dpi=600)
+plt.savefig(os.path.join(Path(os.getcwd()).parents[1], 'files', 'Figures', 'multistability', 'pH_hysterysis_2.png'), transparent=True, dpi=600)
 plt.show()

@@ -27,7 +27,7 @@ experiments = ['bhbt', 'bhri', 'bhbtri']
 labels = ['bh1', 'bh2', 'bh3']
 colors = ['#00ff26', '#003eff', '#ff0000']
 
-params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'bh.tsv'))
+params = getPramsFromFile('bh', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'allParamsFitted.tsv'))
 
 databaseName = 'modelDB_bhbtri.sqlite3'
 
@@ -105,7 +105,7 @@ experiments = ['bhbt', 'btri', 'bhbtri']
 labels = ['bt1', 'bt2', 'bt3']
 colors = ['#00ff26', '#003eff', '#ff0000']
 
-params = getPramsFromFile('bhbtri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'btri.tsv'))
+params = getPramsFromFile('bt', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'allParamsFitted.tsv'))
 
 databaseName = 'modelDB_bhbtri.sqlite3'
 
@@ -189,7 +189,7 @@ experiments = ['bhri', 'btri', 'bhbtri']
 labels = ['ri1', 'ri2', 'ri3']
 colors = ['#00ff26', '#003eff', '#ff0000']
 
-params = getPramsFromFile('bhbtri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'btri.tsv'))
+params = getPramsFromFile('ri', os.path.join(Path(os.getcwd()).parents[1], 'files', 'params', 'allParamsFitted.tsv'))
 
 databaseName = 'modelDB_bhbtri.sqlite3'
 

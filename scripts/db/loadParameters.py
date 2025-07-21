@@ -20,103 +20,101 @@ def getPramsFromFile(species, filePath):
     '''
     file expected: #, species, parameter, value, min, max
     '''
-    lmfit_params = Parameters()    
+    lmfit_params = Parameters()
     with open(filePath) as f:
         f.readline()
         for line in f:
             a = line.strip().split('\t')
-            if a[1] == species:
-              lmfit_params.add(a[2], value = float(a[3]), min = float(a[4]), max = float(a[5]), vary=True)
-    
+            if a[0] == species:
+              lmfit_params.add(a[1], value = float(a[2]), min = float(a[3]), max = float(a[4]), vary=True)
+
     return lmfit_params
     
     
 
 
 def assignBhParams(lmfit_params, conn):
-    
-    
+
+
     #transition functions
-    
-    
+
+
     #z1
-    
+
     z1_l_s1 = str(lmfit_params['z1_l_s1'].value)
     z1_h_s1 = " ** " + str(lmfit_params['z1_h_s1'].value)
     z1 = "(" + z1_l_s1 + z1_h_s1 + "/(" + z1_l_s1 + z1_h_s1 + " + metObj.metD['trehalose'].concentration" + z1_h_s1 + "))"
 
-        
-    
+
+
     #z2
     z2_l_s1 = str(lmfit_params['z2_l_s1'].value)
     z2_h_s1 = " ** " + str(lmfit_params['z2_h_s1'].value)
     z2 = "(metObj.metD['trehalose'].concentration" + z2_h_s1 + ")/(metObj.metD['trehalose'].concentration" + z2_h_s1 + " + " + z2_l_s1 + z2_h_s1 + ")"
 
-     
+
     #z3
-    
+
     z3 = '""'
-    
+
     #z4
-    
+
     z4_l_s3_s4 = str(lmfit_params['z4_l_s3_s4'].value)
     z4_h_s3_s4 = " ** " + str(lmfit_params['z4_h_s3_s4'].value)
     z4 = "(" + z4_l_s3_s4 + z4_h_s3_s4 + "/(" + z4_l_s3_s4 + z4_h_s3_s4 + " + ((metObj.metD['glucose'].concentration + metObj.metD['glutamate'].concentration - ((metObj.metD['glucose'].concentration - metObj.metD['glutamate'].concentration)**2)**0.5)/2)" + z4_h_s3_s4 + "))"
 
-    z5 = '""'   
+    z5 = '""'
     with conn:
-        
-        
+
+
         update_subpopulations(conn, (lmfit_params['xa_mumax'].value, lmfit_params['xa_pHopt'].value, lmfit_params['xa_pHalpha'].value, 'xa'))
-        
+
         update_subpopulations(conn, (lmfit_params['xb_mumax'].value, lmfit_params['xb_pHopt'].value, lmfit_params['xb_pHalpha'].value, 'xb'))
-        
-        
-        
+
+
+
         update_subpopulations2subpopulations(conn, (z1, lmfit_params['z1_r'].value, 1))
-        
-        update_subpopulations2subpopulations(conn, (z2, lmfit_params['z2_r'],value, 2))
-        
+
+        update_subpopulations2subpopulations(conn, (z2, lmfit_params['z2_r'].value, 2))
+
         update_subpopulations2subpopulations(conn, (z3, lmfit_params['z3_r'].value, 3))
-        
+
         update_subpopulations2subpopulations(conn, (z4, lmfit_params['z4_r'].value, 4))
-        
+
         update_subpopulations2subpopulations(conn, (z5, lmfit_params['z5_r'].value, 5))
-        
-        
-        
-        
+
+
+
+
         update_feedingTerms2metabolites(conn, (lmfit_params['xa_g_s1'].value, lmfit_params['xa_k_s1'].value, 1))
-        
-        
+
+
         update_feedingTerms2metabolites(conn, (lmfit_params['xa_g_s5_s1'].value, 0, 2))
-        
-        
+
+
         update_feedingTerms2metabolites(conn, (lmfit_params['xa_g_s6_s1'].value, 0, 3))
-        
-        
+
+
         update_feedingTerms2metabolites(conn, (lmfit_params['xa_g_s2'].value, lmfit_params['xa_k_s2'].value, 4))
-        
-        
+
+
         update_feedingTerms2metabolites(conn, (lmfit_params['xa_g_s6_s2'].value, 0, 5))
-        
-        
+
+
         update_feedingTerms2metabolites(conn, (lmfit_params['xb_g_s3'].value, lmfit_params['xb_k_s3'].value, 6))
-        
-        
+
+
         update_feedingTerms2metabolites(conn, (lmfit_params['xb_g_s4'].value, lmfit_params['xb_k_s4'].value, 7))
-        
-        
+
+
         update_feedingTerms2metabolites(conn, (lmfit_params['xb_g_s6_s3_s4'].value, 0, 8))
-        
-        
+
+
         update_feedingTerms2metabolites(conn, (lmfit_params['xb_g_s2'].value, lmfit_params['xb_k_s2'].value, 9))
-        
+
         update_feedingTerms2metabolites(conn, (lmfit_params['xb_g_s6_s2'].value, 0, 10))
-        
-        
-        
-        
+
+ 
         
         
     
@@ -204,39 +202,35 @@ def assignBtParams(lmfit_params, conn):
     
 def assignRiParams(lmfit_params, conn):
     
-    #z11
-    num = "(metObj.metD['lactate'].concentration+metObj.metD['acetate'].concentration)**" + str(lmfit_params['z11_h_s5'].value)
-    denom = num + " + " + str(lmfit_params['z11_l_s5'].value**lmfit_params['z11_h_s5'].value)
     
-    zeta11 = "(" + num + "/(" + denom + "))"
+    #z11
+    
+    z11_l_s5_s6 = str(lmfit_params['z11_l_s5_s6'].value)
+    z11_h_s5_s6 = " ** " + str(lmfit_params['z11_h_s5_s6'].value)
+    z11 = "((metObj.metD['lactate'].concentration+metObj.metD['acetate'].concentration)" + z11_h_s5_s6 + "/(" + z11_l_s5_s6 + z11_h_s5_s6 + " + (metObj.metD['lactate'].concentration+metObj.metD['acetate'].concentration)" + z11_h_s5_s6 + "))"
+
     
     #z12
+    z12_l_s3_s2 = str(lmfit_params['z12_l_s3_s2'].value)
+    z12_h_s3_s2 = " ** " + str(lmfit_params['z12_h_s3_s2'].value)
+    z12 = "(" + z12_l_s3_s2 + z12_h_s3_s2 + "/(" + z12_l_s3_s2 + z12_h_s3_s2 + " + (metObj.metD['glucose'].concentration + metObj.metD['pyruvate'].concentration)" + z12_h_s3_s2 + "))"
     
-    num = str(lmfit_params['z12_l_s3_s2'].value**lmfit_params['z12_h_s3_s2'].value)
-    denom = num + " + (metObj.metD['glucose'].concentration + metObj.metD['pyruvate'].concentration)**" + str(lmfit_params['z12_h_s3_s2'].value)
-    
-    zeta12 = "(" + num + "/(" + denom + "))"
     
     #z13
-    zeta13 = '""'
+    
+    z13 = '""'
     
     #z14
     
-    zeta14 = '""'
-    
-    
+    z14 = '""'
     
     #z15
     
-    num = "(metObj.metD['glucose'].concentration + metObj.metD['pyruvate'].concentration)**50" #+ str(lmfit_params['z11_h_s3'].value)
+    z15_l_s3_s2 = str(lmfit_params['z15_l_s3_s2'].value)
+    z15_h_s3_s2 = " ** " + str(lmfit_params['z15_h_s3_s2'].value)
+    z15 = "((metObj.metD['glucose'].concentration + metObj.metD['pyruvate'].concentration)" + z15_h_s3_s2 + "/((metObj.metD['glucose'].concentration + metObj.metD['pyruvate'].concentration) " + z15_h_s3_s2 + " + " + z15_l_s3_s2 + z15_h_s3_s2 + "))"
+
     
-   
-    denom = num + " + 8.0**50" #+ str(lmfit_params['z11_l_s3'].value**lmfit_params['z11_h_s3'].value)
-    
-    zeta15 = "(" + num + "/(" + denom + "))"
-    
-    
-    #zeta14 = '""'
     
     with conn:
         
@@ -244,15 +238,15 @@ def assignRiParams(lmfit_params, conn):
         
         update_subpopulations(conn, (lmfit_params['xj_mumax'].value, lmfit_params['xj_pHopt'].value, lmfit_params['xj_pHalpha'].value, 'xj'))
     
-        update_subpopulations2subpopulations(conn, (zeta11, lmfit_params['z11_r'].value, 11))
+        update_subpopulations2subpopulations(conn, (z11, lmfit_params['z11_r'].value, 11))
         
-        update_subpopulations2subpopulations(conn, (zeta12, lmfit_params['z12_r'].value, 12))
+        update_subpopulations2subpopulations(conn, (z12, lmfit_params['z12_r'].value, 12))
         
-        update_subpopulations2subpopulations(conn, (zeta13, lmfit_params['z13_r'].value, 13))
+        update_subpopulations2subpopulations(conn, (z13, lmfit_params['z13_r'].value, 13))
         
-        update_subpopulations2subpopulations(conn, (zeta14, lmfit_params['z14_r'].value, 14))
+        update_subpopulations2subpopulations(conn, (z14, lmfit_params['z14_r'].value, 14))
         
-        update_subpopulations2subpopulations(conn, (zeta15, 0.1, 15))
+        update_subpopulations2subpopulations(conn, (z15, lmfit_params['z15_r'].value, 15))
         
         update_feedingTerms2metabolites(conn, (lmfit_params['xi_g_s2'].value, lmfit_params['xi_k_s2'].value, 21))
         

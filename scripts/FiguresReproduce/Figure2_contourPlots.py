@@ -225,8 +225,8 @@ def makeSimulation(pHControl = None,
         succ[-1],
         buty[-1]
         ])
-    
-    return bac_composition,metsA,metsB
+    pH = reactor.pH_simul[-1]
+    return bac_composition,metsA,metsB, pH
 
 
 
@@ -249,11 +249,10 @@ for ph in tqdm(pH_points):
         
         
         
-        bac, metA, metB = makeSimulation(pHControl=ph,
-                                          dilutionRate=d,
+        bac, metA, metB, _ = makeSimulation(pHControl=ph,
+                                          dilutionFactor=d,
                                          
-                                          bhA = 0.003,
-                                          bhB =0.0,
+                                          bh = 0.003,
                                           bt = 0.003,
                                           ri = 0.003)
         bhbtri2_b.append(bac)

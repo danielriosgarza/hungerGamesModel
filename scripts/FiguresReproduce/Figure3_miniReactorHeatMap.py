@@ -20,9 +20,11 @@ sys.path.append(os.path.join(Path(os.getcwd()).parents[0], 'compare2experiments'
 from general import *
 
 
-def create_heatmap(data, row_labels, x_positions, x_values, xlabel, ylabel, title, fileName = None):
+def create_heatmap(data, row_labels, x_positions, x_values, xlabel, ylabel, title, fileName=None):
     fig, ax = plt.subplots()
-    heatmap = ax.imshow(data, aspect='auto')
+    
+    # Use interpolation='none' to avoid color bleeding
+    heatmap = ax.imshow(data, aspect='auto', interpolation='none')
     ax.grid(False)
 
     # Set row labels (y-axis)
@@ -35,7 +37,7 @@ def create_heatmap(data, row_labels, x_positions, x_values, xlabel, ylabel, titl
 
     # Set specific x-ticks and labels (x-axis)
     #ax.set_xticks(x_positions)
-    #ax.set_xticklabels(x_values, rotation =90, fontsize=4)
+    #ax.set_xticklabels(x_values, rotation=90, fontsize=4)
 
     # Set labels and title
     ax.set_xlabel(xlabel)
@@ -56,6 +58,7 @@ def create_heatmap(data, row_labels, x_positions, x_values, xlabel, ylabel, titl
         plt.savefig(fileName, transparent=True, dpi=600)
 
     plt.show()
+
 
 
 
